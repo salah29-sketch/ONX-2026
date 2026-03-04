@@ -1,27 +1,73 @@
-<h1>خدمة الإعلانات</h1>
+@extends('layouts.front')
 
-<h2>إعلان مرة واحدة</h2>
-@foreach($oneTime as $o)
-    <div style="border:1px solid #ccc; padding:15px; margin-bottom:15px;">
-        <h3>{{ $o['name'] }} - {{ $o['price_note'] }}</h3>
-        <ul>
-            @foreach($o['features'] as $f)
-                <li>{{ $f }}</li>
-            @endforeach
-        </ul>
-        <button>اطلب عرض سعر</button>
-    </div>
-@endforeach
+@section('title','Ads')
 
-<h2>الاشتراكات الشهرية</h2>
-@foreach($monthly as $m)
-    <div style="border:1px solid #ccc; padding:15px; margin-bottom:15px;">
-        <h3>{{ $m['name'] }} - {{ number_format($m['price']) }} دج / شهر</h3>
-        <ul>
-            @foreach($m['features'] as $f)
-                <li>{{ $f }}</li>
-            @endforeach
-        </ul>
-        <button>اشترك</button>
-    </div>
-@endforeach
+@section('content')
+
+<section class="onx-section">
+
+<div class="container">
+
+<h1 class="fw-bold text-center mb-5">
+إنتاج الإعلانات
+</h1>
+
+<div class="row g-4">
+
+<div class="col-lg-6">
+<div class="onx-card p-4">
+
+<h3 class="fw-bold mb-3">إعلان حسب الطلب</h3>
+
+<p class="onx-muted">
+ننتج إعلان كامل حسب فكرة العميل
+وتختلف التكلفة حسب:
+</p>
+
+<ul class="onx-muted">
+<li>مدة الفيديو</li>
+<li>عدد أيام التصوير</li>
+<li>المعدات</li>
+<li>الممثلين</li>
+</ul>
+
+<a href="/contact" class="btn btn-onx-ghost mt-3">
+اطلب عرض سعر
+</a>
+
+</div>
+</div>
+
+
+<div class="col-lg-6">
+<div class="onx-card p-4">
+
+<h3 class="fw-bold mb-3">اشتراك شهري</h3>
+
+<p class="onx-muted">
+مناسب للشركات والمتاجر
+</p>
+
+<ul class="onx-muted">
+<li>إعلانات شهرية</li>
+<li>Reels</li>
+<li>تصوير منتجات</li>
+<li>مونتاج</li>
+</ul>
+
+<h4 class="mt-3">ابتداء من 60000 DA / شهر</h4>
+
+<a href="/contact" class="btn btn-onx-ghost mt-3">
+ابدأ الاشتراك
+</a>
+
+</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+@endsection

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\MassDestroyServiceRequest;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
+use App\Http\Requests\MassDestroyServiceRequest;
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
 use App\Service;
@@ -12,8 +12,6 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
-
-
 
 class ServicesController extends Controller
 {
@@ -23,7 +21,7 @@ class ServicesController extends Controller
     {
         if ($request->ajax()) {
             $query = Service::query()->select(sprintf('%s.*', (new Service)->table));
-            $table = Datatables::of($query);
+            $table = DataTables::of($query); // ✅ هنا التصحيح
 
             $table->addColumn('placeholder', '&nbsp;');
             $table->addColumn('actions', '&nbsp;');
@@ -42,35 +40,26 @@ class ServicesController extends Controller
                     'row'
                 ));
             });
-            $table->editColumn('id', function ($row) {
-                return $row->id ? $row->id : "";
-            });
+
+            $table->editColumn('id', fn($row) => $row->id ?? '');
 
             $table->editColumn('photo', function ($row) {
                 if ($photo = $row->photo) {
                     return sprintf(
-                        '<a href="%s" target="_blank"><img src="%s" width="50px" height="50px"></a>',
+                        '<a href="%s" target="_blank"><img src="%s" width="50" height="50"></a>',
                         $photo->url,
                         $photo->thumbnail
                     );
                 }
-
                 return '';
             });
-            $table->editColumn('name', function ($row) {
-                return $row->name ? $row->name : "";
-            });
-            $table->editColumn('description', function ($row) {
-                return $row->description ? $row->description : "";
-            });
-             $table->editColumn('image', function ($row) {
-                return $row->image ? $row->image : "";
-            });
-            $table->editColumn('price', function ($row) {
-                return $row->price ? $row->price : "";
-            });
 
-            $table->rawColumns(['actions','photo', 'placeholder']);
+            $table->editColumn('name', fn($row) => $row->name ?? '');
+            $table->editColumn('description', fn($row) => $row->description ?? '');
+            $table->editColumn('image', fn($row) => $row->image ?? '');
+            $table->editColumn('price', fn($row) => $row->price ?? '');
+
+            $table->rawColumns(['actions', 'photo', 'placeholder']);
 
             return $table->make(true);
         }
@@ -87,13 +76,14 @@ class ServicesController extends Controller
 
     public function store(StoreServiceRequest $request)
     {
-           $service = Service::create($request->all());
+        $service = Service::create($request->all());
 
-           if ($request->input('photo', false)) {
-                    $service->addMedia(storage_path('tmp/uploads/' . $request->input('photo')))->toMediaCollection('photo');
-                }
+        if ($request->input('photo', false)) {
+            $service->addMedia(storage_path('tmp/uploads/' . $request->input('photo')))
+                ->toMediaCollection('photo');
+        }
 
-            return redirect()->route('admin.services.index');
+        return redirect()->route('admin.services.index');
     }
 
     public function edit(Service $service)
@@ -107,9 +97,10 @@ class ServicesController extends Controller
     {
         $service->update($request->all());
 
-         if ($request->input('photo', false)) {
+        if ($request->input('photo', false)) {
             if (!$service->photo || $request->input('photo') !== $service->photo->file_name) {
-                $service->addMedia(storage_path('tmp/uploads/' . $request->input('photo')))->toMediaCollection('photo');
+                $service->addMedia(storage_path('tmp/uploads/' . $request->input('photo')))
+                    ->toMediaCollection('photo');
             }
         } elseif ($service->photo) {
             $service->photo->delete();

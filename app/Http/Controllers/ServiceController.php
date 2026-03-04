@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\View\View;
+use App\Models\EventPackage;
 
 class ServiceController extends Controller
 {
@@ -25,32 +26,28 @@ class ServiceController extends Controller
     }
 
     public function events(): View
-    {
-        $packages = [
-            [
-                'name' => 'العادية',
-                'price' => 20000,
-                'features' => ['مصور واحد', 'فيديو كامل', 'مونتاج بسيط', 'تسليم خلال 7 أيام'],
-                'featured' => false,
-            ],
-            [
-                'name' => 'المميزة',
-                'price' => 30000,
-                'features' => ['مصورين', 'فيديو كامل + Teaser', 'مونتاج احترافي', 'تسليم خلال 5 أيام'],
-                'featured' => true,
-            ],
-            [
-                'name' => 'البريميوم',
-                'price' => 50000,
-                'features' => ['فريق تصوير', 'فيديو كامل + Teaser + Reels', 'مونتاج سينمائي', 'تسليم خلال 3-5 أيام'],
-                'featured' => false,
-            ],
-        ];
+{
+    $packages = EventPackage::where('is_active', true)->get();
 
-        $travelNote = 'خارج ولاية سيدي بلعباس: تُضاف رسوم تنقل حسب الولاية.';
+    $featured = $packages->where('is_featured', true)->first();
 
-        return view('services.events', compact('packages', 'travelNote'));
-    }
+    $others = $packages->where('is_featured', false);
+
+    // ترتيب: نصف قبل الـfeatured ونصف بعده
+    $before = $others->take(ceil($others->count()/2));
+    $after  = $others->slice(ceil($others->count()/2));
+
+    $packagesOrdered = $before
+        ->merge($featured ? [$featured] : [])
+        ->merge($after);
+
+    $travelNote = 'خارج ولاية سيدي بلعباس: تُضاف رسوم تنقل حسب الولاية.';
+
+    return view('services.events', [
+        'packages' => $packagesOrdered,
+        'travelNote' => $travelNote
+    ]);
+}
 
     public function ads(): View
     {

@@ -11,7 +11,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-  .onx-orange{
+.btn-onx-ghost i{ margin-left:6px; } /* لأن الصفحة RTL */
+.onx-orange{
 color:#ff6a00;
 }
 .onx-left{
@@ -479,6 +480,79 @@ font-size:14px;
 
 .onx-card:hover::before{
   opacity:1;
+}
+/* ===== Events Pricing (Plans) ===== */
+
+.onx-plan{
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.onx-plan:hover{
+  transform: translateY(-6px);
+  border-color: rgba(255,106,0,.25);
+  box-shadow: 0 18px 60px rgba(0,0,0,.65);
+}
+
+/* الباقة الوسطى أكبر */
+.onx-plan-featured{
+  transform: scale(1.06);
+  border-color: rgba(255,106,0,.28);
+  position: relative;
+}
+
+/* Glow خفيف */
+.onx-plan-featured::before{
+  content:"";
+  position:absolute;
+  inset:-35%;
+  background:
+    radial-gradient(circle, rgba(255,106,0,.35), transparent 60%),
+    radial-gradient(circle at 30% 40%, rgba(255,106,0,.22), transparent 65%);
+  filter: blur(90px);
+  opacity:.65;
+  z-index:0;
+  pointer-events:none;
+  animation: planGlow 10s ease-in-out infinite;
+}
+
+/* ارفع المحتوى فوق glow */
+.onx-plan-featured > *{
+  position:relative;
+  z-index:2;
+}
+
+@keyframes planGlow{
+  0%   { opacity:.35; transform: translate(-8%,-6%) scale(1.05); }
+  45%  { opacity:.75; transform: translate(10%,6%)  scale(1.25); }
+  100% { opacity:.35; transform: translate(-8%,-6%) scale(1.05); }
+}
+
+/* قائمة أنيقة */
+.onx-list{ padding-right:18px; }
+.onx-list li{ margin-bottom:8px; }
+
+/* زر Booking احترافي */
+.btn-onx-book{
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.24);
+  color: rgba(255,255,255,.92);
+  font-weight: 900;
+  border-radius: 999px;
+  padding: .85rem 1.2rem;
+  transition: .2s ease;
+}
+
+.btn-onx-book:hover{
+  border-color: rgba(255,106,0,.75);
+  background: rgba(255,106,0,.14);
+  box-shadow: 0 0 26px rgba(255,106,0,.22);
+  transform: translateY(-1px);
+  color:#fff;
+}
+
+/* على الموبايل: لا نكبر الوسط كثير */
+@media (max-width: 992px){
+  .onx-plan-featured{ transform: none; }
 }
 </style>
 
