@@ -1,3 +1,4 @@
+
 <div class="sidebar">
     <nav class="sidebar-nav">
 
@@ -64,15 +65,13 @@
                     </a>
                 </li>
             @endcan
-            @can('service_access')
-    <li class="nav-item">
-        <a href="{{ route('admin.event-packages.index') }}"
-           class="nav-link {{ request()->is('admin/event-packages') || request()->is('admin/event-packages/*') ? 'active' : '' }}">
-            <i class="fa-fw fas fa-box-open nav-icon"></i>
-            باقات الحفلات
-        </a>
-    </li>
-@endcan
+            <li class="nav-item">
+                 <a href="{{ route('admin.event-packages.index') }}"
+                  class="nav-link {{ request()->is('admin/event-packages') || request()->is('admin/event-packages/*') ? 'active' : '' }}">
+                 <i class="fa-fw fas fa-box-open nav-icon"></i>
+                 event packages
+                 </a>
+             </li>
             @can('client_access')
                 <li class="nav-item">
                     <a href="{{ route("admin.clients.index") }}" class="nav-link {{ request()->is('admin/clients') || request()->is('admin/clients/*') ? 'active' : '' }}">

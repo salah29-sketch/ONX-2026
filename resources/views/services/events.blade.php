@@ -2,7 +2,6 @@
 @section('title','Events')
 
 @section('content')
-
 <section class="onx-section">
   <div class="container">
 
@@ -11,12 +10,13 @@
       اختر الباقة المناسبة — رسوم إضافية للتنقل خارج الولاية.
     </p>
 
-    <div class="row g-4 align-items-stretch justify-content-center">
+    {{-- ✅ احذف align-items-stretch لأنه يسبب تمدد غريب --}}
+    <div class="row g-4 justify-content-center">
 
       @forelse($packages as $p)
-
-        <div class="col-lg-4">
-          <div class="onx-card onx-plan p-4 text-center h-100 {{ $p->is_featured ? 'onx-plan-featured' : '' }}">
+        <div class="col-lg-4 d-flex plan-col">
+          {{-- ✅ احذف p-4 و h-100 لأننا نتحكم بالـpadding والارتفاع من CSS --}}
+          <div class="onx-card onx-plan text-center w-100 {{ $p->is_featured ? 'onx-plan-featured' : '' }}">
 
             {{-- Badge --}}
             <div class="onx-badge mx-auto mb-3"
@@ -28,52 +28,82 @@
             <h3 class="fw-bold mb-2">{{ $p->name }}</h3>
 
             {{-- Description --}}
-            @if($p->description)
-              <p class="onx-muted mb-4">{{ $p->description }}</p>
-            @else
-              <p class="onx-muted mb-4">باقة مناسبة لتوثيق حفلتكم بجودة سينمائية.</p>
-            @endif
+            <p class="onx-muted mb-3">
+              {{ $p->description ?: 'باقة مناسبة لتوثيق حفلتكم بجودة سينمائية.' }}
+            </p>
 
             {{-- Features --}}
-            <ul class="text-start onx-muted mb-4 onx-list">
-              @foreach(($p->features ?? []) as $f)
-                <li>{{ $f }}</li>
-              @endforeach
-            </ul>
+            <div class="features-wrap">
 
-            {{-- Price --}}
-            <div class="onx-price mb-4">
-               <span class="fw-bold" style="font-size:{{ $p->is_featured ? '32px' : '28px' }};">
-                {{ number_format($p->price) }}
-                 </span>
-               <span class="onx-muted">DA</span>
+  <ul class="onx-muted mb-0 onx-list package-features-ltr features-list collapsed" dir="ltr">
+    @foreach(($p->features ?? []) as $f)
+      <li>
+        <span class="feat-dot"></span>
+        <span class="feat-text">{{ $f }}</span>
+      </li>
+    @endforeach
+  </ul>
+
+  @if(count($p->features ?? []) > 6)
+    <button type="button"
+            class="btn btn-link onx-more-btn p-0 mt-2"
+            onclick="toggleFeatures(this)">
+      عرض المزيد
+    </button>
+  @endif
+
+</div>
+
+            {{-- ✅ هذا الجزء يثبت السعر والزر في الأسفل --}}
+            <div class="mt-auto">
+              <div class="onx-price mb-3">
+                <span class="fw-bold">
+                  {{ number_format($p->price) }}
+                </span>
+                <span class="onx-muted">DA</span>
+              </div>
+
+              <a href="{{ route('booking') }}" class="btn btn-onx-book w-100">احجز الآن</a>
             </div>
-
-            {{-- Booking --}}
-            <a href="{{ route('booking') }}" class="btn btn-onx-book w-100">احجز الآن</a>
 
           </div>
         </div>
 
       @empty
-
         <div class="col-lg-8">
           <div class="onx-card p-4 text-center">
             <h4 class="fw-bold mb-2">لا توجد باقات بعد</h4>
             <p class="onx-muted mb-0">أضف الباقات من لوحة التحكم (Admin).</p>
           </div>
         </div>
-
       @endforelse
 
     </div>
 
-    {{-- Travel note (اختياري من الكنترولر) --}}
     @if(!empty($travelNote))
       <div class="text-center onx-muted mt-4">{{ $travelNote }}</div>
     @endif
 
   </div>
 </section>
-
 @endsection
+
+@push('scripts')
+<script>
+function toggleFeatures(btn){
+  const list = btn.parentElement.querySelector('.features-list');
+  const expanded = list.classList.contains('expanded');
+
+  if(expanded){
+    list.classList.remove('expanded');
+    list.classList.add('collapsed');
+    btn.textContent = 'عرض المزيد';
+  }else{
+    list.classList.remove('collapsed');
+    list.classList.add('expanded');
+    btn.textContent = 'إخفاء';
+  }
+}
+</script>
+
+@endpush

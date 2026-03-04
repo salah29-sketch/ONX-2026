@@ -1,108 +1,131 @@
-.ck-editor__editable,
-textarea {
-    min-height: 150px;
+/* ========= Packages Cards ========= */
+
+.onx-plan{
+  max-width: 330px;
+  margin: 0 auto;
+  padding: 18px 18px;
+  border-radius: 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  height: 560px; /* ✅ نفس ارتفاع كل الباقات */
+  transition: all .35s ease;
 }
 
-.datatable {
-    width: 100% !important;
+/* featured */
+.onx-plan-featured{
+  height: 590px;
+  transform: none !important;
 }
 
-.dataTables_length,
-.dataTables_filter,
-.dt-buttons {
-    margin-bottom: 0.333em;
-    margin-top: .2rem;
+/* Title / text sizing */
+.onx-plan h3{
+  font-size: 24px;
+  margin-bottom: 6px;
 }
 
-.dataTables_filter {
-    margin-right: .2rem;
+.onx-plan .onx-muted{
+  font-size: 13.5px;
+  line-height: 1.6;
 }
 
-.dt-buttons .btn {
-    margin-left: 0.333em;
-    border-radius: 0;
+.onx-price-val{
+  font-size: 26px;
 }
 
-.table.datatable {
-    box-sizing: border-box;
-    border-collapse: collapse;
+/* Button */
+.onx-plan .btn-onx-book{
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 14px;
 }
 
-table.dataTable thead th {
-    border-bottom: 2px solid #c8ced3;
+/* ========= Features (French LTR + dots left) ========= */
+
+.package-features-ltr{
+  direction: ltr;
+  text-align: left;
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 0;
 }
 
-.dataTables_wrapper.no-footer .dataTables_scrollBody {
-    border-bottom: 1px solid #c8ced3;
+.package-features-ltr li{
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 5px 0;
+  border-top: 1px solid rgba(255,255,255,.08);
+  font-size: 13.5px;
 }
 
-.select2 {
-    max-width: 100%;
-    width: 100% !important;
+.package-features-ltr li:first-child{ border-top: 0; }
+
+.package-features-ltr .feat-dot{
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,122,0,.9);
+  box-shadow: 0 0 10px rgba(255,122,0,.35);
+  flex: 0 0 auto;
+  margin-top: 8px;
 }
 
-.select2-selection__rendered {
-    padding-bottom: 5px !important;
+.package-features-ltr .feat-text{
+  direction: ltr;
+  text-align: left;
 }
 
-.has-error .invalid-feedback {
-    display: block !important;
+/* ========= Collapse / Expand (inside selected card) ========= */
+
+.features-list.collapsed{
+  max-height: 170px;
+  overflow: hidden;
 }
 
-.btn-info,
-.badge-info {
-    color: white;
+.features-list.expanded{
+  max-height: none;
+  overflow: visible;
 }
 
-table.dataTable thead .sorting,
-table.dataTable thead .sorting_asc,
-table.dataTable thead .sorting_desc {
-    background-image: none;
+.onx-more-btn{
+  color: rgba(255,122,0,.9);
+  text-decoration: none;
+  font-size: 13px;
+}
+.onx-more-btn:hover{
+  color: rgba(255,122,0,1);
+  text-decoration: underline;
 }
 
-.sidebar .nav-item {
-    cursor: pointer;
+/* ========= Expand ONLY selected package ========= */
+
+.plan-col.is-expanded{
+  flex: 0 0 100%;
+  max-width: 100%;
 }
 
-.btn-default {
-    color: #23282c;
-    background-color: #f0f3f5;
-    border-color: #f0f3f5;
+.onx-plan.is-expanded{
+  max-width: 760px;
+  margin: 0 auto;
+
+  height: auto; /* ✅ يتمدد فقط المختار */
 }
 
-.btn-default.focus,
-.btn-default:focus {
-    box-shadow: 0 0 0 .2rem rgba(209, 213, 215, .5);
+/* Optional: highlight expanded card */
+.onx-plan.is-expanded{
+  box-shadow: 0 0 28px rgba(255,122,0,.18);
+  border: 1px solid rgba(255,122,0,.25);
 }
 
-.btn-default:hover {
-    color: #23282c;
-    background-color: #d9e1e6;
-    border-color: #d1dbe1;
+/* Responsive */
+@media (max-width: 992px){
+  .onx-plan{ max-width: 420px; height: auto; }
+  .onx-plan-featured{ height: auto; }
+  .onx-plan.is-expanded{ max-width: 100%; }
 }
 
-.btn-group-xs > .btn,
-.btn-xs {
-    padding: 1px 5px;
-    font-size: 12px;
-    line-height: 1.5;
-    border-radius: 3px;
-}
-
-.searchable-title {
-    font-weight: bold;
-}
-.searchable-fields {
-    padding-left:5px;
-}
-.searchable-link {
-    padding:0 5px 0 5px;
-}
-.searchable-link:hover   {
-    cursor: pointer;
-    background: #eaeaea;
-}
-.select2-results__option {
-    padding-left: 0px;
-    padding-right: 0px;
+@media (max-width: 576px){
+  .onx-plan{ max-width: 100%; }
 }
