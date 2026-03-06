@@ -30,9 +30,10 @@ class BookingsController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        $bookings = $query->paginate(20)->withQueryString();
+        $bookings = $query->paginate(20);
+        $bookings->appends($request->query());
 
-        return view('admin.bookings.index', compact('bookings'));
+return view('admin.bookings.index', compact('bookings'));
     }
 
     public function show(Booking $booking)
