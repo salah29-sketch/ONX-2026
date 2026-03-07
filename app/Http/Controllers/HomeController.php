@@ -12,6 +12,10 @@ use App\Models\AdPackage;
 
 class HomeController extends Controller
 {
+    public function index()
+    {
+    return view('front.home');
+    }
     public function booking(): View
     {
         // الخدمات (checkbox)
