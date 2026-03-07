@@ -93,7 +93,7 @@
     aaSorting: [],
     ajax: "{{ route('admin.employees.index') }}",
     columns: [
-      { data: 'placeholder', name: 'placeholder' },
+      
 { data: 'id', name: 'id' },
 { data: 'name', name: 'name' },
 { data: 'email', name: 'email' },

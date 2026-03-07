@@ -26,15 +26,15 @@ use App\Http\Controllers\Admin\CompanyController as AdminCompanyController;
 use App\Http\Controllers\Admin\EventLocationController as AdminEventLocationController;
 use App\Http\Controllers\Admin\BookingsController as AdminBookingsController;
 use App\Http\Controllers\Admin\BookingsCalendarController as AdminBookingsCalendarController;
+
 /*
 |--------------------------------------------------------------------------
 | Front Routes (موقع الزوار)
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', [HomeController::class ,'index'])->name('home');
-
-Route::get('/portfolio', [HomeController::class ,'portfolio'])->name('portfolio');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/portfolio', [HomeController::class, 'portfolio'])->name('portfolio');
 
 Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
 Route::get('/services/events', [ServiceController::class, 'events'])->name('services.events');
@@ -47,12 +47,13 @@ Route::get('/services/marketing', [ServiceController::class, 'marketing'])->name
 */
 
 Route::get('/booking', [BookingController::class, 'index'])->name('booking');
-
 Route::get('/booking/booked-days', [BookingController::class, 'bookedDays'])->name('booking.bookedDays');
-
 Route::get('/booking/check', [BookingController::class, 'checkDate'])->name('booking.check');
 
 Route::post('/booking', [ReservationController::class, 'store'])->name('booking.store');
+Route::get('/booking/confirmation/{booking}', [ReservationController::class, 'confirmation'])->name('booking.confirmation');
+Route::get('/booking/{booking}/pdf', [ReservationController::class, 'pdf'])->name('booking.pdf');
+
 /*
 |--------------------------------------------------------------------------
 | API Reservation (اختياري)
@@ -61,17 +62,14 @@ Route::post('/booking', [ReservationController::class, 'store'])->name('booking.
 
 Route::post('/reservation-api', [ReservationController::class, 'store']);
 
-
 /*
 |--------------------------------------------------------------------------
 | Misc
 |--------------------------------------------------------------------------
 */
 
-Route::get('/saleh', [HomeController::class , 'saleh']);
-
+Route::get('/saleh', [HomeController::class, 'saleh']);
 Route::redirect('/home', '/admin');
-
 
 /*
 |--------------------------------------------------------------------------
@@ -81,7 +79,6 @@ Route::redirect('/home', '/admin');
 
 Auth::routes(['register' => false]);
 
-
 /*
 |--------------------------------------------------------------------------
 | Translation JS
@@ -89,17 +86,15 @@ Auth::routes(['register' => false]);
 */
 
 Route::get('/lang.js', function () {
-
     $translations = [
         'booking' => __('booking'),
-        'home' => __('home'),
+        'home'    => __('home'),
     ];
 
     $js = 'window.translations = ' . json_encode($translations, JSON_UNESCAPED_UNICODE) . ';';
 
     return response($js)->header('Content-Type', 'application/javascript');
 });
-
 
 /*
 |--------------------------------------------------------------------------

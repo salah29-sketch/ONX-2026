@@ -23,6 +23,7 @@ class ClientsController extends Controller
             $table = DataTables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
+            $table->editColumn('id', fn($row) => $row->id ?? '');
             $table->addColumn('actions', '&nbsp;');
 
             $table->editColumn('actions', function ($row) {

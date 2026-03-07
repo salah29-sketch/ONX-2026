@@ -20,7 +20,7 @@
         <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Appointment">
             <thead>
                 <tr>
-                    <th width="10"></th>
+                    
                     <th>{{ trans('cruds.appointment.fields.id') }}</th>
                     <th>{{ trans('cruds.appointment.fields.client') }}</th>
                     <th>{{ trans('cruds.appointment.fields.employee') }}</th>

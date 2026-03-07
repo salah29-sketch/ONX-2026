@@ -59,7 +59,7 @@
             <table class="table table-bordered table-striped db-table text-center">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>#</th>  
                         <th>الخدمة</th>
                         <th>الباقة</th>
                         <th>التاريخ</th>

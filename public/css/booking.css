@@ -34,8 +34,8 @@
 ========================================================= */
 .onx-booking-shell{
   display:grid;
-  grid-template-columns:minmax(0,1fr) 360px;
-  gap:16px;
+  grid-template-columns:minmax(0,1fr) 320px;
+  gap:14px;
   align-items:start;
 }
 @media(max-width:992px){
@@ -479,5 +479,248 @@ select.onx-input option{
   #onxCalendar .flatpickr-day{
     height:38px !important;
     line-height:38px !important;
+  }
+}
+/* =========================================================
+   CONFIRMATION PAGE
+========================================================= */
+
+.onx-hero-confirmation{
+  min-height: 46vh;
+}
+
+.onx-confirm-success{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  padding:18px;
+  border-radius:22px;
+  border:1px solid rgba(40,167,69,.25);
+  background:rgba(40,167,69,.08);
+}
+
+.onx-confirm-icon{
+  width:52px;
+  height:52px;
+  min-width:52px;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.4rem;
+  font-weight:900;
+  background:rgba(40,167,69,.16);
+  border:1px solid rgba(40,167,69,.30);
+  color:#b8ffca;
+}
+
+.onx-confirm-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:14px;
+}
+
+.onx-confirm-item{
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.04);
+  border-radius:18px;
+  padding:14px 16px;
+}
+
+.onx-confirm-item .label{
+  display:block;
+  margin-bottom:6px;
+  font-size:.88rem;
+  color:rgba(255,255,255,.60);
+  font-weight:700;
+}
+
+.onx-confirm-item strong{
+  color:rgba(255,255,255,.95);
+  font-weight:800;
+}
+
+.onx-status-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:.42rem .8rem;
+  border-radius:999px;
+  font-size:.84rem;
+  font-weight:900;
+  border:1px solid transparent;
+}
+
+.onx-status-badge.pending{
+  background:rgba(255,159,28,.16);
+  border-color:rgba(255,159,28,.42);
+  color:#ffd08a;
+}
+
+.onx-status-badge.confirmed{
+  background:rgba(220,53,69,.16);
+  border-color:rgba(220,53,69,.40);
+  color:#ffb1b8;
+}
+
+.onx-status-badge.neutral{
+  background:rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.16);
+  color:rgba(255,255,255,.82);
+}
+
+@media (max-width: 768px){
+  .onx-confirm-grid{
+    grid-template-columns:1fr;
+  }
+
+  .onx-confirm-success{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+}
+/* =========================================================
+   CONFIRMATION PAGE - COMPACT CONTENT ONLY
+========================================================= */
+
+.onx-section .container{
+  max-width: 1140px;
+}
+
+.onx-hero-confirmation + .onx-section{
+  padding-top: 28px;
+}
+
+.onx-hero-confirmation + .onx-section .onx-booking-shell{
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 14px;
+}
+
+.onx-hero-confirmation + .onx-section .onx-form-card,
+.onx-hero-confirmation + .onx-section .onx-side-card,
+.onx-hero-confirmation + .onx-section .onx-panel{
+  padding: 14px;
+  border-radius: 18px;
+}
+
+.onx-hero-confirmation + .onx-section .onx-confirm-success{
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  margin-bottom: 16px !important;
+}
+
+.onx-hero-confirmation + .onx-section .onx-confirm-icon{
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  font-size: 1.1rem;
+  border-radius: 12px;
+}
+
+.onx-hero-confirmation + .onx-section .onx-confirm-success h3{
+  font-size: 1.25rem;
+}
+
+.onx-hero-confirmation + .onx-section .onx-confirm-success p{
+  font-size: .95rem;
+  line-height: 1.6;
+}
+
+.onx-hero-confirmation + .onx-section .onx-block-title{
+  font-size: .98rem;
+  margin-bottom: 10px;
+}
+
+.onx-hero-confirmation + .onx-section .onx-confirm-grid{
+  gap: 10px;
+}
+
+.onx-hero-confirmation + .onx-section .onx-confirm-item{
+  padding: 12px 14px;
+  border-radius: 14px;
+}
+
+.onx-hero-confirmation + .onx-section .onx-confirm-item .label{
+  font-size: .82rem;
+  margin-bottom: 4px;
+}
+
+.onx-hero-confirmation + .onx-section .onx-confirm-item strong{
+  font-size: .98rem;
+  line-height: 1.45;
+}
+
+.onx-hero-confirmation + .onx-section .onx-status-badge{
+  padding: .32rem .68rem;
+  font-size: .78rem;
+}
+
+.onx-hero-confirmation + .onx-section .onx-summary{
+  padding: 14px;
+  border-radius: 18px;
+}
+
+.onx-hero-confirmation + .onx-section .onx-summary-row{
+  padding: 8px 0;
+}
+
+.onx-hero-confirmation + .onx-section .onx-summary-row .k,
+.onx-hero-confirmation + .onx-section .onx-summary-row .v{
+  font-size: .9rem;
+}
+
+.onx-hero-confirmation + .onx-section .onx-qa-item{
+  padding: 10px 0;
+}
+
+.onx-hero-confirmation + .onx-section .onx-qa-item .q{
+  font-size: .98rem;
+  margin-bottom: 4px;
+}
+
+.onx-hero-confirmation + .onx-section .onx-qa-item .a{
+  font-size: .9rem;
+  line-height: 1.65;
+}
+
+.onx-hero-confirmation + .onx-section .btn{
+  padding: .72rem 1rem !important;
+  font-size: .92rem;
+}
+
+.onx-hero-confirmation + .onx-section .onx-divider{
+  margin-top: 16px !important;
+  margin-bottom: 16px !important;
+}
+
+@media (max-width: 992px){
+  .onx-hero-confirmation + .onx-section .onx-booking-shell{
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px){
+  .onx-hero-confirmation + .onx-section{
+    padding-top: 20px;
+  }
+
+  .onx-hero-confirmation + .onx-section .onx-form-card,
+  .onx-hero-confirmation + .onx-section .onx-side-card,
+  .onx-hero-confirmation + .onx-section .onx-panel{
+    padding: 12px;
+  }
+
+  .onx-hero-confirmation + .onx-section .onx-confirm-success{
+    padding: 12px;
+  }
+
+  .onx-hero-confirmation + .onx-section .onx-confirm-grid{
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .onx-hero-confirmation + .onx-section .onx-confirm-item{
+    padding: 11px 12px;
   }
 }

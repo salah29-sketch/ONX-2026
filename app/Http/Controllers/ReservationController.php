@@ -6,7 +6,9 @@ use App\Models\Booking;
 use App\Models\Client;
 use App\Models\EventPackage;
 use App\Models\AdPackage;
+use App\Models\EventLocation;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReservationController extends Controller
 {
@@ -62,6 +64,7 @@ class ReservationController extends Controller
 
         if ($serviceType === 'event' && $packageId && $packageType === 'event') {
             $package = EventPackage::where('is_active', true)->find($packageId);
+
             if ($package) {
                 $data['package_type'] = EventPackage::class;
                 $data['package_id']   = $package->id;
@@ -122,14 +125,70 @@ class ReservationController extends Controller
 
         $data['client_id'] = $client->id;
 
-        // جديد = غير مؤكد = برتقالي
+        // الحجز الجديد يبدأ كـ غير مؤكد
         $data['status'] = 'unconfirmed';
 
-        Booking::create($data);
+        $booking = Booking::create($data);
 
-        return redirect()->back()->with(
-            'message',
-            'تم إرسال طلبك بنجاح ✅ سنتواصل معك قريبًا'
-        );
+        return redirect()->route('booking.confirmation', $booking->id);
     }
+
+    public function confirmation(Booking $booking)
+{
+    $meta = $this->bookingMeta($booking);
+
+    return view('booking.confirmation', [
+        'booking'      => $booking,
+        'packageName'  => $meta['packageName'],
+        'packagePrice' => $meta['packagePrice'],
+        'locationName' => $meta['locationName'],
+    ]);
+}
+
+    public function pdf(Booking $booking)
+{
+    $meta = $this->bookingMeta($booking);
+
+    $pdf = Pdf::loadView('booking.pdf', [
+        'booking'      => $booking,
+        'packageName'  => $meta['packageName'],
+        'packagePrice' => $meta['packagePrice'],
+        'locationName' => $meta['locationName'],
+    ]);
+
+    return $pdf->download('booking-' . $booking->id . '.pdf');
+}
+
+    private function bookingMeta(Booking $booking)
+{
+    $packageName = null;
+    $packagePrice = null;
+
+    if ($booking->package_type === EventPackage::class) {
+        $package = EventPackage::find($booking->package_id);
+        $packageName = $package ? $package->name : null;
+        $packagePrice = $package ? $package->price : null;
+    }
+
+    if ($booking->package_type === AdPackage::class) {
+        $package = AdPackage::find($booking->package_id);
+        $packageName = $package ? $package->name : null;
+        $packagePrice = $package ? $package->price : null;
+    }
+
+    $locationName = null;
+
+    if (!empty($booking->custom_event_location)) {
+        $locationName = $booking->custom_event_location;
+    } elseif (!empty($booking->event_location_id) && $booking->event_location_id !== 'other') {
+        $location = EventLocation::find($booking->event_location_id);
+        $locationName = $location ? $location->name : null;
+    }
+
+    return [
+        'packageName'  => $packageName,
+        'packagePrice' => $packagePrice,
+        'locationName' => $locationName,
+    ];
+}
 }
