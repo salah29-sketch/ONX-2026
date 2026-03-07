@@ -14,20 +14,16 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        //
     ];
 
-    /**
-     * Register any authentication / authorization services.
-     *
-     * @return void
-     */
     public function boot()
     {
         $this->registerPolicies();
 
-        if (!app()->runningInConsole()) {
-            Passport::routes();
-        };
+        // ضع هنا فقط أشياء Passport الأخرى إن كنت تحتاجها
+        // مثل:
+        // Passport::tokensExpireIn(now()->addDays(15));
+        // Passport::refreshTokensExpireIn(now()->addDays(30));
     }
 }

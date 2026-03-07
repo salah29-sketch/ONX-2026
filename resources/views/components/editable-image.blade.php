@@ -1,7 +1,7 @@
 @props(['key', 'default' => '', 'class' => ''])
 
 @php
-    use App\EditableContent;
+    use App\Models\EditableContent;
 
     $record = EditableContent::where('key', $key)->first();
     $url = $record && $record->content ? asset($record->content) : asset($default);
