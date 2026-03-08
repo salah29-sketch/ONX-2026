@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\EventLocation;
 use App\Models\EventPackage;
-use App\Models\AdPackage;
+use App\Models\Adpackage;
 
 class Booking extends Model
 {
@@ -45,8 +45,8 @@ class Booking extends Model
         return $this->belongsTo(EventPackage::class, 'package_id');
     }
 
-    public function adPackage()
+    public function adpackage()
     {
-        return $this->belongsTo(AdPackage::class, 'package_id');
+        return $this->belongsTo(Adpackage::class, 'package_id');
     }
 }

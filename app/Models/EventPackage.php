@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class EventPackage extends Model
 {
-    protected $table = 'event_packages';
+    protected $table = 'event_Packages';
 
     protected $fillable = [
         'name','subtitle','description','price','features',

@@ -27,18 +27,18 @@
             </li>
 
             <li class="nav-item">
-                <a href="{{ route('admin.adpackages.index') }}"
-                   class="nav-link {{ request()->is('admin/adpackages*') ? 'active' : '' }}">
+                <a href="{{ route('admin.adPackages.index') }}"
+                   class="nav-link {{ request()->is('admin/adPackages*') ? 'active' : '' }}">
                     <i class="fa-fw fas fa-bullhorn nav-icon"></i>
                     Packages marketing
                 </a>
             </li>
 
             <li class="nav-item">
-                <a href="{{ route('admin.event-packages.index') }}"
-                   class="nav-link {{ request()->is('admin/event-packages*') ? 'active' : '' }}">
+                <a href="{{ route('admin.event-Packages.index') }}"
+                   class="nav-link {{ request()->is('admin/event-Packages*') ? 'active' : '' }}">
                     <i class="fa-fw fas fa-box-open nav-icon"></i>
-                    packages event
+                    Packages event
                 </a>
             </li>
 

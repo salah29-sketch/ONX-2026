@@ -8,7 +8,7 @@ use Illuminate\View\View;
 use App\Models\Service;
 use App\Models\EventLocation;
 use App\Models\EventPackage;
-use App\Models\AdPackage;
+use App\Models\Adpackage;
 
 class HomeController extends Controller
 {
@@ -37,13 +37,13 @@ class HomeController extends Controller
             ->get();
 
         // باقات الإعلانات من DB (monthly/custom)
-        $adMonthly = AdPackage::where('is_active', true)
+        $adMonthly = Adpackage::where('is_active', true)
             ->where('type', 'monthly')
             ->orderByDesc('is_featured')
             ->orderBy('sort_order')
             ->get();
 
-        $adCustom = AdPackage::where('is_active', true)
+        $adCustom = Adpackage::where('is_active', true)
             ->where('type', 'custom')
             ->orderByDesc('is_featured')
             ->orderBy('sort_order')

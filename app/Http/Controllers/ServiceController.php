@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\View\View;
 use App\Models\EventPackage;
-use App\Models\AdPackage;
+use App\Models\Adpackage;
 
 class ServiceController extends Controller
 {
@@ -48,19 +48,19 @@ class ServiceController extends Controller
         $before = $others->slice(0, $half);
         $after  = $others->slice($half);
 
-        $packagesOrdered = collect();
-        $packagesOrdered = $packagesOrdered->merge($before);
+        $PackagesOrdered = collect();
+        $PackagesOrdered = $PackagesOrdered->merge($before);
 
         if ($featured) {
-            $packagesOrdered->push($featured);
+            $PackagesOrdered->push($featured);
         }
 
-        $packagesOrdered = $packagesOrdered->merge($after);
+        $PackagesOrdered = $PackagesOrdered->merge($after);
 
         $travelNote = 'خارج ولاية سيدي بلعباس: تُضاف رسوم تنقل حسب الولاية.';
 
         return view('services.events', [
-            'packages'   => $packagesOrdered,
+            'Packages'   => $PackagesOrdered,
             'travelNote' => $travelNote,
         ]);
     }
@@ -71,13 +71,13 @@ class ServiceController extends Controller
      */
     public function marketing(): View
     {
-        $monthly = AdPackage::where('is_active', true)
+        $monthly = Adpackage::where('is_active', true)
             ->where('type', 'monthly')
             ->orderByDesc('is_featured')
             ->orderBy('sort_order')
             ->get();
 
-        $custom = AdPackage::where('is_active', true)
+        $custom = Adpackage::where('is_active', true)
             ->where('type', 'custom')
             ->orderByDesc('is_featured')
             ->orderBy('sort_order')

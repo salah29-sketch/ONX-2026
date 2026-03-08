@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Client;
 use App\Models\EventPackage;
-use App\Models\AdPackage;
+use App\Models\Adpackage;
 use App\Models\EventLocation;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -72,10 +72,10 @@ class ReservationController extends Controller
         }
 
         if ($serviceType === 'ads' && $packageId) {
-            $package = AdPackage::where('is_active', true)->find($packageId);
+            $package = Adpackage::where('is_active', true)->find($packageId);
 
             if ($package && in_array($package->type, ['monthly', 'custom'], true)) {
-                $data['package_type'] = AdPackage::class;
+                $data['package_type'] = Adpackage::class;
                 $data['package_id']   = $package->id;
             }
         }
@@ -170,8 +170,8 @@ class ReservationController extends Controller
         $packagePrice = $package ? $package->price : null;
     }
 
-    if ($booking->package_type === AdPackage::class) {
-        $package = AdPackage::find($booking->package_id);
+    if ($booking->package_type === Adpackage::class) {
+        $package = Adpackage::find($booking->package_id);
         $packageName = $package ? $package->name : null;
         $packagePrice = $package ? $package->price : null;
     }

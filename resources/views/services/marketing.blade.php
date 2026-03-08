@@ -1,133 +1,209 @@
-@extends('layouts.front')
-@section('title','marketing')
+@extends('layouts.front_tailwind')
+@section('title', 'marketing')
 
 @section('content')
 
 {{-- HERO --}}
-<section class="onx-hero-events" style="background-image:url('/img/hero-marketing.jpg')">
-  <div class="onx-hero-overlay"></div>
-  <div class="container text-center">
-    <span class="onx-badge mb-3">📣 ONX EDGE</span>
-    <h1 class="fw-bold mb-3">إنتاج الإعلانات</h1>
-    <p class="onx-muted mb-4">اشتراك شهري للمحتوى + إعلان حسب الطلب حسب مشروعك.</p>
-
-    <div class="d-flex justify-content-center gap-2 flex-wrap">
-      <a href="#monthly" class="btn btn-onx">الباقات الشهرية</a>
-      <a href="#custom" class="btn btn-onx-ghost">حسب الطلب</a>
+<section class="relative isolate overflow-hidden border-b border-white/10">
+    <div class="absolute inset-0 -z-10">
+        <img src="{{ asset('img/hero-marketing.jpg') }}"
+             alt="إنتاج الإعلانات"
+             class="h-full w-full object-cover opacity-20">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/80 to-[#050505]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,106,0,0.14),transparent_28%),radial-gradient(circle_at_20%_80%,rgba(255,106,0,0.06),transparent_26%)]"></div>
     </div>
-  </div>
+
+    <div class="mx-auto max-w-7xl px-6 py-20 text-center lg:px-8 lg:py-24">
+        <div class="mx-auto max-w-4xl">
+            <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold text-white/70 backdrop-blur">
+                <span class="h-2 w-2 rounded-full bg-orange-500"></span>
+                ONX • Marketing
+            </div>
+
+            <h1 class="text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
+                إنتاج الإعلانات
+            </h1>
+
+            <p class="mx-auto mt-6 max-w-2xl text-sm leading-8 text-white/70 sm:text-base">
+                اشتراك شهري للمحتوى + إعلان حسب الطلب حسب مشروعك.
+            </p>
+
+            <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <a href="#monthly"
+                   class="inline-flex items-center justify-center rounded-full bg-orange-500 px-7 py-3 text-sm font-black text-black transition duration-300 hover:-translate-y-1 hover:bg-orange-400 hover:shadow-[0_0_30px_rgba(249,115,22,0.3)]">
+                    الباقات الشهرية
+                </a>
+
+                <a href="#custom"
+                   class="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-7 py-3 text-sm font-extrabold text-white transition duration-300 hover:-translate-y-1 hover:border-orange-500/50 hover:bg-orange-500/10">
+                    حسب الطلب
+                </a>
+            </div>
+        </div>
+    </div>
 </section>
 
 {{-- MONTHLY --}}
-<section id="monthly" class="onx-section">
-  <div class="container">
-    <div class="text-center mb-4">
-      <h2 class="fw-bold mb-2">الباقات الشهرية</h2>
-      <p class="onx-muted mb-0">مناسبة للمتاجر والشركات لصناعة محتوى ثابت.</p>
+<section id="monthly" class="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+    <div class="mb-10 text-center">
+        <h2 class="text-3xl font-black sm:text-4xl">الباقات الشهرية</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-sm leading-8 text-white/65 sm:text-base">
+            مناسبة للمتاجر والشركات لصناعة محتوى ثابت.
+        </p>
     </div>
 
-    <div class="packages-grid">
-      @forelse($monthly as $p)
-        <div class="plan-item">
-          <div class="onx-card onx-plan text-center {{ $p->is_featured ? 'onx-plan-featured' : '' }}">
-            <div class="onx-badge mx-auto mb-3"
-                 style="{{ $p->is_featured ? 'border-color:rgba(255,106,0,.45);color:rgba(255,255,255,.9);' : '' }}">
-              {{ $p->subtitle ?: ($p->is_featured ? 'الأكثر طلبًا' : 'Monthly') }}
+    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        @forelse($monthly as $p)
+    <article class="flex flex-col rounded-[30px] border {{ $p->is_featured ? 'border-orange-500/30' : 'border-white/10' }} bg-white/5 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.32)]">
+        @if($p->is_featured)
+            <div class="mb-4 inline-flex w-fit self-center rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-2 text-[11px] font-extrabold tracking-[0.18em] text-orange-300">
+                {{ $p->subtitle ?: 'الأكثر طلبًا' }}
+            </div>
+        @else
+            <div class="mb-4 inline-flex w-fit self-center rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-extrabold tracking-[0.18em] text-white/70">
+                {{ $p->subtitle ?: 'MONTHLY' }}
+            </div>
+        @endif
+
+        <div class="text-center">
+            <h3 class="text-2xl font-black">{{ $p->name }}</h3>
+            <p class="mt-3 text-sm leading-7 text-white/70">{{ $p->description }}</p>
+        </div>
+
+        @php
+            $features = is_array($p->features)
+                ? $p->features
+                : (json_decode($p->features ?? '[]', true) ?: []);
+        @endphp
+
+        @if(count($features))
+            <div class="mt-6">
+                <ul class="space-y-2 text-sm text-white/65" dir="ltr">
+                    @foreach($features as $feature)
+                        <li class="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                            <span class="mt-1 h-2 w-2 rounded-full bg-orange-500"></span>
+                            <span class="text-left leading-6">{{ $feature }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <div class="mt-auto border-t border-white/10 pt-6 text-center">
+            <div class="mb-4 text-3xl font-black text-white">
+                @if($p->price)
+                    {{ number_format($p->price) }}
+                    <span class="text-base font-bold text-white/50">DA / شهر</span>
+                @else
+                    <span class="text-xl">{{ $p->price_note }}</span>
+                @endif
             </div>
 
-            <h3 class="fw-bold mb-2">{{ $p->name }}</h3>
-            <p class="onx-muted mb-3">{{ $p->description }}</p>
-
-           
-
-            <div class="mt-auto">
-              <div class="onx-price mb-3">
-                <span class="fw-bold">{{ $p->price ? number_format($p->price) : '' }}</span>
-                <span class="onx-muted">{{ $p->price ? 'DA / شهر' : $p->price_note }}</span>
-              </div>
-
-              <a href="https://wa.me/213540573518?text=سلام%20ONX%20حاب%20اشتراك%20شهري:%20{{ urlencode($p->name) }}"
-                 class="btn btn-onx-book w-100" target="_blank">
+            <a href="https://wa.me/213540573518?text=سلام%20ONX%20حاب%20اشتراك%20شهري:%20{{ urlencode($p->name) }}"
+               target="_blank"
+               class="inline-flex w-full items-center justify-center rounded-full {{ $p->is_featured ? 'bg-orange-500 text-black hover:bg-orange-400' : 'border border-white/15 bg-white/5 text-white hover:border-orange-500/50 hover:bg-orange-500/10' }} px-6 py-3.5 text-sm font-black transition duration-300">
                 ابدأ الاشتراك
-              </a>
-            </div>
-          </div>
+            </a>
         </div>
-      @empty
-        <div class="onx-card p-4 text-center" style="grid-column:1/-1;">
-          <h4 class="fw-bold mb-2">لا توجد باقات شهرية بعد</h4>
-          <p class="onx-muted mb-0">أضفها من لوحة التحكم.</p>
-        </div>
-      @endforelse
+    </article>
+@empty
+    <div class="rounded-[28px] border border-white/10 bg-white/5 p-8 text-center md:col-span-2 xl:col-span-3">
+        <h4 class="text-2xl font-black">لا توجد باقات شهرية بعد</h4>
+        <p class="mt-3 text-sm leading-7 text-white/65">
+            أضفها من لوحة التحكم.
+        </p>
     </div>
-  </div>
+@endforelse
+    </div>
 </section>
 
 {{-- CUSTOM --}}
-<section id="custom" class="onx-section pt-0">
-  <div class="container">
-    <div class="text-center mb-4">
-      <h2 class="fw-bold mb-2">إعلان حسب الطلب</h2>
-      <p class="onx-muted mb-0">نحسب السعر حسب الفكرة، مدة الفيديو، أيام التصوير…</p>
+<section id="custom" class="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+    <div class="mb-10 text-center">
+        <h2 class="text-3xl font-black sm:text-4xl">إعلان حسب الطلب</h2>
+        <p class="mx-auto mt-4 max-w-2xl text-sm leading-8 text-white/65 sm:text-base">
+            نحسب السعر حسب الفكرة، مدة الفيديو، أيام التصوير…
+        </p>
     </div>
 
-    <div class="packages-grid" style="grid-template-columns: repeat(2, minmax(0, 420px));">
-      @forelse($custom as $p)
-        <div class="plan-item">
-          <div class="onx-card onx-plan text-center {{ $p->is_featured ? 'onx-plan-featured' : '' }}">
-            <div class="onx-badge mx-auto mb-3">
-              {{ $p->subtitle ?: 'Custom' }}
+    <div class="grid items-start gap-6 lg:grid-cols-2">
+        @forelse($custom as $p)
+            <article class="self-start rounded-[30px] border {{ $p->is_featured ? 'border-orange-500/30' : 'border-white/10' }} bg-white/5 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.32)]">
+                @if($p->is_featured)
+                    <div class="mb-4 inline-flex w-fit self-center rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-2 text-[11px] font-extrabold tracking-[0.18em] text-orange-300">
+                        {{ $p->subtitle ?: 'الأكثر طلبًا' }}
+                    </div>
+                @else
+                    <div class="mb-4 inline-flex w-fit self-center rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-extrabold tracking-[0.18em] text-white/70">
+                        {{ $p->subtitle ?: 'CUSTOM' }}
+                    </div>
+                @endif
+
+                <div class="text-center">
+                    <h3 class="text-2xl font-black">{{ $p->name }}</h3>
+                    <p class="mt-3 text-sm leading-7 text-white/70">{{ $p->description }}</p>
+                </div>
+
+                <div class="mt-6">
+                    <ul class="space-y-2 text-sm text-white/65" dir="ltr">
+                        @foreach((array)($p->features ?? []) as $f)
+                            <li class="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                                <span class="mt-1 h-2 w-2 rounded-full bg-orange-500"></span>
+                                <span class="text-left leading-6">{{ $f }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+
+                <div class="mt-6 border-t border-white/10 pt-6 text-center">
+                    <div class="mb-4 text-2xl font-black text-white">
+                        {{ $p->price_note ?: 'حسب الطلب' }}
+                    </div>
+
+                    <a href="https://wa.me/213540573518?text=سلام%20ONX%20حاب%20عرض%20سعر%20إعلان:%20{{ urlencode($p->name) }}"
+                       target="_blank"
+                       class="inline-flex w-full items-center justify-center rounded-full {{ $p->is_featured ? 'bg-orange-500 text-black hover:bg-orange-400' : 'border border-white/15 bg-white/5 text-white hover:border-orange-500/50 hover:bg-orange-500/10' }} px-6 py-3.5 text-sm font-black transition duration-300">
+                        اطلب عرض سعر
+                    </a>
+                </div>
+            </article>
+        @empty
+            <div class="rounded-[28px] border border-white/10 bg-white/5 p-8 text-center lg:col-span-2">
+                <h4 class="text-2xl font-black">لا توجد عروض حسب الطلب بعد</h4>
+                <p class="mt-3 text-sm leading-7 text-white/65">
+                    أضفها من لوحة التحكم.
+                </p>
             </div>
-
-            <h3 class="fw-bold mb-2">{{ $p->name }}</h3>
-            <p class="onx-muted mb-3">{{ $p->description }}</p>
-
-            <ul class="onx-muted mb-3 onx-list package-features-ltr" dir="ltr">
-@foreach((array)($p->features ?? []) as $f)
-    <li>
-        <span class="feat-dot"></span>
-        <span class="feat-text">{{ $f }}</span>
-    </li>
-@endforeach
-</ul>
-
-            <div class="mt-auto">
-              <div class="onx-price mb-3">
-                <span class="fw-bold">{{ $p->price_note ?: 'حسب الطلب' }}</span>
-              </div>
-
-              <a href="https://wa.me/213540573518?text=سلام%20ONX%20حاب%20عرض%20سعر%20إعلان:%20{{ urlencode($p->name) }}"
-                 class="btn btn-onx-book w-100" target="_blank">
-                اطلب عرض سعر
-              </a>
-            </div>
-          </div>
-        </div>
-      @empty
-        <div class="onx-card p-4 text-center" style="grid-column:1/-1;">
-          <h4 class="fw-bold mb-2">لا توجد عروض حسب الطلب بعد</h4>
-          <p class="onx-muted mb-0">أضفها من لوحة التحكم.</p>
-        </div>
-      @endforelse
+        @endforelse
     </div>
 
     {{-- CTA صغير --}}
-    <div class="onx-cta mt-5">
-      <div class="row align-items-center g-3">
-        <div class="col-lg-8">
-          <h3 class="fw-bold mb-1">حاب إعلان احترافي يبيع؟</h3>
-          <p class="onx-muted mb-0">أرسل الفكرة ونقترح عليك السيناريو والمدة الأنسب.</p>
-        </div>
-        <div class="col-lg-4 text-center text-lg-start">
-          <div class="d-flex gap-2 justify-content-center justify-content-lg-start flex-wrap">
-            <a class="btn btn-onx-ghost" href="tel:+213540573518"><i class="bi bi-telephone"></i> اتصال</a>
-            <a class="btn btn-onx" target="_blank" href="https://wa.me/213540573518">واتساب</a>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="relative mt-10 overflow-hidden rounded-[34px] border border-orange-500/20 bg-gradient-to-br from-orange-500/12 via-white/5 to-white/5 p-8 shadow-[0_30px_90px_rgba(0,0,0,0.4)] sm:p-10">
+        <div class="absolute -left-24 top-1/2 h-52 w-52 -translate-y-1/2 rounded-full bg-orange-500/10 blur-3xl"></div>
+        <div class="absolute -right-16 top-0 h-36 w-36 rounded-full bg-white/5 blur-3xl"></div>
 
-  </div>
+        <div class="relative z-10 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div class="text-center lg:text-right">
+                <h3 class="text-3xl font-black">حاب إعلان احترافي يبيع؟</h3>
+                <p class="mt-4 text-sm leading-8 text-white/70 sm:text-base">
+                    أرسل الفكرة ونقترح عليك السيناريو والمدة الأنسب.
+                </p>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+                <a href="tel:+213540573518"
+                   class="inline-flex rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-extrabold text-white transition duration-300 hover:-translate-y-1 hover:border-orange-500/50 hover:bg-orange-500/10">
+                    اتصال
+                </a>
+
+                <a href="https://wa.me/213540573518"
+                   target="_blank"
+                   class="inline-flex rounded-full bg-orange-500 px-6 py-3 text-sm font-black text-black transition duration-300 hover:-translate-y-1 hover:bg-orange-400 hover:shadow-[0_0_30px_rgba(249,115,22,0.35)]">
+                    واتساب
+                </a>
+            </div>
+        </div>
+    </div>
 </section>
 
 @endsection

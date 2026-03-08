@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('event_packages', function (Blueprint $table) {
+        Schema::create('event_Packages', function (Blueprint $table) {
             $table->id();
             $table->string('name');                 // Basic / Standard / Premium
             $table->string('subtitle')->nullable(); // الأكثر طلبًا...
@@ -24,6 +24,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('event_packages');
+        Schema::dropIfExists('event_Packages');
     }
 };

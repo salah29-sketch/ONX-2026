@@ -19,7 +19,7 @@
       @endforeach
     </ul>
 
-    <a class="btn btn-secondary" href="{{ route('admin.event-packages.index') }}">Back</a>
+    <a class="btn btn-secondary" href="{{ route('admin.event-Packages.index') }}">Back</a>
   </div>
 </div>
 @endsection

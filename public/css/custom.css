@@ -1,469 +1,469 @@
-/* =========================================================
-   HERO for Services page 
-========================================================= */
+  /* =========================================================
+    HERO for Services page 
+  ========================================================= */
 
-.onx-hero-services{
-  position:relative;
-  min-height:44vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background: url('/img/hero-bg1.jpg') center/cover no-repeat;
-  border-bottom:0px solid rgba(255,255,255,.08);
-}
-.onx-hero-services .container{ position:relative; z-index:2; max-width:900px; }
-.onx-hero-services .onx-hero-overlay{
-  position:absolute; inset:0;
-  background: linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.85));
-}
+  .onx-hero-services{
+    position:relative;
+    min-height:44vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: url('/img/hero-bg1.jpg') center/cover no-repeat;
+    border-bottom:0px solid rgba(255,255,255,.08);
+  }
+  .onx-hero-services .container{ position:relative; z-index:2; max-width:900px; }
+  .onx-hero-services .onx-hero-overlay{
+    position:absolute; inset:0;
+    background: linear-gradient(to bottom, rgba(0,0,0,.35), rgba(0,0,0,.85));
+  }
 
-/* images inside cards */
-.onx-img{
-  width:100%;
-  height:280px;
-  object-fit:cover;
-  display:block;
-}
+  /* images inside cards */
+  .onx-img{
+    width:100%;
+    height:280px;
+    object-fit:cover;
+    display:block;
+  }
 
-/* optional: make card a bit more premium */
-.onx-service-card{ overflow:hidden; }
-.onx-service-card .onx-img{ transition:transform .6s ease; }
-.onx-service-card:hover .onx-img{ transform:scale(1.05); }
-
-
-/* =========================================================
-  ONX THEME
-========================================================= */
-:root{
-  --bg:#0b0b0b;
-  --card:rgba(255,255,255,.06);
-  --border:rgba(255,255,255,.12);
-  --text:rgba(255,255,255,.92);
-  --muted:rgba(255,255,255,.72);
-  --orange:#ff6a00;
-  --shadow:0 14px 40px rgba(0,0,0,.45);
-}
-
-body{
-  font-family:'Cairo',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-a{color:inherit;text-decoration:none}
-.onx-muted{color:var(--muted)}
-
-/* =========================================================
-  NAVBAR
-========================================================= */
-.onx-nav{
-  padding:8px 0; /* أقل عريض */
-  background:rgba(0, 0, 0, 0.223);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(255, 255, 255, 0.122);
-}
-
-.onx-logo{font-size:30px;font-weight:800;letter-spacing:.5px;}
-.onx-dot{
-  display:inline-block;width:8px;height:8px;border-radius:50%;
-  background:var(--orange);
-  margin-left:3px;
-  transform: translateY(2px);
-}
-
-/* Links + underline أقرب */
-.onx-link{
-  color:rgba(255,255,255,.75) !important;
-  font-weight:700;
-  position:relative;
-  padding:8px 2px;
-  transition:.2s;
-}
-.onx-link:hover{ color:rgb(187, 86, 2) !important; }
-.onx-link.active{ color:rgb(246, 41, 5) !important; }
-.onx-link.active::after{
-  content:"";
-  position:absolute;
-  left:0;right:0;
-  bottom:4px; /* أقرب */
-  height:1px;background:white;border-radius:999px;
-}
-
-/* Button right */
-.onx-cta-btn{
-  border:1px solid rgba(255,106,0,.5);
-  color:white;
-  font-weight:800;
-  padding:.6rem 1.3rem;
-  border-radius:14px;
-  background:transparent;
-  transition:.2s;
-}
-.onx-cta-btn:hover{
-  border-color:var(--orange);
-  box-shadow:0 0 18px rgba(255,106,0,.25);
-  transform:translateY(-1px);
-}
-
-/* =========================================================
-  GLOBAL UI
-========================================================= */
-.onx-section{ padding:70px 0; }
-@media (max-width:576px){ .onx-section{padding:48px 0;} }
-
-.onx-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:24px;
-  overflow:hidden;
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(14px);
-}
-
-.onx-divider{height:1px;background:rgba(255,255,255,.10);}
-
-.onx-badge{
-  display:inline-flex;
-  align-items:center;
-  gap:.5rem;
-  padding:.45rem .8rem;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.14);
-  background: rgba(0,0,0,.25);
-  color: var(--muted);
-  font-weight:700;
-  font-size:.9rem;
-}
-.badge-featured{
-  border-color:rgba(255,106,0,.45) !important;
-  color:rgba(255,255,255,.92) !important;
-}
-
-/* Buttons */
-.btn-onx{
-  background:var(--orange);
-  border:0;
-  color:#111;
-  font-weight:900;
-  border-radius:999px;
-  padding:.75rem 1.25rem;
-}
-.btn-onx:hover{ filter:brightness(1.06); }
-
-.btn-onx-ghost{
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.22);
-  color: rgba(255,255,255,.92);
-  font-weight: 800;
-  border-radius: 999px;
-  padding: .75rem 1.25rem;
-  transition: .2s ease;
-}
-.btn-onx-ghost:hover{
-  border-color: rgba(255,106,0,.70);
-  background: rgba(255,106,0,.12);
-  box-shadow: 0 0 22px rgba(255,106,0,.18);
-  transform: translateY(-1px);
-  color: #fff;
-}
-
-/* Booking button */
-.btn-onx-book{
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.24);
-  color: rgba(255,255,255,.92);
-  font-weight: 900;
-  border-radius: 999px;
-  padding: .85rem 1.2rem;
-  transition: .2s ease;
-}
-.btn-onx-book:hover{
-  border-color: rgba(255,106,0,.75);
-  background: rgba(255,106,0,.14);
-  box-shadow: 0 0 26px rgba(255,106,0,.18);
-  transform: translateY(-1px);
-  color:#fff;
-}
-
-/* =========================================================
-  HERO (EVENTS)
-========================================================= */
-.onx-hero-events{
-  position:relative;
-  min-height:52vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background: url('/img/hero-events.jpg') center/cover no-repeat;
-  border-bottom:0px solid rgba(255,255,255,.08);
-}
-.onx-hero-overlay{
-  position:absolute; inset:0;
-  background: linear-gradient(to bottom, rgba(0,0,0,.30), rgba(0,0,0,.82));
-}
-.onx-hero-events .container{
-  position:relative;
-  z-index:2;
-  max-width:780px;
-}
-
-/* =========================================================
-  PACKAGES GRID
-========================================================= */
-.packages-grid{
-  display:grid;
-  grid-template-columns: repeat(3, minmax(0, 330px));
-  justify-content:center;
-  gap:18px;
-  align-items:start;
-}
-@media (max-width:992px){
-  .packages-grid{ grid-template-columns: repeat(2, minmax(0, 330px)); }
-}
-@media (max-width:576px){
-  .packages-grid{ grid-template-columns: 1fr; }
-}
-.plan-item{ align-self:start; }
-
-.onx-plan{
-  padding:18px;
-  border-radius:24px;
-  display:flex;
-  flex-direction:column;
-  height:auto;
-  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
-}
-.onx-plan:hover{
-  transform: translateY(-6px);
-  border-color: rgba(255,106,0,.25);
-  box-shadow: 0 18px 60px rgba(0,0,0,.65);
-}
-
-/* Featured look */
-.onx-plan-featured{
-  border-color: rgba(255,106,0,.28);
-  position: relative;
-}
-.onx-plan-featured::before{
-  content:"";
-  position:absolute;
-  inset:-35%;
-  background:
-    radial-gradient(circle, rgba(255,106,0,.32), transparent 60%),
-    radial-gradient(circle at 30% 40%, rgba(255,106,0,.18), transparent 65%);
-  filter: blur(90px);
-  opacity:.55;
-  z-index:0;
-  pointer-events:none;
-  animation: planGlow 10s ease-in-out infinite;
-}
-.onx-plan-featured > *{ position:relative; z-index:2; }
-@keyframes planGlow{
-  0%   { opacity:.28; transform: translate(-8%,-6%) scale(1.05); }
-  45%  { opacity:.62; transform: translate(10%,6%)  scale(1.25); }
-  100% { opacity:.28; transform: translate(-8%,-6%) scale(1.05); }
-}
-
-/* Features list (LTR + dots) */
-.onx-list{list-style:none;padding:0;margin:0}
-.package-features-ltr{
-  direction:ltr;
-  text-align:left;
-  list-style:none;
-  padding:0;
-  margin:14px 0 0;
-}
-.package-features-ltr li{
-  display:flex;
-  gap:10px;
-  padding:5px 0;
-  border-top:1px solid rgba(255,255,255,.08);
-  font-size:13.5px;
-}
-.package-features-ltr li:first-child{ border-top:0; }
-.package-features-ltr .feat-dot{
-  width:7px;height:7px;border-radius:50%;
-  background:rgba(255,122,0,.9);
-  margin-top:8px; flex:0 0 auto;
-}
-.features-list.collapsed{ max-height:170px; overflow:hidden; }
-.features-list.expanded{ max-height:none; overflow:visible; }
-
-.onx-more-btn{
-  color: rgba(255,122,0,.9);
-  font-size: 13px;
-  text-decoration: none;
-}
-.onx-more-btn:hover{ text-decoration: underline; }
-
-/* =========================================================
-  “HERE” MEDIA CARD (blurred image + glow)
-========================================================= */
-.onx-media{
-  position:relative;
-  border-radius:24px;
-  overflow:hidden;
-  border:1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.05);
-  box-shadow: var(--shadow);
-  min-height: 340px;
-}
-.onx-media-img{
-  width:100%;
-  height:340px;
-  object-fit:cover;
-  filter: blur(2px) saturate(1.05);
-  transform: scale(1.05);
-  opacity:.88;
-}
-.onx-media-overlay{
-  position:absolute; inset:0;
-  background: linear-gradient(to bottom, rgba(0,0,0,.15), rgba(0,0,0,.80));
-}
-.onx-media-glow{
-  position:absolute; inset:-40%;
-  background: radial-gradient(circle at 30% 30%, rgba(255,106,0,.25), transparent 55%);
-  filter: blur(60px);
-  animation: onxGlow2 7s ease-in-out infinite;
-}
-@keyframes onxGlow2{
-  0%{opacity:.18; transform:translate(-1%, -1%) scale(1);}
-  50%{opacity:.45; transform:translate(2%, 1%) scale(1.2);}
-  100%{opacity:.18; transform:translate(-1%, -1%) scale(1);}
-}
-.onx-media-content{
-  position:absolute;
-  left:18px; right:18px;
-  bottom:18px;
-}
-
-/* Terms + CTA */
-.onx-terms{
-  background: rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:24px;
-  padding:22px;
-  box-shadow: var(--shadow);
-}
-.onx-list li{
-  padding:10px 0;
-  border-bottom:1px solid rgba(255,255,255,.10);
-}
-.onx-list li:last-child{border-bottom:0}
-
-.onx-cta{
-  position:relative;
-  overflow:hidden;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:26px;
-  padding:28px;
-  backdrop-filter:blur(10px);
-}
-
-/* =========================================================
-  FOOTER
-========================================================= */
-.onx-footer{
-  margin-top:80px;
-  padding:60px 0 30px;
-  background:#070707;
-  border-top:1px solid rgba(255,255,255,.08);
-}
-.onx-footer-links li{ margin-bottom:8px; }
-.onx-footer-links a{ color:rgba(255,255,255,.7); transition:.2s; }
-.onx-footer-links a:hover{ color:var(--orange); }
-
-.onx-social{
-  width:40px;height:40px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.1);
-  color:white;transition:.2s;
-}
-.onx-social:hover{
-  background:rgba(255,106,0,.15);
-  border-color:var(--orange);
-  color:var(--orange);
-}
+  /* optional: make card a bit more premium */
+  .onx-service-card{ overflow:hidden; }
+  .onx-service-card .onx-img{ transition:transform .6s ease; }
+  .onx-service-card:hover .onx-img{ transform:scale(1.05); }
 
 
-/* =========================================================
-  Panels: الشروط + لماذا ONX 
-========================================================= */
+  /* =========================================================
+    ONX THEME
+  ========================================================= */
+  :root{
+    --bg:#0b0b0b;
+    --card:rgba(255,255,255,.06);
+    --border:rgba(255,255,255,.12);
+    --text:rgba(255,255,255,.92);
+    --muted:rgba(255,255,255,.72);
+    --orange:#ff6a00;
+    --shadow:0 14px 40px rgba(0,0,0,.45);
+  }
 
-.onx-panel{
-  position: relative;
-  border-radius: 24px;
-  padding: 22px;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.10);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
+  body{
+    font-family:'Cairo',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+  }
+  a{color:inherit;text-decoration:none}
+  .onx-muted{color:var(--muted)}
 
-/* توهج خفيف وهادئ */
-.onx-panel::before{
-  content:"";
-  position:absolute;
-  inset:-40%;
-  background:
-    radial-gradient(circle at 25% 30%, rgba(255,106,0,.18), transparent 55%),
-    radial-gradient(circle at 75% 70%, rgba(255,106,0,.10), transparent 60%);
-  filter: blur(70px);
-  opacity: .55;
-  pointer-events:none;
-}
+  /* =========================================================
+    NAVBAR
+  ========================================================= */
+  .onx-nav{
+    padding:8px 0; /* أقل عريض */
+    background:rgba(0, 0, 0, 0.223);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(255, 255, 255, 0.122);
+  }
 
-.onx-panel > *{ position: relative; z-index: 2; }
+  .onx-logo{font-size:30px;font-weight:800;letter-spacing:.5px;}
+  .onx-dot{
+    display:inline-block;width:8px;height:8px;border-radius:50%;
+    background:var(--orange);
+    margin-left:3px;
+    transform: translateY(2px);
+  }
 
-.onx-qa{ margin-top: 10px; }
-.onx-qa-item{
-  padding: 14px 0;
-  border-top: 1px solid rgba(255,255,255,.10);
-}
-.onx-qa-item:first-child{ border-top: 0; }
+  /* Links + underline أقرب */
+  .onx-link{
+    color:rgba(255,255,255,.75) !important;
+    font-weight:700;
+    position:relative;
+    padding:8px 2px;
+    transition:.2s;
+  }
+  .onx-link:hover{ color:rgb(187, 86, 2) !important; }
+  .onx-link.active{ color:rgb(246, 41, 5) !important; }
+  .onx-link.active::after{
+    content:"";
+    position:absolute;
+    left:0;right:0;
+    bottom:4px; /* أقرب */
+    height:1px;background:white;border-radius:999px;
+  }
 
-.onx-qa-item .q{
-  font-weight: 800;
-  color: rgba(255,255,255,.92);
-  margin-bottom: 6px;
-}
+  /* Button right */
+  .onx-cta-btn{
+    border:1px solid rgba(255,106,0,.5);
+    color:white;
+    font-weight:800;
+    padding:.6rem 1.3rem;
+    border-radius:14px;
+    background:transparent;
+    transition:.2s;
+  }
+  .onx-cta-btn:hover{
+    border-color:var(--orange);
+    box-shadow:0 0 18px rgba(255,106,0,.25);
+    transform:translateY(-1px);
+  }
 
-.onx-qa-item .a{
-  color: rgba(255,255,255,.72);
-  line-height: 1.8;
-}
+  /* =========================================================
+    GLOBAL UI
+  ========================================================= */
+  .onx-section{ padding:70px 0; }
+  @media (max-width:576px){ .onx-section{padding:48px 0;} }
 
-/* =========================================================
- 
-           Panels: الشروط + لماذا ONX 
-========================================================= */
-/* Booking inputs */
-.onx-input{
-  background: rgba(255,255,255,.04) !important;
-  border: 1px solid rgba(255,255,255,.14) !important;
-  color: rgba(255,255,255,.92) !important;
-  border-radius: 14px !important;
-  padding: .75rem .9rem !important;
-}
-.onx-input:focus{
-  border-color: rgba(255,106,0,.55) !important;
-  box-shadow: 0 0 0 .2rem rgba(255,106,0,.12) !important;
-}
+  .onx-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(14px);
+  }
 
-/* Pills (toggle buttons) */
-.onx-pill,
-.onx-pill-sm{
-  border-radius: 999px !important;
-  border: 1px solid rgba(255,255,255,.18) !important;
-  background: rgba(255,255,255,.05) !important;
-  color: rgba(255,255,255,.85) !important;
-  font-weight: 900;
-}
-.onx-pill.active,
-.onx-pill-sm.active{
-  border-color: rgba(255,106,0,.55) !important;
-  background: rgba(255,106,0,.14) !important;
-  color: #fff !important;
-  box-shadow: 0 0 22px rgba(255,106,0,.18);
-}
+  .onx-divider{height:1px;background:rgba(255,255,255,.10);}
+
+  .onx-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+    padding:.45rem .8rem;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.25);
+    color: var(--muted);
+    font-weight:700;
+    font-size:.9rem;
+  }
+  .badge-featured{
+    border-color:rgba(255,106,0,.45) !important;
+    color:rgba(255,255,255,.92) !important;
+  }
+
+  /* Buttons */
+  .btn-onx{
+    background:var(--orange);
+    border:0;
+    color:#111;
+    font-weight:900;
+    border-radius:999px;
+    padding:.75rem 1.25rem;
+  }
+  .btn-onx:hover{ filter:brightness(1.06); }
+
+  .btn-onx-ghost{
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.22);
+    color: rgba(255,255,255,.92);
+    font-weight: 800;
+    border-radius: 999px;
+    padding: .75rem 1.25rem;
+    transition: .2s ease;
+  }
+  .btn-onx-ghost:hover{
+    border-color: rgba(255,106,0,.70);
+    background: rgba(255,106,0,.12);
+    box-shadow: 0 0 22px rgba(255,106,0,.18);
+    transform: translateY(-1px);
+    color: #fff;
+  }
+
+  /* Booking button */
+  .btn-onx-book{
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.24);
+    color: rgba(255,255,255,.92);
+    font-weight: 900;
+    border-radius: 999px;
+    padding: .85rem 1.2rem;
+    transition: .2s ease;
+  }
+  .btn-onx-book:hover{
+    border-color: rgba(255,106,0,.75);
+    background: rgba(255,106,0,.14);
+    box-shadow: 0 0 26px rgba(255,106,0,.18);
+    transform: translateY(-1px);
+    color:#fff;
+  }
+
+  /* =========================================================
+    HERO (EVENTS)
+  ========================================================= */
+  .onx-hero-events{
+    position:relative;
+    min-height:52vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: url('/img/hero-events.jpg') center/cover no-repeat;
+    border-bottom:0px solid rgba(255,255,255,.08);
+  }
+  .onx-hero-overlay{
+    position:absolute; inset:0;
+    background: linear-gradient(to bottom, rgba(0,0,0,.30), rgba(0,0,0,.82));
+  }
+  .onx-hero-events .container{
+    position:relative;
+    z-index:2;
+    max-width:780px;
+  }
+
+  /* =========================================================
+    Packages GRID
+  ========================================================= */
+  .Packages-grid{
+    display:grid;
+    grid-template-columns: repeat(3, minmax(0, 330px));
+    justify-content:center;
+    gap:18px;
+    align-items:start;
+  }
+  @media (max-width:992px){
+    .Packages-grid{ grid-template-columns: repeat(2, minmax(0, 330px)); }
+  }
+  @media (max-width:576px){
+    .Packages-grid{ grid-template-columns: 1fr; }
+  }
+  .plan-item{ align-self:start; }
+
+  .onx-plan{
+    padding:18px;
+    border-radius:24px;
+    display:flex;
+    flex-direction:column;
+    height:auto;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .onx-plan:hover{
+    transform: translateY(-6px);
+    border-color: rgba(255,106,0,.25);
+    box-shadow: 0 18px 60px rgba(0,0,0,.65);
+  }
+
+  /* Featured look */
+  .onx-plan-featured{
+    border-color: rgba(255,106,0,.28);
+    position: relative;
+  }
+  .onx-plan-featured::before{
+    content:"";
+    position:absolute;
+    inset:-35%;
+    background:
+      radial-gradient(circle, rgba(255,106,0,.32), transparent 60%),
+      radial-gradient(circle at 30% 40%, rgba(255,106,0,.18), transparent 65%);
+    filter: blur(90px);
+    opacity:.55;
+    z-index:0;
+    pointer-events:none;
+    animation: planGlow 10s ease-in-out infinite;
+  }
+  .onx-plan-featured > *{ position:relative; z-index:2; }
+  @keyframes planGlow{
+    0%   { opacity:.28; transform: translate(-8%,-6%) scale(1.05); }
+    45%  { opacity:.62; transform: translate(10%,6%)  scale(1.25); }
+    100% { opacity:.28; transform: translate(-8%,-6%) scale(1.05); }
+  }
+
+  /* Features list (LTR + dots) */
+  .onx-list{list-style:none;padding:0;margin:0}
+  .package-features-ltr{
+    direction:ltr;
+    text-align:left;
+    list-style:none;
+    padding:0;
+    margin:14px 0 0;
+  }
+  .package-features-ltr li{
+    display:flex;
+    gap:10px;
+    padding:5px 0;
+    border-top:1px solid rgba(255,255,255,.08);
+    font-size:13.5px;
+  }
+  .package-features-ltr li:first-child{ border-top:0; }
+  .package-features-ltr .feat-dot{
+    width:7px;height:7px;border-radius:50%;
+    background:rgba(255,122,0,.9);
+    margin-top:8px; flex:0 0 auto;
+  }
+  .features-list.collapsed{ max-height:170px; overflow:hidden; }
+  .features-list.expanded{ max-height:none; overflow:visible; }
+
+  .onx-more-btn{
+    color: rgba(255,122,0,.9);
+    font-size: 13px;
+    text-decoration: none;
+  }
+  .onx-more-btn:hover{ text-decoration: underline; }
+
+  /* =========================================================
+    “HERE” MEDIA CARD (blurred image + glow)
+  ========================================================= */
+  .onx-media{
+    position:relative;
+    border-radius:24px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.05);
+    box-shadow: var(--shadow);
+    min-height: 340px;
+  }
+  .onx-media-img{
+    width:100%;
+    height:340px;
+    object-fit:cover;
+    filter: blur(2px) saturate(1.05);
+    transform: scale(1.05);
+    opacity:.88;
+  }
+  .onx-media-overlay{
+    position:absolute; inset:0;
+    background: linear-gradient(to bottom, rgba(0,0,0,.15), rgba(0,0,0,.80));
+  }
+  .onx-media-glow{
+    position:absolute; inset:-40%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,106,0,.25), transparent 55%);
+    filter: blur(60px);
+    animation: onxGlow2 7s ease-in-out infinite;
+  }
+  @keyframes onxGlow2{
+    0%{opacity:.18; transform:translate(-1%, -1%) scale(1);}
+    50%{opacity:.45; transform:translate(2%, 1%) scale(1.2);}
+    100%{opacity:.18; transform:translate(-1%, -1%) scale(1);}
+  }
+  .onx-media-content{
+    position:absolute;
+    left:18px; right:18px;
+    bottom:18px;
+  }
+
+  /* Terms + CTA */
+  .onx-terms{
+    background: rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:24px;
+    padding:22px;
+    box-shadow: var(--shadow);
+  }
+  .onx-list li{
+    padding:10px 0;
+    border-bottom:1px solid rgba(255,255,255,.10);
+  }
+  .onx-list li:last-child{border-bottom:0}
+
+  .onx-cta{
+    position:relative;
+    overflow:hidden;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:26px;
+    padding:28px;
+    backdrop-filter:blur(10px);
+  }
+
+  /* =========================================================
+    FOOTER
+  ========================================================= */
+  .onx-footer{
+    margin-top:80px;
+    padding:60px 0 30px;
+    background:#070707;
+    border-top:1px solid rgba(255,255,255,.08);
+  }
+  .onx-footer-links li{ margin-bottom:8px; }
+  .onx-footer-links a{ color:rgba(255,255,255,.7); transition:.2s; }
+  .onx-footer-links a:hover{ color:var(--orange); }
+
+  .onx-social{
+    width:40px;height:40px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.1);
+    color:white;transition:.2s;
+  }
+  .onx-social:hover{
+    background:rgba(255,106,0,.15);
+    border-color:var(--orange);
+    color:var(--orange);
+  }
+
+
+  /* =========================================================
+    Panels: الشروط + لماذا ONX 
+  ========================================================= */
+
+  .onx-panel{
+    position: relative;
+    border-radius: 24px;
+    padding: 22px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.10);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  /* توهج خفيف وهادئ */
+  .onx-panel::before{
+    content:"";
+    position:absolute;
+    inset:-40%;
+    background:
+      radial-gradient(circle at 25% 30%, rgba(255,106,0,.18), transparent 55%),
+      radial-gradient(circle at 75% 70%, rgba(255,106,0,.10), transparent 60%);
+    filter: blur(70px);
+    opacity: .55;
+    pointer-events:none;
+  }
+
+  .onx-panel > *{ position: relative; z-index: 2; }
+
+  .onx-qa{ margin-top: 10px; }
+  .onx-qa-item{
+    padding: 14px 0;
+    border-top: 1px solid rgba(255,255,255,.10);
+  }
+  .onx-qa-item:first-child{ border-top: 0; }
+
+  .onx-qa-item .q{
+    font-weight: 800;
+    color: rgba(255,255,255,.92);
+    margin-bottom: 6px;
+  }
+
+  .onx-qa-item .a{
+    color: rgba(255,255,255,.72);
+    line-height: 1.8;
+  }
+
+  /* =========================================================
+  
+            Panels: الشروط + لماذا ONX 
+  ========================================================= */
+  /* Booking inputs */
+  .onx-input{
+    background: rgba(255,255,255,.04) !important;
+    border: 1px solid rgba(255,255,255,.14) !important;
+    color: rgba(255,255,255,.92) !important;
+    border-radius: 14px !important;
+    padding: .75rem .9rem !important;
+  }
+  .onx-input:focus{
+    border-color: rgba(255,106,0,.55) !important;
+    box-shadow: 0 0 0 .2rem rgba(255,106,0,.12) !important;
+  }
+
+  /* Pills (toggle buttons) */
+  .onx-pill,
+  .onx-pill-sm{
+    border-radius: 999px !important;
+    border: 1px solid rgba(255,255,255,.18) !important;
+    background: rgba(255,255,255,.05) !important;
+    color: rgba(255,255,255,.85) !important;
+    font-weight: 900;
+  }
+  .onx-pill.active,
+  .onx-pill-sm.active{
+    border-color: rgba(255,106,0,.55) !important;
+    background: rgba(255,106,0,.14) !important;
+    color: #fff !important;
+    box-shadow: 0 0 22px rgba(255,106,0,.18);
+  }

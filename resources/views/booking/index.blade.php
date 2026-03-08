@@ -98,7 +98,7 @@
             </div>
 
             {{-- حفلات --}}
-            <div id="eventPackagesSection" class="onx-simple-packages">
+            <div id="eventPackagesSection" class="onx-simple-Packages">
               @forelse($eventPackages as $p)
                 <label class="onx-simple-option">
                   <input
@@ -124,7 +124,7 @@
             </div>
 
             {{-- إعلانات --}}
-            <div id="adsPackagesSection" class="onx-simple-packages" style="display:none;">
+            <div id="adsPackagesSection" class="onx-simple-Packages" style="display:none;">
               @forelse($adMonthlyPackages as $p)
                 <label class="onx-simple-option">
                   <input

@@ -92,7 +92,7 @@ class ClientsController extends Controller
 
         $client->load([
             'bookings.eventPackage',
-            'bookings.adPackage',
+            'bookings.adpackage',
             'bookings.eventLocation',
         ]);
 

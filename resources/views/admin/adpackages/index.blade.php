@@ -5,13 +5,12 @@
 <div class="card">
     <div class="card-header">
         marketing Packages
-        <a class="btn btn-success float-right" href="{{ route('admin.adpackages.create') }}">
+        <a class="btn btn-success float-right" href="{{ route('admin.adPackages.create') }}">
             Add Package
         </a>
     </div>
 
     <div class="card-body">
-
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -19,6 +18,7 @@
                     <th>Name</th>
                     <th>Type</th>
                     <th>Price</th>
+                    <th>Features</th>
                     <th>Featured</th>
                     <th>Active</th>
                     <th width="160"></th>
@@ -26,70 +26,87 @@
             </thead>
 
             <tbody>
-                @foreach($adpackages as $package)
+                @foreach($adPackages as $package)
+                    <tr>
+                        <td>{{ $package->id }}</td>
 
-                <tr>
-                    <td>{{ $package->id }}</td>
+                        <td>
+                            <strong>{{ $package->name }}</strong>
+                            <br>
+                            <small>{{ $package->subtitle }}</small>
+                        </td>
 
-                    <td>
-                        <strong>{{ $package->name }}</strong>
-                        <br>
-                        <small>{{ $package->subtitle }}</small>
-                    </td>
+                        <td>
+                            {{ $package->type == 'monthly' ? 'Monthly' : 'Custom' }}
+                        </td>
 
-                    <td>
-                        {{ $package->type == 'monthly' ? 'Monthly' : 'Custom' }}
-                    </td>
+                        <td>
+                            @if($package->price)
+                                {{ number_format($package->price) }} DA
+                            @else
+                                {{ $package->price_note }}
+                            @endif
+                        </td>
 
-                    <td>
-                        @if($package->price)
-                            {{ number_format($package->price) }} DA
-                        @else
-                            {{ $package->price_note }}
-                        @endif
-                    </td>
+                        <td>
+                            @php
+                                $features = is_array($package->features)
+                                    ? $package->features
+                                    : (json_decode($package->features ?? '[]', true) ?: []);
+                            @endphp
 
-                    <td>
-                        @if($package->is_featured)
-                            ⭐
-                        @endif
-                    </td>
+                            @if(count($features))
+                                <ul class="mb-0 pl-3">
+                                    @foreach(array_slice($features, 0, 3) as $feature)
+                                        <li>{{ $feature }}</li>
+                                    @endforeach
+                                </ul>
 
-                    <td>
-                        {{ $package->is_active ? 'Yes' : 'No' }}
-                    </td>
+                                @if(count($features) > 3)
+                                    <small>...</small>
+                                @endif
+                            @else
+                                —
+                            @endif
+                        </td>
 
-                    <td>
-                        <a class="btn btn-xs btn-info"
-                           href="{{ route('admin.adpackages.show',$package->id) }}">
-                           View
-                        </a>
+                        <td>
+                            @if($package->is_featured)
+                                ⭐
+                            @endif
+                        </td>
 
-                        <a class="btn btn-xs btn-warning"
-                           href="{{ route('admin.adpackages.edit',$package->id) }}">
-                           Edit
-                        </a>
+                        <td>
+                            {{ $package->is_active ? 'Yes' : 'No' }}
+                        </td>
 
-                        <form action="{{ route('admin.adpackages.destroy',$package->id) }}"
-                              method="POST"
-                              style="display:inline-block">
+                        <td>
+                            <a class="btn btn-xs btn-info"
+                               href="{{ route('admin.adPackages.show', $package->id) }}">
+                                View
+                            </a>
 
-                            @csrf
-                            @method('DELETE')
+                            <a class="btn btn-xs btn-warning"
+                               href="{{ route('admin.adPackages.edit', $package->id) }}">
+                                Edit
+                            </a>
 
-                            <input type="submit"
-                                   class="btn btn-xs btn-danger"
-                                   value="Delete"
-                                   onclick="return confirm('Delete package?')">
-                        </form>
+                            <form action="{{ route('admin.adPackages.destroy', $package->id) }}"
+                                  method="POST"
+                                  style="display:inline-block">
+                                @csrf
+                                @method('DELETE')
 
-                    </td>
-                </tr>
-
+                                <input type="submit"
+                                       class="btn btn-xs btn-danger"
+                                       value="Delete"
+                                       onclick="return confirm('Delete package?')">
+                            </form>
+                        </td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
-
     </div>
 </div>
 

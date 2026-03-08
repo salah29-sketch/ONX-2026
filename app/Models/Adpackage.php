@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AdPackage extends Model
+class Adpackage extends Model
 {
     protected $fillable = [
         'type','name','subtitle','description','price','price_note',

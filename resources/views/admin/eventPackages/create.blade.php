@@ -3,7 +3,7 @@
 <div class="card">
   <div class="card-header">Add Package</div>
   <div class="card-body">
-    <form method="POST" action="{{ route('admin.event-packages.store') }}">
+    <form method="POST" action="{{ route('admin.event-Packages.store') }}">
       @csrf
 
       <div class="form-group">
@@ -47,7 +47,7 @@
       </div>
 
       <button class="btn btn-primary">Save</button>
-      <a class="btn btn-secondary" href="{{ route('admin.event-packages.index') }}">Cancel</a>
+      <a class="btn btn-secondary" href="{{ route('admin.event-Packages.index') }}">Cancel</a>
     </form>
   </div>
 </div>

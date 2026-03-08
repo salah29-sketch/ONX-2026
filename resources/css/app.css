@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+
+/* Custom styles for the features list and more button */
+
+.features-list {
+  transition: max-height 0.35s ease;
+}
+
+.features-list.collapsed {
+  max-height: 180px;
+  overflow: hidden;
+}
+
+.features-list.expanded {
+  max-height: 2000px;
+  overflow: visible;
+}
+
+.onx-more-btn {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}

@@ -3,7 +3,7 @@
 <div class="card">
   <div class="card-header">Edit Package</div>
   <div class="card-body">
-    <form method="POST" action="{{ route('admin.event-packages.update', $eventPackage->id) }}">
+    <form method="POST" action="{{ route('admin.event-Packages.update', $eventPackage->id) }}">
       @csrf
       @method('PUT')
 
@@ -49,7 +49,7 @@
       </div>
 
       <button class="btn btn-primary">Update</button>
-      <a class="btn btn-secondary" href="{{ route('admin.event-packages.index') }}">Cancel</a>
+      <a class="btn btn-secondary" href="{{ route('admin.event-Packages.index') }}">Cancel</a>
     </form>
   </div>
 </div>

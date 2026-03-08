@@ -116,10 +116,10 @@ Route::group([
     Route::resource('permissions', AdminPermissionsController::class);
 
     // Event Packages
-    Route::resource('event-packages', AdminEventPackagesController::class);
+    Route::resource('event-Packages', AdminEventPackagesController::class);
 
     // Ad Packages
-    Route::resource('adpackages', AdminAdpackageController::class);
+    Route::resource('adPackages', AdminAdpackageController::class);
 
     // Roles
     Route::delete('roles/destroy', [AdminRolesController::class, 'massDestroy'])->name('roles.massDestroy');

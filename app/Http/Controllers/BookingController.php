@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\EventLocation;
 use App\Models\Booking;
 use App\Models\EventPackage;
-use App\Models\AdPackage;
+use App\Models\Adpackage;
 use Carbon\Carbon;
 
 class BookingController extends Controller
@@ -20,13 +20,13 @@ class BookingController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        $adMonthlyPackages = AdPackage::where('is_active', true)
+        $adMonthlyPackages = Adpackage::where('is_active', true)
             ->where('type', 'monthly')
             ->orderByDesc('is_featured')
             ->orderBy('sort_order')
             ->get();
 
-        $adCustomPackages = AdPackage::where('is_active', true)
+        $adCustomPackages = Adpackage::where('is_active', true)
             ->where('type', 'custom')
             ->orderByDesc('is_featured')
             ->orderBy('sort_order')

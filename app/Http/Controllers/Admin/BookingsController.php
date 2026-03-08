@@ -11,7 +11,7 @@ class BookingsController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Booking::with(['client', 'eventLocation', 'eventPackage', 'adPackage'])
+        $query = Booking::with(['client', 'eventLocation', 'eventPackage', 'adpackage'])
             ->latest();
 
         if ($request->filled('service_type')) {
@@ -38,7 +38,7 @@ return view('admin.bookings.index', compact('bookings'));
 
     public function show(Booking $booking)
     {
-        $booking->load(['client', 'eventLocation', 'eventPackage', 'adPackage']);
+        $booking->load(['client', 'eventLocation', 'eventPackage', 'adpackage']);
         $eventLocations = EventLocation::pluck('name', 'id');
 
         return view('admin.bookings.show', compact('booking', 'eventLocations'));

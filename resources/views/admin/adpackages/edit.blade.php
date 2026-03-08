@@ -11,7 +11,7 @@ Edit marketing Package
 <div class="card-body">
 
 <form method="POST"
-action="{{ route('admin.adpackages.update',$adpackage->id) }}">
+action="{{ route('admin.adPackages.update',$adpackage->id) }}">
 
 @csrf
 @method('PUT')

@@ -5,7 +5,7 @@
         "This file is @generated automatically"
     ],
     "content-hash": "de1cfabd12f93767f8ff8948eb870b5b",
-    "packages": [
+    "Packages": [
         {
             "name": "barryvdh/laravel-dompdf",
             "version": "v2.2.0",
@@ -592,7 +592,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "A small layer on top of trigger_error(E_USER_DEPRECATED) or PSR-3 logging with options to disable all deprecations or selectively for packages.",
+            "description": "A small layer on top of trigger_error(E_USER_DEPRECATED) or PSR-3 logging with options to disable all deprecations or selectively for Packages.",
             "homepage": "https://www.doctrine-project.org/",
             "support": {
                 "issues": "https://github.com/doctrine/deprecations/issues",
@@ -8031,7 +8031,7 @@
             "time": "2024-02-28T05:00:23+00:00"
         }
     ],
-    "packages-dev": [
+    "Packages-dev": [
         {
             "name": "doctrine/instantiator",
             "version": "2.1.0",

@@ -10,7 +10,7 @@ Create marketing Package
 
 <div class="card-body">
 
-<form method="POST" action="{{ route('admin.adpackages.store') }}">
+<form method="POST" action="{{ route('admin.adPackages.store') }}">
 
 @csrf
 

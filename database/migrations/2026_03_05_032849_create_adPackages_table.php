@@ -13,7 +13,7 @@ class CreateAdPackagesTable extends Migration
      */
     public function up()
 {
-    Schema::create('ad_packages', function (Blueprint $table) {
+    Schema::create('adPackages', function (Blueprint $table) {
         $table->id();
 
         // monthly | custom
@@ -42,6 +42,6 @@ class CreateAdPackagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ad_packages');
+        Schema::dropIfExists('adPackages');
     }
 }

@@ -3,7 +3,7 @@
 <div class="card">
   <div class="card-header">
     Event Packages
-    <a class="btn btn-success float-right" href="{{ route('admin.event-packages.create') }}">Add Package</a>
+    <a class="btn btn-success float-right" href="{{ route('admin.event-Packages.create') }}">Add Package</a>
   </div>
 
   <div class="card-body">
@@ -34,7 +34,7 @@ $(function () {
     processing: true,
     serverSide: true,
     retrieve: true,
-    ajax: "{{ route('admin.event-packages.index') }}",
+    ajax: "{{ route('admin.event-Packages.index') }}",
     columns: [
       { data: 'placeholder', name: 'placeholder' },
       { data: 'id', name: 'id' },

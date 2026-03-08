@@ -22,7 +22,7 @@ class EventPackagesController extends Controller
                 $viewGate = null;
                 $editGate = null;
                 $deleteGate = null;
-                $crudRoutePart = 'event-packages';
+                $crudRoutePart = 'event-Packages';
 
                 return view('partials.datatablesActions', compact(
                     'viewGate', 'editGate', 'deleteGate', 'crudRoutePart', 'row'
@@ -76,7 +76,7 @@ class EventPackagesController extends Controller
 
         EventPackage::create($data);
 
-        return redirect()->route('admin.event-packages.index');
+        return redirect()->route('admin.event-Packages.index');
     }
 
     public function edit(EventPackage $eventPackage)
@@ -112,7 +112,7 @@ class EventPackagesController extends Controller
 
         $eventPackage->update($data);
 
-        return redirect()->route('admin.event-packages.index');
+        return redirect()->route('admin.event-Packages.index');
     }
 
     public function show(EventPackage $eventPackage)

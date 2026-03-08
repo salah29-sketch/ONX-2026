@@ -10,13 +10,13 @@ class AdpackageController extends Controller
 {
     public function index()
     {
-        $adpackages = Adpackage::latest()->paginate(20);
-        return view('admin.adpackages.index', compact('adpackages'));
+        $adPackages = Adpackage::latest()->paginate(20);
+        return view('admin.adPackages.index', compact('adPackages'));
     }
 
     public function create()
     {
-        return view('admin.adpackages.create');
+        return view('admin.adPackages.create');
     }
 
     public function store(Request $request)
@@ -34,7 +34,6 @@ class AdpackageController extends Controller
             'is_active' => ['nullable','boolean'],
         ]);
 
-        // لو features جاية array من form نحولها json
         if (isset($data['features']) && is_array($data['features'])) {
             $data['features'] = array_values(array_filter($data['features']));
         }
@@ -45,12 +44,17 @@ class AdpackageController extends Controller
 
         Adpackage::create($data);
 
-        return redirect()->route('admin.adpackages.index');
+        return redirect()->route('admin.adPackages.index');
+    }
+
+    public function show(Adpackage $adpackage)
+    {
+        return view('admin.adPackages.show', compact('adpackage'));
     }
 
     public function edit(Adpackage $adpackage)
     {
-        return view('admin.adpackages.edit', compact('adpackage'));
+        return view('admin.adPackages.edit', compact('adpackage'));
     }
 
     public function update(Request $request, Adpackage $adpackage)
@@ -78,7 +82,7 @@ class AdpackageController extends Controller
 
         $adpackage->update($data);
 
-        return redirect()->route('admin.adpackages.index');
+        return redirect()->route('admin.adPackages.index');
     }
 
     public function destroy(Adpackage $adpackage)

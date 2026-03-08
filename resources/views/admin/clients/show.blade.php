@@ -80,8 +80,8 @@
                             <td>
                                 @if($booking->service_type === 'event' && $booking->eventPackage)
                                     {{ $booking->eventPackage->name }}
-                                @elseif($booking->service_type === 'ads' && $booking->adPackage)
-                                    {{ $booking->adPackage->name }}
+                                @elseif($booking->service_type === 'ads' && $booking->adpackage)
+                                    {{ $booking->adpackage->name }}
                                 @else
                                     —
                                 @endif
