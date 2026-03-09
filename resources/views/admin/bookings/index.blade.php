@@ -24,8 +24,8 @@
                 <label class="db-label">نوع الخدمة</label>
                 <select name="service_type" class="form-control db-input">
                     <option value="">الكل</option>
-                    <option value="event" {{ request('service_type') === 'event' ? 'selected' : '' }}>حفلات</option>
-                    <option value="ads" {{ request('service_type') === 'ads' ? 'selected' : '' }}>إعلانات</option>
+                    <option value="event" {{ request('service_type') === 'event' ? 'selected' : '' }}>Mariage</option>
+                    <option value="ads" {{ request('service_type') === 'ads' ? 'selected' : '' }}>Pub</option>
                 </select>
             </div>
 
@@ -86,8 +86,13 @@
                             <td>{{ $booking->id }}</td>
                             <td>{{ $booking->name }}</td>
                             <td>{{ $booking->phone }}</td>
-                            <td>{{ $booking->service_type === 'event' ? 'حفلات' : 'إعلانات' }}</td>
-                            <td>{{ $booking->event_date ?: '—' }}</td>
+                            <td>{{ $booking->service_type === 'event' ? 'mariage' : 'PUB' }}</td>
+                            <td> @if($booking->event_date)
+                                     {{ \Carbon\Carbon::parse($booking->event_date)->format('Y/m/d') }}
+                                @else
+                                      —
+                                @endif
+                            </td>
                             <td>{{ $booking->custom_event_location ?: ($booking->eventLocation->name ?? '—') }}</td>
 
                             <td>

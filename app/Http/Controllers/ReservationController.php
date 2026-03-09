@@ -7,40 +7,43 @@ use App\Models\Client;
 use App\Models\EventPackage;
 use App\Models\Adpackage;
 use App\Models\EventLocation;
-use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 
 class ReservationController extends Controller
 {
     public function store(Request $request)
     {
         $serviceType = $request->input('service_type', $request->input('booking_type'));
-
-        $selected = $request->input('selected_package');
+        $selected    = $request->input('selected_package');
 
         $packageType = $request->input('package_type');
         $packageId   = $request->input('package_id');
 
         if ($selected && (!$packageType || !$packageId)) {
-            if (preg_match('/^(event|ad|ads):(\d+)$/', $selected, $m)) {
-                $prefix = $m[1];
-                $packageId = (int) $m[2];
+            if (preg_match('/^(event|ad|ads):(\d+)$/', $selected, $matches)) {
+                $prefix = $matches[1];
+                $packageId = (int) $matches[2];
                 $packageType = $prefix === 'event' ? 'event' : 'ads';
             }
         }
 
+        $request->merge([
+            'service_type' => $serviceType,
+        ]);
+
         $rules = [
             'service_type' => 'required|in:event,ads',
-            'name'  => 'required|string|max:255',
-            'phone' => 'required|string|max:30',
-            'email' => 'nullable|email|max:255',
-            'notes' => 'nullable|string',
+            'name'         => 'required|string|max:255',
+            'phone'        => 'required|string|max:30',
+            'email'        => 'nullable|email|max:255',
+            'notes'        => 'nullable|string',
         ];
 
         if ($serviceType === 'event') {
             $rules = array_merge($rules, [
-                'event_date' => 'required|date',
-                'event_location_id' => 'nullable',
+                'event_date'            => 'required|date|after_or_equal:today',
+                'event_location_id'     => 'nullable',
                 'custom_event_location' => 'nullable|string|max:255',
             ]);
         }
@@ -48,14 +51,10 @@ class ReservationController extends Controller
         if ($serviceType === 'ads') {
             $rules = array_merge($rules, [
                 'business_name' => 'nullable|string|max:255',
-                'budget' => 'nullable|numeric|min:0',
-                'deadline' => 'nullable|date',
+                'budget'        => 'nullable|numeric|min:0',
+                'deadline'      => 'nullable|date|after_or_equal:today',
             ]);
         }
-
-        $request->merge([
-            'service_type' => $serviceType,
-        ]);
 
         $data = $request->validate($rules);
 
@@ -81,25 +80,25 @@ class ReservationController extends Controller
         }
 
         if ($serviceType === 'event') {
-            if (($request->input('event_location_id') === 'other') && !$request->filled('custom_event_location')) {
+            if ($request->input('event_location_id') === 'other' && !$request->filled('custom_event_location')) {
                 return back()
-                    ->withErrors(['custom_event_location' => 'اكتب مكان الحفل.'])
+                    ->withErrors([
+                        'custom_event_location' => 'اكتب مكان الحفل.',
+                    ])
                     ->withInput();
             }
-        }
 
-        if ($serviceType === 'event') {
-            $exists = Booking::where([
-                ['service_type', 'event'],
-                ['event_date', $data['event_date']]
-            ])
-            ->whereIn('status', ['unconfirmed', 'confirmed', 'in_progress'])
-            ->exists();
+            $exists = Booking::where('service_type', 'event')
+                ->whereDate('event_date', $data['event_date'])
+                ->whereIn('status', ['unconfirmed', 'confirmed', 'in_progress'])
+                ->exists();
 
             if ($exists) {
-                return back()->withErrors([
-                    'event_date' => 'هذا التاريخ محجوز بالفعل، اختر تاريخًا آخر.',
-                ])->withInput();
+                return back()
+                    ->withErrors([
+                        'event_date' => 'هذا التاريخ محجوز بالفعل، اختر تاريخًا آخر.',
+                    ])
+                    ->withInput();
             }
         }
 
@@ -124,8 +123,6 @@ class ReservationController extends Controller
         }
 
         $data['client_id'] = $client->id;
-
-        // الحجز الجديد يبدأ كـ غير مؤكد
         $data['status'] = 'unconfirmed';
 
         $booking = Booking::create($data);
@@ -134,61 +131,67 @@ class ReservationController extends Controller
     }
 
     public function confirmation(Booking $booking)
-{
-    $meta = $this->bookingMeta($booking);
+    {
+        $meta = $this->bookingMeta($booking);
 
-    return view('booking.confirmation', [
-        'booking'      => $booking,
-        'packageName'  => $meta['packageName'],
-        'packagePrice' => $meta['packagePrice'],
-        'locationName' => $meta['locationName'],
-    ]);
-}
+        return view('booking.confirmation', [
+            'booking'      => $booking,
+            'packageName'  => $meta['packageName'],
+            'packagePrice' => $meta['packagePrice'],
+            'locationName' => $meta['locationName'],
+        ]);
+    }
 
     public function pdf(Booking $booking)
-{
-    $meta = $this->bookingMeta($booking);
+    {
+        $meta = $this->bookingMeta($booking);
 
-    $pdf = Pdf::loadView('booking.pdf', [
-        'booking'      => $booking,
-        'packageName'  => $meta['packageName'],
-        'packagePrice' => $meta['packagePrice'],
-        'locationName' => $meta['locationName'],
-    ]);
+        $pdf = Pdf::loadView('booking.pdf', [
+            'booking'      => $booking,
+            'packageName'  => $meta['packageName'],
+            'packagePrice' => $meta['packagePrice'],
+            'locationName' => $meta['locationName'],
+        ]);
 
-    return $pdf->download('booking-' . $booking->id . '.pdf');
-}
-
-    private function bookingMeta(Booking $booking)
-{
-    $packageName = null;
-    $packagePrice = null;
-
-    if ($booking->package_type === EventPackage::class) {
-        $package = EventPackage::find($booking->package_id);
-        $packageName = $package ? $package->name : null;
-        $packagePrice = $package ? $package->price : null;
+        return $pdf->download('booking-' . $booking->id . '.pdf');
     }
 
-    if ($booking->package_type === Adpackage::class) {
-        $package = Adpackage::find($booking->package_id);
-        $packageName = $package ? $package->name : null;
-        $packagePrice = $package ? $package->price : null;
+    private function bookingMeta(Booking $booking): array
+    {
+        $packageName = null;
+        $packagePrice = null;
+
+        if ($booking->package_type === EventPackage::class) {
+            $package = EventPackage::find($booking->package_id);
+
+            if ($package) {
+                $packageName = $package->name;
+                $packagePrice = $package->price;
+            }
+        }
+
+        if ($booking->package_type === Adpackage::class) {
+            $package = Adpackage::find($booking->package_id);
+
+            if ($package) {
+                $packageName = $package->name;
+                $packagePrice = $package->price;
+            }
+        }
+
+        $locationName = null;
+
+        if (!empty($booking->custom_event_location)) {
+            $locationName = $booking->custom_event_location;
+        } elseif (!empty($booking->event_location_id) && $booking->event_location_id !== 'other') {
+            $location = EventLocation::find($booking->event_location_id);
+            $locationName = $location ? $location->name : null;
+        }
+
+        return [
+            'packageName'  => $packageName,
+            'packagePrice' => $packagePrice,
+            'locationName' => $locationName,
+        ];
     }
-
-    $locationName = null;
-
-    if (!empty($booking->custom_event_location)) {
-        $locationName = $booking->custom_event_location;
-    } elseif (!empty($booking->event_location_id) && $booking->event_location_id !== 'other') {
-        $location = EventLocation::find($booking->event_location_id);
-        $locationName = $location ? $location->name : null;
-    }
-
-    return [
-        'packageName'  => $packageName,
-        'packagePrice' => $packagePrice,
-        'locationName' => $locationName,
-    ];
-}
 }

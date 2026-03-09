@@ -93,7 +93,7 @@
 
             <div class="relative flex min-h-[380px] flex-col justify-end p-7 sm:p-8">
                 <div class="mb-5 inline-flex w-fit rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-extrabold tracking-[0.18em] text-white/70 backdrop-blur">
-                    ADS
+                    Marketing
                 </div>
 
                 <h3 class="text-2xl font-black sm:text-3xl">الإعلانات</h3>

@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
 use App\Http\Resources\Admin\ServiceResource;
-use App\Service;
-use Gate;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,7 +14,6 @@ class ServicesApiController extends Controller
 {
     public function index()
     {
-        abort_if(Gate::denies('service_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new ServiceResource(Service::all());
     }
@@ -31,7 +29,6 @@ class ServicesApiController extends Controller
 
     public function show(Service $service)
     {
-        abort_if(Gate::denies('service_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new ServiceResource($service);
     }
@@ -47,7 +44,6 @@ class ServicesApiController extends Controller
 
     public function destroy(Service $service)
     {
-        abort_if(Gate::denies('service_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $service->delete();
 

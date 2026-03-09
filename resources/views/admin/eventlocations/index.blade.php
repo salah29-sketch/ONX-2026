@@ -18,9 +18,14 @@
 </div>
 
 @if(session('success'))
-    <div class="alert alert-success db-alert">
-        <i class="fas fa-check-circle me-2"></i>
+    <div class="mb-6 inline-flex min-w-[320px] items-center rounded-full border border-green-500/30 bg-green-500/10 px-6 py-3 text-sm font-extrabold text-green-700 shadow-sm">
         {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="mb-6 inline-flex min-w-[320px] items-center rounded-full border border-red-500/30 bg-red-500/10 px-6 py-3 text-sm font-extrabold text-red-700 shadow-sm">
+        {{ session('error') }}
     </div>
 @endif
 

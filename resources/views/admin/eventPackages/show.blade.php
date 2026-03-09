@@ -5,7 +5,8 @@
   <div class="card-body">
     <div><strong>Name:</strong> {{ $eventPackage->name }}</div>
     <div><strong>Subtitle:</strong> {{ $eventPackage->subtitle }}</div>
-    <div><strong>Price:</strong> {{ $eventPackage->price }} DA</div>
+    <div><strong>Price:</strong> {{ $eventPackage->price !== null ? number_format((float) $eventPackage->price, 0) . ' DA' : '-' }}</div>
+    <div><strong>Old Price:</strong> {{ $eventPackage->old_price !== null ? number_format((float) $eventPackage->old_price, 0) . ' DA' : '-' }}</div>
     <div><strong>Featured:</strong> {{ $eventPackage->is_featured ? 'Yes' : 'No' }}</div>
     <div><strong>Active:</strong> {{ $eventPackage->is_active ? 'Yes' : 'No' }}</div>
     <div><strong>Sort:</strong> {{ $eventPackage->sort_order }}</div>
@@ -19,7 +20,7 @@
       @endforeach
     </ul>
 
-    <a class="btn btn-secondary" href="{{ route('admin.event-Packages.index') }}">Back</a>
+    <a class="btn btn-secondary" href="{{ route('admin.event-packages.index') }}">Back</a>
   </div>
 </div>
 @endsection

@@ -60,13 +60,13 @@ document.addEventListener('DOMContentLoaded', function () {
       dot.style.background = 'rgba(25,135,84,.92)';
       summaryStatus.innerHTML = '✅ متاح';
     } else if (type === 'pending') {
-      statusBox.style.borderColor = 'rgba(255,159,28,.55)';
-      dot.style.background = 'rgba(255,159,28,.95)';
-      summaryStatus.innerHTML = '🟠 غير مؤكد';
+      statusBox.style.borderColor = 'rgba(245,158,11,.55)';
+      dot.style.background = 'rgba(245,158,11,.95)';
+      summaryStatus.innerHTML = '🟠 حجز مؤقت';
     } else if (type === 'booked') {
-      statusBox.style.borderColor = 'rgba(220,53,69,.55)';
-      dot.style.background = 'rgba(220,53,69,.92)';
-      summaryStatus.innerHTML = '🔴 مؤكد';
+      statusBox.style.borderColor = 'rgba(239,68,68,.55)';
+      dot.style.background = 'rgba(239,68,68,.92)';
+      summaryStatus.innerHTML = '🔴 محجوز ومؤكد';
     } else {
       statusBox.style.borderColor = 'rgba(255,255,255,.10)';
       dot.style.background = 'rgba(255,255,255,.22)';
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data.status === 'booked') {
           setStatus('booked', 'هذا اليوم محجوز ومؤكد');
         } else if (data.status === 'pending') {
-          setStatus('pending', 'هذا اليوم محجوز وغير مؤكد');
+          setStatus('pending', 'هذا اليوم محجوز مؤقتًا بانتظار العربون');
         } else if (data.status === 'available') {
           setStatus('available', 'هذا اليوم متاح');
         } else {
@@ -214,32 +214,14 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function buildCalendar() {
-    const monthNames = [
-      'يناير', 'فبراير', 'مارس', 'أبريل', 'ماي', 'يونيو',
-      'يوليو', 'أوت', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
-    ];
-
-    const currentYear = new Date().getFullYear();
-
-    if (monthSelect) {
-      monthSelect.innerHTML = monthNames
-        .map((name, index) => `<option value="${index}">${name}</option>`)
-        .join('');
-    }
-
-    if (yearSelect) {
-      let years = '';
-      for (let y = currentYear - 2; y <= currentYear + 5; y++) {
-        years += `<option value="${y}">${y}</option>`;
-      }
-      yearSelect.innerHTML = years;
-    }
-
     onxFp = flatpickr('#onxCalendar', {
       inline: true,
       dateFormat: 'Y-m-d',
       minDate: 'today',
       monthSelectorType: 'static',
+      locale: {
+        firstDayOfWeek: 0
+      },
 
       onDayCreate: function (dObj, dStr, fp, dayElem) {
         const y = dayElem.dateObj.getFullYear();
@@ -249,26 +231,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (confirmedDates.includes(ymd)) {
           dayElem.classList.add('onx-booked-day');
-          dayElem.setAttribute('title', 'محجوز ومؤكد');
+          dayElem.setAttribute('title', 'Booked');
         } else if (pendingDates.includes(ymd)) {
           dayElem.classList.add('onx-pending-day');
-          dayElem.setAttribute('title', 'محجوز وغير مؤكد');
+          dayElem.setAttribute('title', 'Pending');
         }
       },
 
       onReady: function (selectedDates, dateStr, instance) {
-        if (monthSelect) monthSelect.value = instance.currentMonth;
-        if (yearSelect) yearSelect.value = instance.currentYear;
+        if (monthSelect) {
+          monthSelect.value = String(instance.currentMonth);
+          monthSelect.dispatchEvent(new Event('change'));
+        }
+        if (yearSelect) {
+          yearSelect.value = String(instance.currentYear);
+          yearSelect.dispatchEvent(new Event('change'));
+        }
       },
 
       onMonthChange: function (selectedDates, dateStr, instance) {
-        if (monthSelect) monthSelect.value = instance.currentMonth;
-        if (yearSelect) yearSelect.value = instance.currentYear;
+        if (monthSelect) {
+          monthSelect.value = String(instance.currentMonth);
+          monthSelect.dispatchEvent(new Event('change'));
+        }
+        if (yearSelect) {
+          yearSelect.value = String(instance.currentYear);
+          yearSelect.dispatchEvent(new Event('change'));
+        }
       },
 
       onYearChange: function (selectedDates, dateStr, instance) {
-        if (monthSelect) monthSelect.value = instance.currentMonth;
-        if (yearSelect) yearSelect.value = instance.currentYear;
+        if (monthSelect) {
+          monthSelect.value = String(instance.currentMonth);
+          monthSelect.dispatchEvent(new Event('change'));
+        }
+        if (yearSelect) {
+          yearSelect.value = String(instance.currentYear);
+          yearSelect.dispatchEvent(new Event('change'));
+        }
       },
 
       onChange: function (selectedDates, dateStr) {
@@ -281,18 +281,74 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (monthSelect) {
       monthSelect.addEventListener('change', function () {
+        if (!onxFp) return;
         const selectedMonth = parseInt(this.value, 10);
         const diff = selectedMonth - onxFp.currentMonth;
-        onxFp.changeMonth(diff);
+        if (diff !== 0) onxFp.changeMonth(diff);
       });
     }
 
     if (yearSelect) {
       yearSelect.addEventListener('change', function () {
+        if (!onxFp) return;
         const selectedYear = parseInt(this.value, 10);
-        onxFp.changeYear(selectedYear);
+        if (selectedYear !== onxFp.currentYear) onxFp.changeYear(selectedYear);
       });
     }
+  }
+
+  function initCustomSelects() {
+    const customSelects = document.querySelectorAll('.onx-select');
+
+    customSelects.forEach((select) => {
+      const realSelectId = select.dataset.select;
+      const realSelect = document.getElementById(realSelectId);
+      const trigger = select.querySelector('.onx-select-trigger');
+      const label = select.querySelector('.onx-select-label');
+      const options = select.querySelectorAll('.onx-select-option');
+
+      if (!realSelect || !trigger || !label || !options.length) return;
+
+      function syncFromRealSelect() {
+        const currentValue = realSelect.value;
+        const matched = Array.from(options).find((opt) => String(opt.dataset.value) === String(currentValue));
+
+        options.forEach((opt) => opt.classList.remove('selected'));
+
+        if (matched) {
+          matched.classList.add('selected');
+          label.textContent = matched.textContent.trim();
+        }
+      }
+
+      trigger.addEventListener('click', function () {
+        document.querySelectorAll('.onx-select').forEach((other) => {
+          if (other !== select) other.classList.remove('open');
+        });
+        select.classList.toggle('open');
+      });
+
+      options.forEach((opt) => {
+        opt.addEventListener('click', function () {
+          const value = this.dataset.value;
+          realSelect.value = value;
+          realSelect.dispatchEvent(new Event('change', { bubbles: true }));
+          syncFromRealSelect();
+          select.classList.remove('open');
+        });
+      });
+
+      realSelect.addEventListener('change', syncFromRealSelect);
+      syncFromRealSelect();
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.onx-select')) {
+        document.querySelectorAll('.onx-select').forEach((select) => {
+          select.classList.remove('open');
+        });
+      }
+    });
   }
 
   function loadBookedDays() {
@@ -308,6 +364,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
+  initCustomSelects();
   attachServiceEvents();
   attachPackageEvents();
   attachLocationEvents();

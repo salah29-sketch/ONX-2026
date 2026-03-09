@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 /* Custom styles for the features list and more button */
 
 .features-list {
@@ -8,7 +7,7 @@
 }
 
 .features-list.collapsed {
-  max-height: 180px;
+  max-height: 170px;
   overflow: hidden;
 }
 

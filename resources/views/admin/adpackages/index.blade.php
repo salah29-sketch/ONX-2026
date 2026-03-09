@@ -1,11 +1,10 @@
 @extends('layouts.admin')
 
 @section('content')
-
 <div class="card">
     <div class="card-header">
-        marketing Packages
-        <a class="btn btn-success float-right" href="{{ route('admin.adPackages.create') }}">
+        Marketing Packages
+        <a class="btn btn-success float-right" href="{{ route('admin.ad-packages.create') }}">
             Add Package
         </a>
     </div>
@@ -18,6 +17,7 @@
                     <th>Name</th>
                     <th>Type</th>
                     <th>Price</th>
+                    <th>Old Price</th>
                     <th>Features</th>
                     <th>Featured</th>
                     <th>Active</th>
@@ -41,10 +41,18 @@
                         </td>
 
                         <td>
-                            @if($package->price)
-                                {{ number_format($package->price) }} DA
+                            @if(!is_null($package->price))
+                                {{ number_format((float) $package->price, 0) }} DA
                             @else
-                                {{ $package->price_note }}
+                                {{ $package->price_note ?: '—' }}
+                            @endif
+                        </td>
+
+                        <td>
+                            @if(!is_null($package->old_price))
+                                {{ number_format((float) $package->old_price, 0) }} DA
+                            @else
+                                —
                             @endif
                         </td>
 
@@ -82,16 +90,16 @@
 
                         <td>
                             <a class="btn btn-xs btn-info"
-                               href="{{ route('admin.adPackages.show', $package->id) }}">
+                               href="{{ route('admin.ad-packages.show', $package->id) }}">
                                 View
                             </a>
 
                             <a class="btn btn-xs btn-warning"
-                               href="{{ route('admin.adPackages.edit', $package->id) }}">
+                               href="{{ route('admin.ad-packages.edit', $package->id) }}">
                                 Edit
                             </a>
 
-                            <form action="{{ route('admin.adPackages.destroy', $package->id) }}"
+                            <form action="{{ route('admin.ad-packages.destroy', $package->id) }}"
                                   method="POST"
                                   style="display:inline-block">
                                 @csrf
@@ -107,7 +115,10 @@
                 @endforeach
             </tbody>
         </table>
+
+        <div class="mt-3">
+            {{ $adPackages->links() }}
+        </div>
     </div>
 </div>
-
 @endsection

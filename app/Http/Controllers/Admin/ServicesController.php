@@ -7,8 +7,7 @@ use App\Http\Controllers\Traits\MediaUploadingTrait;
 use App\Http\Requests\MassDestroyServiceRequest;
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
-use App\Service;
-use Gate;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
@@ -67,12 +66,7 @@ class ServicesController extends Controller
         return view('admin.services.index');
     }
 
-    public function create()
-    {
-        abort_if(Gate::denies('service_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        return view('admin.services.create');
-    }
+    
 
     public function store(StoreServiceRequest $request)
     {
@@ -88,7 +82,6 @@ class ServicesController extends Controller
 
     public function edit(Service $service)
     {
-        abort_if(Gate::denies('service_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('admin.services.edit', compact('service'));
     }
@@ -111,15 +104,12 @@ class ServicesController extends Controller
 
     public function show(Service $service)
     {
-        abort_if(Gate::denies('service_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('admin.services.show', compact('service'));
     }
 
     public function destroy(Service $service)
     {
-        abort_if(Gate::denies('service_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
         $service->delete();
 
         return back();

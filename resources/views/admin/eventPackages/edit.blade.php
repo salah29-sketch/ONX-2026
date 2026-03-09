@@ -3,7 +3,7 @@
 <div class="card">
   <div class="card-header">Edit Package</div>
   <div class="card-body">
-    <form method="POST" action="{{ route('admin.event-Packages.update', $eventPackage->id) }}">
+    <form method="POST" action="{{ route('admin.event-packages.update', $eventPackage->id) }}">
       @csrf
       @method('PUT')
 
@@ -24,7 +24,12 @@
 
       <div class="form-group">
         <label>Price (DA)</label>
-        <input class="form-control" name="price" type="number" value="{{ old('price', $eventPackage->price) }}">
+        <input class="form-control" name="price" type="number" step="0.01" min="0" value="{{ old('price', $eventPackage->price) }}">
+      </div>
+
+      <div class="form-group">
+        <label>Old Price (DA)</label>
+        <input class="form-control" name="old_price" type="number" step="0.01" min="0" value="{{ old('old_price', $eventPackage->old_price) }}">
       </div>
 
       <div class="form-group">
@@ -39,17 +44,17 @@
       </div>
 
       <div class="form-group form-check">
-        <input type="checkbox" class="form-check-input" name="is_featured" value="1" id="is_featured" {{ $eventPackage->is_featured ? 'checked' : '' }}>
+        <input type="checkbox" class="form-check-input" name="is_featured" value="1" id="is_featured" {{ old('is_featured', $eventPackage->is_featured) ? 'checked' : '' }}>
         <label class="form-check-label" for="is_featured">Featured (middle)</label>
       </div>
 
       <div class="form-group form-check">
-        <input type="checkbox" class="form-check-input" name="is_active" value="1" id="is_active" {{ $eventPackage->is_active ? 'checked' : '' }}>
+        <input type="checkbox" class="form-check-input" name="is_active" value="1" id="is_active" {{ old('is_active', $eventPackage->is_active) ? 'checked' : '' }}>
         <label class="form-check-label" for="is_active">Active</label>
       </div>
 
       <button class="btn btn-primary">Update</button>
-      <a class="btn btn-secondary" href="{{ route('admin.event-Packages.index') }}">Cancel</a>
+      <a class="btn btn-secondary" href="{{ route('admin.event-packages.index') }}">Cancel</a>
     </form>
   </div>
 </div>

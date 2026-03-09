@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\View\View;
 use App\Models\EventPackage;
 use App\Models\Adpackage;
+use App\Models\PortfolioItem;
 
 class ServiceController extends Controller
 {
@@ -31,7 +32,7 @@ class ServiceController extends Controller
 
     /**
      * صفحة /services/events
-     * ✅ يجعل featured في الوسط حتى لو صار عندك 5+ باقات
+     * يجعل featured في الوسط
      */
     public function events(): View
     {
@@ -43,7 +44,6 @@ class ServiceController extends Controller
         $featured = $all->firstWhere('is_featured', true);
         $others   = $all->where('is_featured', false)->values();
 
-        // نقسم الآخرين إلى نصفين ثم نضع featured في الوسط
         $half   = (int) ceil($others->count() / 2);
         $before = $others->slice(0, $half);
         $after  = $others->slice($half);
@@ -59,15 +59,27 @@ class ServiceController extends Controller
 
         $travelNote = 'خارج ولاية سيدي بلعباس: تُضاف رسوم تنقل حسب الولاية.';
 
+        $eventWorks = PortfolioItem::query()
+            ->where('is_active', true)
+            ->where('service_type', 'event')
+            ->whereHas('placements', function ($q) {
+                $q->where('placement_key', 'services_events')
+                  ->where('is_active', true);
+            })
+            ->orderByDesc('is_featured')
+            ->orderBy('sort_order')
+            ->get();
+
         return view('services.events', [
             'Packages'   => $PackagesOrdered,
             'travelNote' => $travelNote,
+            'eventWorks' => $eventWorks,
         ]);
     }
 
     /**
      * صفحة /services/marketing
-     * ✅ كل المحتوى من DB (monthly + custom)
+     * كل المحتوى من DB (monthly + custom)
      */
     public function marketing(): View
     {
@@ -83,6 +95,17 @@ class ServiceController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return view('services.marketing', compact('monthly', 'custom'));
+        $marketingWorks = PortfolioItem::query()
+            ->where('is_active', true)
+            ->where('service_type', 'ads')
+            ->whereHas('placements', function ($q) {
+                $q->where('placement_key', 'services_marketing')
+                  ->where('is_active', true);
+            })
+            ->orderByDesc('is_featured')
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('services.marketing', compact('monthly', 'custom', 'marketingWorks'));
     }
 }

@@ -8,13 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('event_Packages', function (Blueprint $table) {
+        Schema::create('event_packages', function (Blueprint $table) {
             $table->id();
-            $table->string('name');                 // Basic / Standard / Premium
-            $table->string('subtitle')->nullable(); // الأكثر طلبًا...
+            $table->string('name');
+            $table->string('subtitle')->nullable();
             $table->text('description')->nullable();
-            $table->integer('price')->nullable();   // 30000
-            $table->json('features')->nullable();   // ["ميزة1", "ميزة2"]
+            $table->decimal('price', 10, 2)->nullable();
+            $table->decimal('old_price', 10, 2)->nullable();
+            $table->json('features')->nullable();
             $table->boolean('is_featured')->default(false);
             $table->unsignedInteger('sort_order')->default(0);
             $table->boolean('is_active')->default(true);
@@ -24,6 +25,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('event_Packages');
+        Schema::dropIfExists('event_packages');
     }
 };

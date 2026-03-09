@@ -60,12 +60,12 @@ document.addEventListener('DOMContentLoaded', function () {
       dot.style.background = 'rgba(25,135,84,.92)';
       summaryStatus.innerHTML = '✅ متاح';
     } else if (type === 'pending') {
-      statusBox.style.borderColor = 'rgba(255,159,28,.55)';
-      dot.style.background = 'rgba(255,159,28,.95)';
+      statusBox.style.borderColor = 'rgba(245,158,11,.55)';
+      dot.style.background = 'rgba(245,158,11,.95)';
       summaryStatus.innerHTML = '🟠 حجز مؤقت';
     } else if (type === 'booked') {
-      statusBox.style.borderColor = 'rgba(220,53,69,.55)';
-      dot.style.background = 'rgba(220,53,69,.92)';
+      statusBox.style.borderColor = 'rgba(239,68,68,.55)';
+      dot.style.background = 'rgba(239,68,68,.92)';
       summaryStatus.innerHTML = '🔴 محجوز ومؤكد';
     } else {
       statusBox.style.borderColor = 'rgba(255,255,255,.10)';
@@ -214,17 +214,23 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function buildCalendar() {
-    const monthNames = [
-      'يناير', 'فبراير', 'مارس', 'أبريل', 'ماي', 'يونيو',
-      'يوليو', 'أوت', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
-    ];
-
     const currentYear = new Date().getFullYear();
 
     if (monthSelect) {
-      monthSelect.innerHTML = monthNames
-        .map((name, index) => `<option value="${index}">${name}</option>`)
-        .join('');
+      monthSelect.innerHTML = `
+        <option value="0">Janvier</option>
+        <option value="1">Février</option>
+        <option value="2">Mars</option>
+        <option value="3">Avril</option>
+        <option value="4">Mai</option>
+        <option value="5">Juin</option>
+        <option value="6">Juillet</option>
+        <option value="7">Août</option>
+        <option value="8">Septembre</option>
+        <option value="9">Octobre</option>
+        <option value="10">Novembre</option>
+        <option value="11">Décembre</option>
+      `;
     }
 
     if (yearSelect) {
@@ -236,39 +242,44 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     onxFp = flatpickr('#onxCalendar', {
-      inline: true,
-      dateFormat: 'Y-m-d',
-      minDate: 'today',
-      monthSelectorType: 'static',
+  inline: true,
+  dateFormat: 'Y-m-d',
+  minDate: 'today',
+  monthSelectorType: 'static',
+  locale: {
+    ...flatpickr.l10ns.fr,
+    firstDayOfWeek: 0
+  }
+});
 
       onDayCreate: function (dObj, dStr, fp, dayElem) {
         const y = dayElem.dateObj.getFullYear();
-const m = String(dayElem.dateObj.getMonth() + 1).padStart(2, '0');
-const d = String(dayElem.dateObj.getDate()).padStart(2, '0');
-const ymd = `${y}-${m}-${d}`;
+        const m = String(dayElem.dateObj.getMonth() + 1).padStart(2, '0');
+        const d = String(dayElem.dateObj.getDate()).padStart(2, '0');
+        const ymd = `${y}-${m}-${d}`;
 
         if (confirmedDates.includes(ymd)) {
           dayElem.classList.add('onx-booked-day');
-          dayElem.setAttribute('title', 'محجوز ومؤكد');
+          dayElem.setAttribute('title', 'Booked');
         } else if (pendingDates.includes(ymd)) {
           dayElem.classList.add('onx-pending-day');
-          dayElem.setAttribute('title', 'محجوز مؤقتًا');
+          dayElem.setAttribute('title', 'Pending');
         }
       },
 
       onReady: function (selectedDates, dateStr, instance) {
-        if (monthSelect) monthSelect.value = instance.currentMonth;
-        if (yearSelect) yearSelect.value = instance.currentYear;
+        if (monthSelect) monthSelect.value = String(instance.currentMonth);
+        if (yearSelect) yearSelect.value = String(instance.currentYear);
       },
 
       onMonthChange: function (selectedDates, dateStr, instance) {
-        if (monthSelect) monthSelect.value = instance.currentMonth;
-        if (yearSelect) yearSelect.value = instance.currentYear;
+        if (monthSelect) monthSelect.value = String(instance.currentMonth);
+        if (yearSelect) yearSelect.value = String(instance.currentYear);
       },
 
       onYearChange: function (selectedDates, dateStr, instance) {
-        if (monthSelect) monthSelect.value = instance.currentMonth;
-        if (yearSelect) yearSelect.value = instance.currentYear;
+        if (monthSelect) monthSelect.value = String(instance.currentMonth);
+        if (yearSelect) yearSelect.value = String(instance.currentYear);
       },
 
       onChange: function (selectedDates, dateStr) {

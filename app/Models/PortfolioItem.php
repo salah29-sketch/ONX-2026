@@ -1,0 +1,94 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
+
+class PortfolioItem extends Model
+{
+    protected $fillable = [
+        'title',
+        'slug',
+        'service_type',
+        'category',
+        'media_type',
+        'image_path',
+        'youtube_url',
+        'youtube_video_id',
+        'caption',
+        'description',
+        'client_name',
+        'location_name',
+        'is_featured',
+        'is_active',
+        'sort_order',
+        'published_at',
+    ];
+
+    protected $casts = [
+        'is_featured'  => 'boolean',
+        'is_active'    => 'boolean',
+        'published_at' => 'datetime',
+    ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $item) {
+            if (empty($item->slug) && !empty($item->title)) {
+                $item->slug = Str::slug($item->title);
+            }
+
+            if ($item->media_type === 'youtube' && !empty($item->youtube_url)) {
+                $item->youtube_video_id = self::extractYoutubeVideoId($item->youtube_url);
+            }
+
+            if ($item->media_type !== 'youtube') {
+                $item->youtube_url = null;
+                $item->youtube_video_id = null;
+            }
+        });
+    }
+
+    public function placements(): HasMany
+    {
+        return $this->hasMany(PortfolioItemPlacement::class);
+    }
+
+    public function activePlacements(): HasMany
+    {
+        return $this->hasMany(PortfolioItemPlacement::class)->where('is_active', true);
+    }
+
+    public function getYoutubeThumbnailAttribute(): ?string
+    {
+        if (!$this->youtube_video_id) {
+            return null;
+        }
+
+        return 'https://img.youtube.com/vi/' . $this->youtube_video_id . '/hqdefault.jpg';
+    }
+
+    public static function extractYoutubeVideoId(?string $url): ?string
+    {
+        if (empty($url)) {
+            return null;
+        }
+
+        $patterns = [
+            '/youtube\.com\/watch\?v=([^\&\?\/]+)/',
+            '/youtube\.com\/embed\/([^\&\?\/]+)/',
+            '/youtu\.be\/([^\&\?\/]+)/',
+            '/youtube\.com\/shorts\/([^\&\?\/]+)/',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $url, $matches)) {
+                return $matches[1] ?? null;
+            }
+        }
+
+        return null;
+    }
+}

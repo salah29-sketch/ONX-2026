@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\Client;
+use App\Models\Client;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Http\Resources\Admin\ClientResource;
-use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,7 +14,6 @@ class ClientsApiController extends Controller
 {
     public function index()
     {
-        abort_if(Gate::denies('client_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new ClientResource(Client::all());
     }
@@ -31,7 +29,6 @@ class ClientsApiController extends Controller
 
     public function show(Client $client)
     {
-        abort_if(Gate::denies('client_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new ClientResource($client);
     }
@@ -47,7 +44,6 @@ class ClientsApiController extends Controller
 
     public function destroy(Client $client)
     {
-        abort_if(Gate::denies('client_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $client->delete();
 

@@ -8,13 +8,13 @@
                     {{ trans('global.dashboard') }}
                 </a>
             </li>
-            
+
             {{-- Bookings --}}
             <li class="nav-item">
                 <a href="{{ route('admin.bookings.index') }}"
                    class="nav-link {{ request()->is('admin/bookings') || request()->is('admin/bookings/*') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-calendar-check"></i>
-                    Bookings
+                    Réservations
                 </a>
             </li>
 
@@ -22,23 +22,23 @@
                 <a href="{{ route('admin.bookings.calendar') }}"
                    class="nav-link {{ request()->routeIs('admin.bookings.calendar') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-calendar-alt"></i>
-                    Bookings Calendar
+                    Calendrier
                 </a>
             </li>
 
             <li class="nav-item">
-                <a href="{{ route('admin.adPackages.index') }}"
-                   class="nav-link {{ request()->is('admin/adPackages*') ? 'active' : '' }}">
+                <a href="{{ route('admin.ad-packages.index') }}"
+                   class="nav-link {{ request()->is('admin/ad-packages*') ? 'active' : '' }}">
                     <i class="fa-fw fas fa-bullhorn nav-icon"></i>
-                    Packages marketing
+                    Packs Pubs 
                 </a>
             </li>
 
             <li class="nav-item">
-                <a href="{{ route('admin.event-Packages.index') }}"
-                   class="nav-link {{ request()->is('admin/event-Packages*') ? 'active' : '' }}">
+                <a href="{{ route('admin.event-packages.index') }}"
+                   class="nav-link {{ request()->is('admin/event-packages*') ? 'active' : '' }}">
                     <i class="fa-fw fas fa-box-open nav-icon"></i>
-                    Packages event
+                    Packs Mariages
                 </a>
             </li>
 
@@ -49,6 +49,14 @@
                     {{ trans('global.portfolio') }}
                 </a>
             </li>
+
+            <li class="nav-item">
+    <a href="{{ route('admin.portfolio-items.index') }}"
+       class="nav-link {{ request()->is('admin/portfolio-items*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-images"></i>
+        Portfolio
+    </a>
+</li>
 
             <li class="nav-item nav-dropdown {{ request()->is('admin/company*') ? 'open' : '' }}">
                 <a class="nav-link nav-dropdown-toggle" href="#">
@@ -65,7 +73,6 @@
                     </li>
                 </ul>
             </li>
-
 
             <li class="nav-item">
                 <a href="{{ route('admin.employees.index') }}"

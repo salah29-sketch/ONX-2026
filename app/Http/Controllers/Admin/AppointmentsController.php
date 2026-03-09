@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 
-use App\Client;
-use App\Service;
-use App\Employee;
-use App\Appointment;
-use App\EventLocation;
+use App\Models\Appointment;
+use App\Models\Client;
+use App\Models\Employee;
+use App\Models\Service;
+use App\Models\EventLocation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
@@ -112,7 +112,7 @@ class AppointmentsController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('appointment_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
 
         $clients = Client::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -140,7 +140,7 @@ class AppointmentsController extends Controller
 
     public function edit(Appointment $appointment)
     {
-        abort_if(Gate::denies('appointment_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
 
         $clients = Client::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -165,7 +165,7 @@ class AppointmentsController extends Controller
 
     public function show(Appointment $appointment)
     {
-        abort_if(Gate::denies('appointment_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
 
         $appointment->load('client', 'employee', 'services', 'eventLocation');
 
@@ -174,7 +174,7 @@ class AppointmentsController extends Controller
 
     public function destroy(Appointment $appointment)
     {
-        abort_if(Gate::denies('appointment_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
 
         $appointment->delete();
 

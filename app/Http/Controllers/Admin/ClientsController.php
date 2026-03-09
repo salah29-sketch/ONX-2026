@@ -16,7 +16,7 @@ class ClientsController extends Controller
 {
     public function index(Request $request)
     {
-        abort_if(Gate::denies('client_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
 
         if ($request->ajax()) {
             $query = Client::query()->select(sprintf('%s.*', (new Client)->getTable()));
@@ -56,7 +56,7 @@ class ClientsController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('client_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
 
         return view('admin.clients.create');
     }
@@ -70,12 +70,7 @@ class ClientsController extends Controller
             ->with('message', 'تم إنشاء العميل بنجاح.');
     }
 
-    public function edit(Client $client)
-    {
-        abort_if(Gate::denies('client_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        return view('admin.clients.edit', compact('client'));
-    }
+    
 
     public function update(UpdateClientRequest $request, Client $client)
     {
@@ -88,7 +83,7 @@ class ClientsController extends Controller
 
     public function show(Client $client)
     {
-        abort_if(Gate::denies('client_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
 
         $client->load([
             'bookings.eventPackage',
@@ -101,7 +96,7 @@ class ClientsController extends Controller
 
     public function destroy(Client $client)
     {
-        abort_if(Gate::denies('client_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
 
         $client->delete();
 

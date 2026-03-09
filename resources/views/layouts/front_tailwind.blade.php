@@ -16,6 +16,8 @@
         body { font-family: 'Cairo', sans-serif; }
         [x-cloak] { display: none !important; }
     </style>
+        @stack('styles')
+
 </head>
 <body class="bg-[#050505] text-white antialiased selection:bg-orange-500/30 selection:text-white">
 
@@ -96,7 +98,7 @@
     </main>
 
     {{-- FOOTER --}}
-    <footer class="mt-24 border-t border-white/10 bg-black/50">
+    <footer class="mt-24 border-t border-orange-500/20 bg-black/50">
         <div class="mx-auto grid max-w-7xl gap-10 px-6 py-14 lg:grid-cols-3 lg:px-8">
             <div>
                 <div class="mb-4 flex items-center gap-2">
@@ -119,25 +121,78 @@
             </div>
 
             <div>
-                <h3 class="mb-4 text-lg font-extrabold">تواصل</h3>
-                <div class="flex flex-wrap gap-3">
-                    <a href="https://wa.me/213540573518" target="_blank"
-                       class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-white/80 transition hover:border-orange-500/50 hover:bg-orange-500/10 hover:text-white">
-                        واتساب
-                    </a>
-                    <a href="tel:+213540573518"
-                       class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-white/80 transition hover:border-orange-500/50 hover:bg-orange-500/10 hover:text-white">
-                        اتصال
-                    </a>
-                    <a href="/booking"
-                       class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-white/80 transition hover:border-orange-500/50 hover:bg-orange-500/10 hover:text-white">
-                        احجز الآن
-                    </a>
-                </div>
+    <h3 class="mb-4 text-lg font-extrabold">تواصل معنا</h3>
+
+    <div class="space-y-5">
+
+        <!-- التواصل المباشر -->
+        <div>
+            <p class="mb-2 text-sm text-white/40">تواصل مباشر</p>
+
+            <div class="flex flex-wrap gap-3">
+                <a href="https://wa.me/213540573518" target="_blank"
+                   class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-white/80 transition hover:border-orange-500/50 hover:bg-orange-500/10 hover:text-white">
+                    واتساب
+                </a>
+
+                <a href="tel:+213540573518"
+                   class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-white/80 transition hover:border-orange-500/50 hover:bg-orange-500/10 hover:text-white">
+                    اتصال
+                </a>
+
+                <a href="/booking"
+                   class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-white/80 transition hover:border-orange-500/50 hover:bg-orange-500/10 hover:text-white">
+                    احجز الآن
+                </a>
             </div>
         </div>
 
-        <div class="border-t border-white/10 py-5 text-center text-sm text-white/40">
+        <!-- السوشيال ميديا -->
+        <div>
+    <p class="mb-2 text-sm text-white/40">follow us</p>
+
+    <div class="flex flex-wrap gap-3">
+
+        <!-- Instagram -->
+        <a href="https://instagram.com/onx.edge" target="_blank"
+           class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 transition duration-300 hover:scale-110 hover:border-orange-500/50 hover:bg-orange-500/10 hover:text-white hover:shadow-[0_0_20px_rgba(249,115,22,0.35)]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M7.75 2h8.5A5.75 5.75 0 0122 7.75v8.5A5.75 5.75 0 0116.25 22h-8.5A5.75 5.75 0 012 16.25v-8.5A5.75 5.75 0 017.75 2zm4.25 5a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6zm4.75-.9a1.1 1.1 0 100 2.2 1.1 1.1 0 000-2.2z"/>
+            </svg>
+        </a>
+
+        <!-- Facebook -->
+        <a href="https://facebook.com/onx.edge" target="_blank"
+           class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 transition duration-300 hover:scale-110 hover:border-orange-500/50 hover:bg-orange-500/10 hover:text-white hover:shadow-[0_0_20px_rgba(249,115,22,0.35)]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.5-3.89 3.8-3.89 1.1 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.62.77-1.62 1.56V12h2.76l-.44 2.89h-2.32v6.99A10 10 0 0022 12z"/>
+            </svg>
+        </a>
+
+        <!-- TikTok -->
+        <a href="https://tiktok.com/@onx.edge" target="_blank"
+           class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 transition duration-300 hover:scale-110 hover:border-orange-500/50 hover:bg-orange-500/10 hover:text-white hover:shadow-[0_0_20px_rgba(249,115,22,0.35)]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M16.5 3c.4 2.1 2 3.7 4.1 4.1v3a7.5 7.5 0 01-4.1-1.3v6.3a5.8 5.8 0 11-5.8-5.8c.3 0 .6 0 .9.1v3a2.8 2.8 0 102.1 2.7V3h2.8z"/>
+            </svg>
+        </a>
+
+        <!-- YouTube -->
+        <a href="https://youtube.com/@onxedge" target="_blank"
+           class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 transition duration-300 hover:scale-110 hover:border-orange-500/50 hover:bg-orange-500/10 hover:text-white hover:shadow-[0_0_20px_rgba(249,115,22,0.35)]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23 12s0-3.6-.46-5.19a2.8 2.8 0 00-1.97-1.97C19 4.4 12 4.4 12 4.4s-7 0-8.57.44A2.8 2.8 0 001.46 6.8C1 8.4 1 12 1 12s0 3.6.46 5.19a2.8 2.8 0 001.97 1.97C5 19.6 12 19.6 12 19.6s7 0 8.57-.44a2.8 2.8 0 001.97-1.97C23 15.6 23 12 23 12zM9.75 15.5v-7l6 3.5-6 3.5z"/>
+            </svg>
+        </a>
+
+    </div>
+</div>
+
+    </div>
+</div>
+        </div>
+
+        <div class="border-t border-orange-500/20 py-5 text-center text-sm text-white/40">
             © ONX — onx-edge.com
         </div>
     </footer>

@@ -1,230 +1,365 @@
-@extends('layouts.front')
-@section('title', 'تأكيد الحجز')
+@extends('layouts.front_tailwind')
+@section('title', 'confirmation - ONX')
 
-@section('styles')
-<link rel="stylesheet" href="{{ asset('css/booking.css') }}">
-@endsection
+@push('styles')
+<style>
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .status-pill.pending {
+        background: rgba(245,158,11,.16);
+        color: #fbbf24;
+        border: 1px solid rgba(245,158,11,.30);
+    }
+
+    .status-pill.confirmed {
+        background: rgba(34,197,94,.16);
+        color: #86efac;
+        border: 1px solid rgba(34,197,94,.30);
+    }
+
+    .status-pill.neutral {
+        background: rgba(255,255,255,.08);
+        color: rgba(255,255,255,.82);
+        border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .confirm-card {
+        border: 1px solid rgba(255,255,255,.10);
+        background: rgba(255,255,255,.04);
+        backdrop-filter: blur(16px);
+        border-radius: 28px;
+    }
+
+    .confirm-item {
+        border: 1px solid rgba(255,255,255,.10);
+        background: rgba(255,255,255,.03);
+        border-radius: 20px;
+        padding: 16px;
+    }
+
+    .confirm-item .label {
+        display: block;
+        margin-bottom: 6px;
+        color: rgba(255,255,255,.55);
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .confirm-item .value {
+        color: #fff;
+        font-size: 14px;
+        font-weight: 800;
+        line-height: 1.7;
+    }
+
+    .confirm-divider {
+        height: 1px;
+        background: rgba(255,255,255,.08);
+        margin: 22px 0;
+    }
+
+    .confirm-note {
+        border: 1px solid rgba(255,255,255,.10);
+        background: rgba(255,255,255,.03);
+        border-radius: 20px;
+        padding: 16px;
+        color: rgba(255,255,255,.82);
+        line-height: 1.9;
+        font-size: 14px;
+    }
+
+    .confirm-success-box {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        border: 1px solid rgba(34,197,94,.25);
+        background: rgba(34,197,94,.08);
+        border-radius: 22px;
+        padding: 16px;
+    }
+
+    .confirm-success-icon {
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(34,197,94,.18);
+        border: 1px solid rgba(34,197,94,.28);
+        color: #86efac;
+        font-size: 20px;
+        font-weight: 900;
+    }
+
+    @media (max-width: 768px) {
+        .confirm-success-box {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+@endpush
 
 @section('content')
+<section class="relative overflow-hidden border-b border-white/10">
+    <div class="absolute inset-0">
+        <img
+            src="{{ asset('img/front/booking/booking-hero.png') }}"
+            alt="Confirmation Hero"
+            class="h-full w-full object-cover opacity-10"
+        >
+        <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/70 to-[#050505]"></div>
+    </div>
 
-<section class="onx-hero-booking onx-hero-confirmation">
-    <div class="onx-hero-overlay"></div>
+    <div class="relative mx-auto max-w-7xl px-6 py-14 lg:px-8 lg:py-16">
+        <div class="max-w-3xl">
+            <span class="inline-flex rounded-full border border-emerald-500/25 bg-emerald-500/10 px-4 py-1 text-[11px] font-extrabold tracking-wide text-emerald-300">
+                CONFIRMATION
+            </span>
 
-    <div class="container text-center">
-        <span class="onx-badge mb-3">✅ ONX EDGE • CONFIRMATION</span>
+            <h1 class="mt-4 text-3xl font-black leading-tight text-white sm:text-4xl">
+                تم استلام طلبك بنجاح
+            </h1>
 
-        <h1 class="fw-bold mb-3">تم استلام طلبك بنجاح</h1>
+            <p class="mt-3 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">
+                طلبك وصلنا بنجاح وهو الآن قيد المراجعة. ستجد هنا التفاصيل الأساسية الخاصة بالحجز وخطوات المتابعة القادمة.
+            </p>
 
-        <p class="onx-muted mb-4">
-            طلبك وصلنا بنجاح وهو الآن قيد المراجعة. ستظهر لك هنا كل التفاصيل الأساسية الخاصة بالحجز.
-        </p>
+            <div class="mt-6 flex flex-wrap gap-3">
+                <a href="{{ route('booking') }}"
+                   class="inline-flex rounded-full bg-orange-500 px-5 py-2.5 text-sm font-extrabold text-black transition hover:bg-orange-400">
+                    حجز جديد
+                </a>
 
-        <div class="d-flex justify-content-center gap-2 flex-wrap">
-            <a class="btn btn-onx-ghost" href="{{ route('booking') }}">حجز جديد</a>
-            <a class="btn btn-onx-book" target="_blank"
-               href="https://wa.me/213540573518?text={{ urlencode(
-                    'السلام عليكم، أرسلت طلب حجز عبر موقع ONX.' . "\n" .
-                    'رقم الطلب: #' . $booking->id . "\n" .
-                    'الاسم: ' . $booking->name . "\n" .
-                    'نوع الخدمة: ' . ($booking->service_type === 'event' ? 'حفلات' : 'إعلانات')
-               ) }}">
-                تواصل عبر WhatsApp
-            </a>
+                <a class="inline-flex rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-bold text-white/80 transition hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-white"
+                   target="_blank"
+                   href="https://wa.me/213540573518?text={{ urlencode(
+                        'السلام عليكم، أرسلت طلب حجز عبر موقع ONX.' . "\n" .
+                        'رقم الطلب: #' . $booking->id . "\n" .
+                        'الاسم: ' . $booking->name . "\n" .
+                        'نوع الخدمة: ' . ($booking->service_type === 'event' ? 'حفلات' : 'إعلانات')
+                   ) }}">
+                    تواصل عبر WhatsApp
+                </a>
+            </div>
         </div>
     </div>
 </section>
 
-<section class="onx-section">
-    <div class="container">
-        <div class="onx-booking-shell">
+<section class="mx-auto max-w-7xl px-6 py-10 lg:px-8">
+    <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div class="confirm-card p-5 sm:p-6">
+            <div class="confirm-success-box">
+                <div class="confirm-success-icon">✓</div>
 
-            <div class="onx-card onx-form-card">
-                <div class="onx-confirm-success mb-4">
-                    <div class="onx-confirm-icon">✓</div>
-                    <div>
-                        <h3 class="fw-bold mb-1">تم إنشاء الطلب بنجاح</h3>
-                        <p class="onx-muted mb-0">
-                            هذا الطلب مسجل مبدئيًا داخل النظام، والتأكيد النهائي يتم بعد مراجعة الإدارة والتواصل معك.
-                        </p>
-                    </div>
+                <div>
+                    <h2 class="text-lg font-black text-white">تم إنشاء الطلب بنجاح</h2>
+                    <p class="mt-1 text-sm leading-7 text-white/60">
+                        هذا الطلب مسجل مبدئيًا داخل النظام، والتأكيد النهائي يتم بعد مراجعة الإدارة والتواصل معك.
+                    </p>
                 </div>
+            </div>
 
-                <div class="onx-block-title">بيانات الطلب</div>
+            <div class="mt-6">
+                <h3 class="text-sm font-extrabold text-white">بيانات الطلب</h3>
 
-                <div class="onx-confirm-grid">
-                    <div class="onx-confirm-item">
+                <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                    <div class="confirm-item">
                         <span class="label">رقم الطلب</span>
-                        <strong>#{{ $booking->id }}</strong>
+                        <div class="value">#{{ $booking->id }}</div>
                     </div>
 
-                    <div class="onx-confirm-item">
+                    <div class="confirm-item">
                         <span class="label">الحالة</span>
-                        @if($booking->status === 'confirmed')
-                            <span class="onx-status-badge confirmed">مؤكد</span>
-                        @elseif($booking->status === 'unconfirmed')
-                            <span class="onx-status-badge pending">غير مؤكد</span>
-                        @else
-                            <span class="onx-status-badge neutral">{{ $booking->status }}</span>
-                        @endif
+                        <div class="value">
+                            @if($booking->status === 'confirmed')
+                                <span class="status-pill confirmed">مؤكد</span>
+                            @elseif($booking->status === 'unconfirmed')
+                                <span class="status-pill pending">غير مؤكد</span>
+                            @else
+                                <span class="status-pill neutral">{{ $booking->status }}</span>
+                            @endif
+                        </div>
                     </div>
 
-                    <div class="onx-confirm-item">
+                    <div class="confirm-item">
                         <span class="label">نوع الخدمة</span>
-                        <strong>{{ $booking->service_type === 'event' ? 'حفلات' : 'إعلانات' }}</strong>
+                        <div class="value">{{ $booking->service_type === 'event' ? 'حفلات' : 'إعلانات' }}</div>
                     </div>
 
-                    <div class="onx-confirm-item">
+                    <div class="confirm-item">
                         <span class="label">الباقة</span>
-                        <strong>{{ $packageName ?: 'لم يتم تحديد باقة' }}</strong>
+                        <div class="value">{{ $packageName ?: 'لم يتم تحديد باقة' }}</div>
                     </div>
                 </div>
+            </div>
 
-                <div class="onx-divider my-4"></div>
+            <div class="confirm-divider"></div>
 
-                <div class="onx-block-title">معلومات العميل</div>
+            <div>
+                <h3 class="text-sm font-extrabold text-white">معلومات العميل</h3>
 
-                <div class="onx-confirm-grid">
-                    <div class="onx-confirm-item">
+                <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                    <div class="confirm-item">
                         <span class="label">الاسم الكامل</span>
-                        <strong>{{ $booking->name }}</strong>
+                        <div class="value">{{ $booking->name }}</div>
                     </div>
 
-                    <div class="onx-confirm-item">
+                    <div class="confirm-item">
                         <span class="label">الهاتف</span>
-                        <strong>{{ $booking->phone }}</strong>
+                        <div class="value">{{ $booking->phone }}</div>
                     </div>
 
-                    <div class="onx-confirm-item">
+                    <div class="confirm-item">
                         <span class="label">البريد الإلكتروني</span>
-                        <strong>{{ $booking->email ?: 'غير مضاف' }}</strong>
+                        <div class="value">{{ $booking->email ?: 'غير مضاف' }}</div>
                     </div>
 
                     @if($booking->service_type === 'ads' && !empty($booking->business_name))
-                        <div class="onx-confirm-item">
+                        <div class="confirm-item">
                             <span class="label">اسم النشاط التجاري</span>
-                            <strong>{{ $booking->business_name }}</strong>
+                            <div class="value">{{ $booking->business_name }}</div>
                         </div>
                     @endif
                 </div>
+            </div>
 
-                <div class="onx-divider my-4"></div>
+            <div class="confirm-divider"></div>
 
-                <div class="onx-block-title">تفاصيل الخدمة</div>
+            <div>
+                <h3 class="text-sm font-extrabold text-white">تفاصيل الخدمة</h3>
 
-                <div class="onx-confirm-grid">
+                <div class="mt-4 grid gap-4 sm:grid-cols-2">
                     @if($booking->service_type === 'event')
-                        <div class="onx-confirm-item">
+                        <div class="confirm-item">
                             <span class="label">تاريخ الحفل</span>
-                            <strong>{{ \Carbon\Carbon::parse($booking->event_date)->format('Y-m-d') }}</strong>
+                            <div class="value">{{ \Carbon\Carbon::parse($booking->event_date)->format('Y-m-d') }}</div>
                         </div>
 
-                        <div class="onx-confirm-item">
+                        <div class="confirm-item">
                             <span class="label">مكان الحفل</span>
-                            <strong>{{ $locationName ?: 'سيتم تأكيده لاحقًا' }}</strong>
+                            <div class="value">{{ $locationName ?: 'سيتم تأكيده لاحقًا' }}</div>
                         </div>
                     @endif
 
                     @if($booking->service_type === 'ads')
-                        <div class="onx-confirm-item">
+                        <div class="confirm-item">
                             <span class="label">الميزانية</span>
-                            <strong>{{ $booking->budget ? number_format((float) $booking->budget) . ' DA' : 'غير محددة' }}</strong>
+                            <div class="value">{{ $booking->budget ? number_format((float) $booking->budget) . ' DA' : 'غير محددة' }}</div>
                         </div>
 
-                        <div class="onx-confirm-item">
+                        <div class="confirm-item">
                             <span class="label">موعد التسليم</span>
-                            <strong>{{ $booking->deadline ?: 'غير محدد' }}</strong>
+                            <div class="value">{{ $booking->deadline ?: 'غير محدد' }}</div>
                         </div>
                     @endif
                 </div>
-
-                @if(!empty($booking->notes))
-                    <div class="onx-divider my-4"></div>
-
-                    <div class="onx-block-title">الملاحظات</div>
-                    <div class="onx-panel">
-                        <p class="mb-0">{{ $booking->notes }}</p>
-                    </div>
-                @endif
             </div>
 
-            <div class="d-grid gap-3">
-                <div class="onx-card onx-side-card">
-                    <div class="d-flex align-items-center justify-content-between gap-2 mb-3 flex-wrap">
-                        <h5 class="fw-bold mb-0">ملخص سريع</h5>
-                        <span class="onx-mini-badge">ONX</span>
-                    </div>
+            @if(!empty($booking->notes))
+                <div class="confirm-divider"></div>
 
-                    <div class="onx-summary">
-                        <div class="onx-summary-row">
-                            <div class="k">رقم الطلب</div>
-                            <div class="v">#{{ $booking->id }}</div>
-                        </div>
-
-                        <div class="onx-summary-row">
-                            <div class="k">الخدمة</div>
-                            <div class="v">{{ $booking->service_type === 'event' ? 'حفلات' : 'إعلانات' }}</div>
-                        </div>
-
-                        <div class="onx-summary-row">
-                            <div class="k">الحالة</div>
-                            <div class="v">
-                                @if($booking->status === 'unconfirmed')
-                                    <span class="onx-status-badge pending">غير مؤكد</span>
-                                @elseif($booking->status === 'confirmed')
-                                    <span class="onx-status-badge confirmed">مؤكد</span>
-                                @else
-                                    <span class="onx-status-badge neutral">{{ $booking->status }}</span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="onx-summary-row">
-                            <div class="k">الباقة</div>
-                            <div class="v">{{ $packageName ?: '—' }}</div>
-                        </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-white">الملاحظات</h3>
+                    <div class="confirm-note mt-4">
+                        {{ $booking->notes }}
                     </div>
                 </div>
+            @endif
+        </div>
 
-                <div class="onx-panel">
-                    <h5 class="fw-bold mb-3">ماذا يحدث الآن؟</h5>
+        <div class="space-y-4">
+            <div class="confirm-card p-5">
+                <div class="mb-4 flex items-center justify-between gap-3">
+                    <h3 class="text-sm font-black text-white">ملخص سريع</h3>
+                    <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-bold text-white/70">
+                        ONX
+                    </span>
+                </div>
 
-                    <div class="onx-qa">
-                        <div class="onx-qa-item">
-                            <div class="q">1) تم تسجيل الطلب</div>
-                            <div class="a">تم حفظ طلبك داخل النظام بحالة غير مؤكد.</div>
-                        </div>
-
-                        <div class="onx-qa-item">
-                            <div class="q">2) تتم المراجعة</div>
-                            <div class="a">سيتم التحقق من التفاصيل ومراجعة الطلب من طرف الإدارة.</div>
-                        </div>
-
-                        <div class="onx-qa-item">
-                            <div class="q">3) التواصل والتأكيد</div>
-                            <div class="a">بعد مراجعة الطلب يتم التواصل معك لتأكيد الحجز أو استكمال الخطوات التالية.</div>
-                        </div>
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-center justify-between border-b border-white/8 pb-3">
+                        <span class="text-white/50">رقم الطلب</span>
+                        <span class="font-bold text-white">#{{ $booking->id }}</span>
                     </div>
 
-                    <div class="mt-4 d-grid gap-2">
-    <a href="{{ route('booking.pdf', $booking->id) }}" class="btn btn-onx-book">
-        تحميل PDF
-    </a>
+                    <div class="flex items-center justify-between border-b border-white/8 pb-3">
+                        <span class="text-white/50">الخدمة</span>
+                        <span class="font-bold text-white">{{ $booking->service_type === 'event' ? 'حفلات' : 'إعلانات' }}</span>
+                    </div>
 
-    <a href="{{ route('booking') }}" class="btn btn-onx-ghost">
-        العودة إلى صفحة الحجز
-    </a>
+                    <div class="flex items-center justify-between border-b border-white/8 pb-3">
+                        <span class="text-white/50">الحالة</span>
+                        <span class="font-bold text-white">
+                            @if($booking->status === 'unconfirmed')
+                                <span class="status-pill pending">غير مؤكد</span>
+                            @elseif($booking->status === 'confirmed')
+                                <span class="status-pill confirmed">مؤكد</span>
+                            @else
+                                <span class="status-pill neutral">{{ $booking->status }}</span>
+                            @endif
+                        </span>
+                    </div>
 
-    <a href="https://wa.me/213540573518?text={{ urlencode(
-        'السلام عليكم، هذا رقم طلبي في ONX: #' . $booking->id
-    ) }}" target="_blank" class="btn btn-onx-ghost">
-        إرسال رقم الطلب عبر WhatsApp
-    </a>
-</div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-white/50">الباقة</span>
+                        <span class="font-bold text-white">{{ $packageName ?: '—' }}</span>
+                    </div>
                 </div>
             </div>
 
+            <div class="confirm-card p-5">
+                <h3 class="mb-4 text-sm font-black text-white">ماذا يحدث الآن؟</h3>
+
+                <div class="space-y-4 text-sm leading-7">
+                    <div>
+                        <div class="font-bold text-white">1) تم تسجيل الطلب</div>
+                        <div class="text-white/55">تم حفظ طلبك داخل النظام بحالة غير مؤكد.</div>
+                    </div>
+
+                    <div>
+                        <div class="font-bold text-white">2) تتم المراجعة</div>
+                        <div class="text-white/55">سيتم التحقق من التفاصيل ومراجعة الطلب من طرف الإدارة.</div>
+                    </div>
+
+                    <div>
+                        <div class="font-bold text-white">3) التواصل والتأكيد</div>
+                        <div class="text-white/55">بعد مراجعة الطلب يتم التواصل معك لتأكيد الحجز أو استكمال الخطوات التالية.</div>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid gap-2">
+                    <a href="{{ route('booking.pdf', $booking->id) }}"
+                       class="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-3 text-sm font-black text-black transition hover:bg-orange-400">
+                        تحميل PDF
+                    </a>
+
+                    <a href="{{ route('booking') }}"
+                       class="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-white/80 transition hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-white">
+                        العودة إلى صفحة الحجز
+                    </a>
+
+                    <a href="https://wa.me/213540573518?text={{ urlencode(
+                        'السلام عليكم، هذا رقم طلبي في ONX: #' . $booking->id
+                    ) }}"
+                       target="_blank"
+                       class="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-white/80 transition hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-white">
+                        إرسال رقم الطلب عبر WhatsApp
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </section>
-
 @endsection

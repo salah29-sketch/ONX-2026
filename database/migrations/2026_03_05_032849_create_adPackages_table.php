@@ -6,42 +6,33 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateAdPackagesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
-{
-    Schema::create('adPackages', function (Blueprint $table) {
-        $table->id();
+    {
+        Schema::create('ad_packages', function (Blueprint $table) {
+            $table->id();
 
-        // monthly | custom
-        $table->string('type')->default('monthly');
+            // monthly | custom
+            $table->string('type')->default('monthly');
 
-        $table->string('name');
-        $table->string('subtitle')->nullable();
-        $table->text('description')->nullable();
+            $table->string('name');
+            $table->string('subtitle')->nullable();
+            $table->text('description')->nullable();
 
-        $table->unsignedInteger('price')->nullable();       // للباقة الشهرية
-        $table->string('price_note')->nullable();           // "حسب الطلب" / "ابتداء من..."
-        $table->json('features')->nullable();               // array
+            $table->decimal('price', 10, 2)->nullable();
+            $table->decimal('old_price', 10, 2)->nullable();
+            $table->string('price_note')->nullable(); // مثل: حسب الطلب / ابتداء من...
+            $table->json('features')->nullable();
 
-        $table->boolean('is_featured')->default(false);
-        $table->unsignedInteger('sort_order')->default(0);
-        $table->boolean('is_active')->default(true);
+            $table->boolean('is_featured')->default(false);
+            $table->unsignedInteger('sort_order')->default(0);
+            $table->boolean('is_active')->default(true);
 
-        $table->timestamps();
-    });
-}
+            $table->timestamps();
+        });
+    }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
-        Schema::dropIfExists('adPackages');
+        Schema::dropIfExists('ad_packages');
     }
 }

@@ -2,39 +2,36 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\EventLocation;
-use App\Models\EventPackage;
-use App\Models\Adpackage;
 
 class Booking extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'service_type',      // event | ads
+        'service_type',
         'name',
         'phone',
         'email',
-
-        'package_type',      // class name (morph)
-        'package_id',
-
-        // event fields
         'event_date',
         'event_location_id',
         'custom_event_location',
-
-        // ads fields
         'business_name',
         'budget',
         'deadline',
-
+        'package_type',
+        'package_id',
         'notes',
         'status',
     ];
-    public function client()
-    {
-        return $this->belongsTo(Client::class);
-    }
+
+    protected $casts = [
+        'event_date' => 'date',
+        'deadline'   => 'date',
+        'budget'     => 'decimal:2',
+    ];
+
     public function eventLocation()
     {
         return $this->belongsTo(EventLocation::class, 'event_location_id');
@@ -45,8 +42,12 @@ class Booking extends Model
         return $this->belongsTo(EventPackage::class, 'package_id');
     }
 
-    public function adpackage()
+    public function adPackage()
     {
-        return $this->belongsTo(Adpackage::class, 'package_id');
+        return $this->belongsTo(AdPackage::class, 'package_id');
     }
+    public function client()
+{
+    return $this->belongsTo(Client::class);
+}
 }

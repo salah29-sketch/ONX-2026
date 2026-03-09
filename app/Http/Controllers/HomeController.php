@@ -9,16 +9,27 @@ use App\Models\Service;
 use App\Models\EventLocation;
 use App\Models\EventPackage;
 use App\Models\Adpackage;
+use App\Models\PortfolioItem;
 
 class HomeController extends Controller
 {
     public function index()
     {
-    return view('front.home');
+        $homeFeatured = PortfolioItem::query()
+            ->where('is_active', true)
+            ->whereHas('placements', function ($q) {
+                $q->where('placement_key', 'home_featured')
+                  ->where('is_active', true);
+            })
+            ->orderByDesc('is_featured')
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('front.home', compact('homeFeatured'));
     }
+
     public function booking(): View
     {
-        // الخدمات (checkbox)
         $services = Service::all()->mapWithKeys(function ($s) {
             return [
                 $s->id => [
@@ -28,15 +39,13 @@ class HomeController extends Controller
             ];
         });
 
-        // أماكن الحفلات
         $event_locations = EventLocation::all();
-        // باقات الحفلات من DB
+
         $eventPackages = EventPackage::where('is_active', true)
             ->orderByDesc('is_featured')
             ->orderBy('sort_order')
             ->get();
 
-        // باقات الإعلانات من DB (monthly/custom)
         $adMonthly = Adpackage::where('is_active', true)
             ->where('type', 'monthly')
             ->orderByDesc('is_featured')
@@ -57,4 +66,38 @@ class HomeController extends Controller
             'adCustom'
         ));
     }
+    public function portfolio(Request $request)
+{
+    $filter      = $request->query('category');
+    $serviceType = $request->query('service_type');
+
+    $query = \App\Models\PortfolioItem::where('is_active', true);
+
+    if ($filter) {
+        $query->where('category', $filter);
+    }
+
+    if ($serviceType) {
+        $query->where('service_type', $serviceType);
+    }
+
+    $items = $query->orderBy('sort_order')->latest()->paginate(12);
+
+    $categories = [
+        'wedding'    => 'زفاف',
+        'engagement' => 'خطوبة',
+        'baby'       => 'أطفال',
+        'event'      => 'مناسبات',
+        'ads'        => 'إعلانات',
+    ];
+
+    if ($request->ajax()) {
+        return response()->json([
+            'html'    => view('partials._portfolio_items', compact('items', 'categories'))->render(),
+            'hasMore' => $items->hasMorePages(),
+        ]);
+    }
+
+    return view('front.portfolio', compact('items', 'categories', 'filter'));
+}
 }

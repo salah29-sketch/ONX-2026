@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Employee;
+use App\Models\Employee;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
 use App\Http\Requests\MassDestroyEmployeeRequest;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
-use App\Service;
-use Gate;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
@@ -85,7 +84,7 @@ class EmployeesController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('employee_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
 
         $services = Service::all()->pluck('name', 'id');
 
@@ -106,7 +105,7 @@ class EmployeesController extends Controller
 
     public function edit(Employee $employee)
     {
-        abort_if(Gate::denies('employee_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
 
         $services = Service::all()->pluck('name', 'id');
 
@@ -133,7 +132,7 @@ class EmployeesController extends Controller
 
     public function show(Employee $employee)
     {
-        abort_if(Gate::denies('employee_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
 
         $employee->load('services');
 
@@ -142,7 +141,7 @@ class EmployeesController extends Controller
 
     public function destroy(Employee $employee)
     {
-        abort_if(Gate::denies('employee_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
 
         $employee->delete();
 
