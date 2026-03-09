@@ -6,7 +6,7 @@
 {{-- HERO --}}
 <section class="relative isolate overflow-hidden border-b border-white/10">
     <div class="absolute inset-0 -z-10">
-        <img src="{{ asset('img/hero-marketing.jpg') }}"
+        <img src="{{ asset('img/marketing.jpg') }}"
              alt="إنتاج الإعلانات"
              class="h-full w-full object-cover opacity-20">
         <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/80 to-[#050505]"></div>
@@ -127,9 +127,7 @@
         @empty
             <div class="rounded-[28px] border border-white/10 bg-white/5 p-8 text-center md:col-span-2 xl:col-span-3">
                 <h4 class="text-2xl font-black">لا توجد باقات شهرية بعد</h4>
-                <p class="mt-3 text-sm leading-7 text-white/65">
-                    أضفها من لوحة التحكم.
-                </p>
+                <p class="mt-3 text-sm leading-7 text-white/65">أضفها من لوحة التحكم.</p>
             </div>
         @endforelse
     </div>
@@ -218,96 +216,20 @@
         @empty
             <div class="rounded-[28px] border border-white/10 bg-white/5 p-8 text-center lg:col-span-2">
                 <h4 class="text-2xl font-black">لا توجد عروض حسب الطلب بعد</h4>
-                <p class="mt-3 text-sm leading-7 text-white/65">
-                    أضفها من لوحة التحكم.
-                </p>
+                <p class="mt-3 text-sm leading-7 text-white/65">أضفها من لوحة التحكم.</p>
             </div>
         @endforelse
     </div>
 </section>
 
 {{-- MARKETING WORKS --}}
-@if(isset($marketingWorks) && $marketingWorks->count())
-<section class="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-    <div class="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-            <p class="mb-3 text-sm font-extrabold uppercase tracking-[0.25em] text-orange-400">نماذج من الأعمال الإعلانية</p>
-            <h2 class="text-3xl font-black sm:text-4xl">إعلانات تحمل حضورًا بصريًا حقيقيًا</h2>
-            <p class="mt-4 max-w-2xl text-sm leading-8 text-white/65 sm:text-base">
-                أمثلة مختارة من أعمال ONX الإعلانية المصممة لتجذب الانتباه وتخدم الرسالة.
-            </p>
-        </div>
-
-        <a href="/portfolio"
-           class="inline-flex w-fit rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-extrabold text-white/80 transition hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-white">
-            شاهد المزيد
-        </a>
-    </div>
-
-    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        @foreach($marketingWorks->take(3) as $item)
-            @php
-                $coverImage = null;
-
-                if ($item->media_type === 'youtube' && !empty($item->youtube_video_id)) {
-                    $coverImage = 'https://img.youtube.com/vi/' . $item->youtube_video_id . '/hqdefault.jpg';
-                } elseif (!empty($item->image_path)) {
-                    $coverImage = asset($item->image_path);
-                }
-            @endphp
-
-            <div class="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
-                <div class="relative h-[380px] w-full overflow-hidden">
-                    @if($coverImage)
-                        <img src="{{ $coverImage }}"
-                             alt="{{ $item->title }}"
-                             class="h-full w-full object-cover transition duration-700 group-hover:scale-110">
-                    @else
-                        <div class="flex h-full w-full items-center justify-center bg-white/5 text-sm font-bold text-white/40">
-                            لا توجد صورة
-                        </div>
-                    @endif
-
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent"></div>
-
-                    <div class="absolute inset-x-0 bottom-0 p-5">
-                        <div class="max-w-[80%]">
-                            <div class="text-[10px] font-extrabold tracking-[0.22em] text-orange-400">
-                                BRAND WORK
-                            </div>
-
-                            <h3 class="mt-2 text-xl font-black text-white sm:text-2xl">
-                                {{ $item->title }}
-                            </h3>
-
-                            @if(!empty($item->caption))
-                                <p class="mt-1 text-sm leading-6 text-white/70">
-                                    {{ $item->caption }}
-                                </p>
-                            @endif
-                        </div>
-
-                        @if($item->media_type === 'youtube' && !empty($item->youtube_video_id))
-    <button
-        type="button"
-        onclick="openVideoModal('{{ $item->youtube_video_id }}')"
-        class="absolute inset-0 z-10 flex items-center justify-center bg-black/10 transition duration-300 hover:bg-black/20"
-        aria-label="تشغيل الفيديو"
-    >
-        <span class="flex h-20 w-20 items-center justify-center rounded-full bg-white/20 backdrop-blur border border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white mr-1" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5.14v14l11-7-11-7z"/>
-            </svg>
-        </span>
-    </button>
-@endif
-                    </div>
-                </div>
-            </div>
-        @endforeach
-    </div>
-</section>
-@endif
+@include('partials.portfolio-works-grid', [
+    'items' => $marketingWorks,
+    'sectionSubtitle' => 'نماذج من الأعمال الإعلانية',
+    'sectionTitle' => 'إعلانات تحمل حضورًا بصريًا حقيقيًا',
+    'sectionDescription' => 'أمثلة مختارة من أعمال ONX الإعلانية المصممة لتجذب الانتباه وتخدم الرسالة.',
+    'badgeText' => 'BRAND WORK',
+])
 
 {{-- CTA --}}
 <section class="mx-auto max-w-7xl px-6 py-20 lg:px-8">
@@ -337,10 +259,9 @@
             </div>
         </div>
     </div>
-    <div
-    id="videoModal"
-    class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
->
+</section>
+
+<div id="videoModal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
     <div class="relative w-full max-w-5xl">
         <button
             type="button"
@@ -364,13 +285,12 @@
         </div>
     </div>
 </div>
-</section>
 
 @endsection
 
 @push('scripts')
 <script>
-    function openVideoModal(videoId) {
+function openVideoModal(videoId) {
     const modal = document.getElementById('videoModal');
     const frame = document.getElementById('videoFrame');
 
@@ -403,6 +323,7 @@ document.addEventListener('click', function (e) {
         closeVideoModal();
     }
 });
+
 function toggleFeatures(btn) {
     const wrap = btn.closest('.features-wrap');
     const list = wrap.querySelector('.features-list');

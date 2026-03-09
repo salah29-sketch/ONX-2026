@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@import './portfolio-works-grid.css';
 /* Custom styles for the features list and more button */
 
 .features-list {

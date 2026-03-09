@@ -7,7 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ReservationController;
-
+use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Admin\PermissionsController as AdminPermissionsController;
 use App\Http\Controllers\Admin\EventPackagesController as AdminEventPackagesController;
@@ -35,8 +35,8 @@ use App\Http\Controllers\Admin\PortfolioItemsController as AdminPortfolioItemsCo
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/portfolio', [HomeController::class, 'portfolio'])->name('portfolio');
 
+Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio.index');
 Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
 Route::get('/services/events', [ServiceController::class, 'events'])->name('services.events');
 Route::get('/services/marketing', [ServiceController::class, 'marketing'])->name('services.marketing');

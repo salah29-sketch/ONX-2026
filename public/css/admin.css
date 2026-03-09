@@ -1039,3 +1039,48 @@ table.dataTable{
     width:100%;
   }
 }
+
+.zoom-btn{
+width:40px;
+height:40px;
+border-radius:10px;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(6px);
+color:#fff;
+font-weight:700;
+font-size:18px;
+display:flex;
+align-items:center;
+justify-content:center;
+border:1px solid rgba(255,255,255,0.15);
+transition:.2s;
+}
+
+.zoom-btn:hover{
+background:rgba(255,255,255,0.18);
+transform:scale(1.05);
+}
+.viewer-tool-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:42px;
+  height:42px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  transition:.2s ease;
+  backdrop-filter:blur(10px);
+}
+
+.viewer-tool-btn:hover{
+  background:rgba(255,255,255,.16);
+  transform:translateY(-1px);
+}
+
+.viewer-image{
+  transition:transform .22s ease;
+  transform-origin:center center;
+  will-change:transform;
+}

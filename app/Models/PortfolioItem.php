@@ -17,6 +17,7 @@ class PortfolioItem extends Model
         'image_path',
         'youtube_url',
         'youtube_video_id',
+        'preview_video_path',
         'caption',
         'description',
         'client_name',
