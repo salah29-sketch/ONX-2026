@@ -2,9 +2,7 @@
 <html lang="{{ app()->getLocale() ?? 'en' }}">
 
 <head>
-    <!-- =========================================================
-         ✅ META
-    ========================================================== -->
+    <!-- META -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -12,56 +10,37 @@
 
     <title>{{ trans('panel.site_title') }}</title>
 
-    <!-- =========================================================
-         ✅ ICONS
-    ========================================================== -->
+    <!-- Icons -->
     <link href="{{ asset('img/logo2.png') }}" rel="icon">
     <link href="{{ asset('img/apple-touch-icon.png') }}" rel="apple-touch-icon">
 
-    <!-- =========================================================
-         ✅ CSS: Bootstrap 4 + CoreUI 2 (Admin)
-         ملاحظة: Admin يعتمد Bootstrap 4 (لا تضف Bootstrap 5 هنا)
-    ========================================================== -->
+    <!-- CSS: Bootstrap 4 + CoreUI 2 -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://unpkg.com/@coreui/coreui@2.1.16/dist/css/coreui.min.css" rel="stylesheet" />
 
-    <!-- =========================================================
-         ✅ CSS: Icons
-    ========================================================== -->
+    <!-- CSS: Icons -->
     <link href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- =========================================================
-         ✅ CSS: DataTables (Bootstrap 4)
-    ========================================================== -->
+    <!-- CSS: DataTables -->
     <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/select/1.3.0/css/select.dataTables.min.css" rel="stylesheet" />
 
-    <!-- =========================================================
-         ✅ CSS: Plugins
-    ========================================================== -->
+    <!-- CSS: Plugins -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.css" rel="stylesheet" />
 
-    <!-- =========================================================
-         ✅ SWEETALERT + LANG
-    ========================================================== -->
+    <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{{ url('/lang.js') }}"></script>
 
-    <!-- =========================================================
-         ✅ IMPORTANT:
-         لا تستخدم custom.css هنا لأنه خاص بالواجهة الأمامية ويخرب DataTables
-         نستخدم admin.css بدلًا منه
-    ========================================================== -->
+    {{-- ❌ lang.js removed — route was deleted --}}
+
+    <!-- Admin CSS -->
     <link href="{{ asset('css/admin.css') }}" rel="stylesheet" />
 
-    <!-- =========================================================
-         ✅ Optional: Styling small animation you had
-    ========================================================== -->
     <style>
         .row-glow { animation: glowFlash 1.5s infinite alternate; }
 
@@ -82,9 +61,7 @@
 
 <body class="app header-fixed sidebar-fixed aside-menu-fixed pace-done sidebar-lg-show">
 
-    <!-- =========================================================
-         ✅ TOP NAVBAR
-    ========================================================== -->
+    <!-- TOP NAVBAR -->
     <header class="app-header navbar">
         <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
             <span class="navbar-toggler-icon"></span>
@@ -99,9 +76,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- =========================================================
-             ✅ RIGHT MENU (languages)
-        ========================================================== -->
+        <!-- RIGHT MENU (languages) -->
         <ul class="nav navbar-nav ml-auto">
             @if(count(config('panel.available_languages', [])) > 1)
                 <li class="nav-item dropdown d-md-down-none">
@@ -124,14 +99,10 @@
 
     <div class="app-body">
 
-        <!-- =========================================================
-             ✅ SIDEBAR
-        ========================================================== -->
+        <!-- SIDEBAR -->
         @include('partials.menu')
 
-        <!-- =========================================================
-             ✅ MAIN CONTENT
-        ========================================================== -->
+        <!-- MAIN CONTENT -->
         <main class="main">
             <div style="padding-top: 20px" class="container-fluid">
 
@@ -160,63 +131,49 @@
             </div>
         </main>
 
-        <!-- =========================================================
-             ✅ LOGOUT FORM
-        ========================================================== -->
+        <!-- LOGOUT FORM -->
         <form id="logoutform" action="{{ route('logout') }}" method="POST" style="display:none;">
             {{ csrf_field() }}
         </form>
     </div>
 
-    <!-- =========================================================
-         ✅ JS: jQuery + Bootstrap 4 + CoreUI (Admin)
-    ========================================================== -->
+    <!-- JS: jQuery + Bootstrap 4 + CoreUI -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="https://unpkg.com/@coreui/coreui@2.1.16/dist/js/coreui.min.js"></script>
 
-    <!-- =========================================================
-         ✅ DataTables JS
-    ========================================================== -->
+    <!-- DataTables JS -->
     <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-
     <script src="//cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
     <script src="//cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.colVis.min.js"></script>
-
     <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
     <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
     <script src="https://cdn.datatables.net/select/1.3.0/js/dataTables.select.min.js"></script>
 
-    <!-- =========================================================
-         ✅ Plugins JS
-    ========================================================== -->
+    <!-- Plugins JS -->
     <script src="https://cdn.ckeditor.com/ckeditor5/11.0.1/classic/ckeditor.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.js"></script>
 
-    <!-- =========================================================
-         ✅ Your main.js (Admin)
-    ========================================================== -->
+    <!-- Admin main.js -->
     <script src="{{ asset('js/main.js') }}"></script>
 
-    <!-- =========================================================
-         ✅ DataTables Defaults (كما كان عندك) + Fix columns adjust
-    ========================================================== -->
+    <!-- DataTables Defaults -->
     <script>
         $(function () {
-            let copyButtonTrans = '{{ trans('global.datatables.copy') }}'
-            let csvButtonTrans = '{{ trans('global.datatables.csv') }}'
-            let excelButtonTrans = '{{ trans('global.datatables.excel') }}'
-            let pdfButtonTrans = '{{ trans('global.datatables.pdf') }}'
-            let printButtonTrans = '{{ trans('global.datatables.print') }}'
+            let copyButtonTrans   = '{{ trans('global.datatables.copy') }}'
+            let csvButtonTrans    = '{{ trans('global.datatables.csv') }}'
+            let excelButtonTrans  = '{{ trans('global.datatables.excel') }}'
+            let pdfButtonTrans    = '{{ trans('global.datatables.pdf') }}'
+            let printButtonTrans  = '{{ trans('global.datatables.print') }}'
             let colvisButtonTrans = '{{ trans('global.datatables.colvis') }}'
 
             let languages = {
@@ -236,25 +193,25 @@
                 pageLength: 100,
                 dom: 'lBfrtip<"actions">',
                 buttons: [
-                    { extend: 'copy',  className: 'btn-default', text: copyButtonTrans,  exportOptions: { columns: ':visible' } },
-                    { extend: 'csv',   className: 'btn-default', text: csvButtonTrans,   exportOptions: { columns: ':visible' } },
-                    { extend: 'excel', className: 'btn-default', text: excelButtonTrans, exportOptions: { columns: ':visible' } },
-                    { extend: 'pdf',   className: 'btn-default', text: pdfButtonTrans,   exportOptions: { columns: ':visible' } },
-                    { extend: 'print', className: 'btn-default', text: printButtonTrans, exportOptions: { columns: ':visible' } },
-                    { extend: 'colvis',className: 'btn-default', text: colvisButtonTrans, exportOptions: { columns: ':visible' } }
+                    { extend: 'copy',   className: 'btn-default', text: copyButtonTrans,   exportOptions: { columns: ':visible' } },
+                    { extend: 'csv',    className: 'btn-default', text: csvButtonTrans,    exportOptions: { columns: ':visible' } },
+                    { extend: 'excel',  className: 'btn-default', text: excelButtonTrans,  exportOptions: { columns: ':visible' } },
+                    { extend: 'pdf',    className: 'btn-default', text: pdfButtonTrans,    exportOptions: { columns: ':visible' } },
+                    { extend: 'print',  className: 'btn-default', text: printButtonTrans,  exportOptions: { columns: ':visible' } },
+                    { extend: 'colvis', className: 'btn-default', text: colvisButtonTrans, exportOptions: { columns: ':visible' } }
                 ]
             });
 
             $.fn.dataTable.ext.classes.sPageButton = '';
         });
 
-        // ✅ Fix: after load (sidebar changes width)
         $(window).on('load', function(){
             if ($.fn.dataTable) {
                 $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
             }
         });
     </script>
+
     @stack('scripts')
     @yield('scripts')
 </body>

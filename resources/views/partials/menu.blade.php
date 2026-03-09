@@ -2,14 +2,20 @@
     <nav class="sidebar-nav">
         <ul class="nav">
 
+            {{-- ═══════════════════════════════════════
+                 الرئيسية
+            ═══════════════════════════════════════ --}}
             <li class="nav-item">
-                <a href="{{ route('admin.home') }}" class="nav-link {{ request()->routeIs('admin.home') ? 'active' : '' }}">
+                <a href="{{ route('admin.home') }}"
+                   class="nav-link {{ request()->routeIs('admin.home') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-fw fa-tachometer-alt"></i>
                     {{ trans('global.dashboard') }}
                 </a>
             </li>
 
-            {{-- Bookings --}}
+            {{-- ═══════════════════════════════════════
+                 الحجوزات
+            ═══════════════════════════════════════ --}}
             <li class="nav-item">
                 <a href="{{ route('admin.bookings.index') }}"
                    class="nav-link {{ request()->is('admin/bookings') || request()->is('admin/bookings/*') ? 'active' : '' }}">
@@ -26,11 +32,14 @@
                 </a>
             </li>
 
+            {{-- ═══════════════════════════════════════
+                 الباقات
+            ═══════════════════════════════════════ --}}
             <li class="nav-item">
                 <a href="{{ route('admin.ad-packages.index') }}"
                    class="nav-link {{ request()->is('admin/ad-packages*') ? 'active' : '' }}">
                     <i class="fa-fw fas fa-bullhorn nav-icon"></i>
-                    Packs Pubs 
+                    Packs Pubs
                 </a>
             </li>
 
@@ -42,22 +51,20 @@
                 </a>
             </li>
 
+            {{-- ═══════════════════════════════════════
+                 البورتفوليو
+            ═══════════════════════════════════════ --}}
             <li class="nav-item">
-                <a href="{{ route('admin.gallery.index') }}"
-                   class="nav-link {{ request()->is('admin/gallery*') ? 'active' : '' }}">
-                    <i class="nav-icon fas fa-fw fa-images"></i>
-                    {{ trans('global.portfolio') }}
+                <a href="{{ route('admin.portfolio-items.index') }}"
+                   class="nav-link {{ request()->is('admin/portfolio-items*') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-images"></i>
+                    Portfolio
                 </a>
             </li>
 
-            <li class="nav-item">
-    <a href="{{ route('admin.portfolio-items.index') }}"
-       class="nav-link {{ request()->is('admin/portfolio-items*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-images"></i>
-        Portfolio
-    </a>
-</li>
-
+            {{-- ═══════════════════════════════════════
+                 الشركة
+            ═══════════════════════════════════════ --}}
             <li class="nav-item nav-dropdown {{ request()->is('admin/company*') ? 'open' : '' }}">
                 <a class="nav-link nav-dropdown-toggle" href="#">
                     <i class="fa-fw fas fa-cogs nav-icon"></i>
@@ -74,6 +81,9 @@
                 </ul>
             </li>
 
+            {{-- ═══════════════════════════════════════
+                 الموظفون
+            ═══════════════════════════════════════ --}}
             <li class="nav-item">
                 <a href="{{ route('admin.employees.index') }}"
                    class="nav-link {{ request()->is('admin/employees*') ? 'active' : '' }}">
@@ -82,14 +92,20 @@
                 </a>
             </li>
 
+            {{-- ═══════════════════════════════════════
+                 قاعات الأفراح
+            ═══════════════════════════════════════ --}}
             <li class="nav-item">
                 <a href="{{ route('admin.eventlocations.index') }}"
                    class="nav-link {{ request()->is('admin/eventlocations*') ? 'active' : '' }}">
                     <i class="fa-fw fas fa-map-marker-alt nav-icon"></i>
-                    salle des fetes
+                    Salle des fêtes
                 </a>
             </li>
 
+            {{-- ═══════════════════════════════════════
+                 العملاء
+            ═══════════════════════════════════════ --}}
             <li class="nav-item">
                 <a href="{{ route('admin.clients.index') }}"
                    class="nav-link {{ request()->is('admin/clients*') ? 'active' : '' }}">
@@ -98,14 +114,9 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a href="{{ route('admin.appointments.index') }}"
-                   class="nav-link {{ request()->is('admin/appointments*') ? 'active' : '' }}">
-                    <i class="fa-fw fas fa-calendar nav-icon"></i>
-                    {{ trans('cruds.appointment.title') }}
-                </a>
-            </li>
-
+            {{-- ═══════════════════════════════════════
+                 إدارة المستخدمين والصلاحيات
+            ═══════════════════════════════════════ --}}
             <li class="nav-item nav-dropdown {{ request()->is('admin/permissions*') || request()->is('admin/roles*') || request()->is('admin/users*') ? 'open' : '' }}">
                 <a class="nav-link nav-dropdown-toggle" href="#">
                     <i class="fa-fw fas fa-users-cog nav-icon"></i>
@@ -119,7 +130,6 @@
                             {{ trans('cruds.permission.title') }}
                         </a>
                     </li>
-
                     <li class="nav-item">
                         <a href="{{ route('admin.roles.index') }}"
                            class="nav-link {{ request()->is('admin/roles*') ? 'active' : '' }}">
@@ -127,7 +137,6 @@
                             {{ trans('cruds.role.title') }}
                         </a>
                     </li>
-
                     <li class="nav-item">
                         <a href="{{ route('admin.users.index') }}"
                            class="nav-link {{ request()->is('admin/users*') ? 'active' : '' }}">
@@ -138,8 +147,12 @@
                 </ul>
             </li>
 
+            {{-- ═══════════════════════════════════════
+                 تسجيل الخروج
+            ═══════════════════════════════════════ --}}
             <li class="nav-item">
-                <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logoutform').submit();">
+                <a href="#" class="nav-link"
+                   onclick="event.preventDefault(); document.getElementById('logoutform').submit();">
                     <i class="nav-icon fas fa-fw fa-sign-out-alt"></i>
                     {{ trans('global.logout') }}
                 </a>

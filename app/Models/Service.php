@@ -2,63 +2,36 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
-
-
 
 class Service extends Model implements HasMedia
 {
-    use SoftDeletes, HasFactory;
-  use SoftDeletes, InteractsWithMedia, HasFactory;
+    use InteractsWithMedia;
+
     public $table = 'services';
-
-     protected $appends = [
-        'photo',
-    ];
-
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-    ];
 
     protected $fillable = [
         'name',
-        'price',
+        'title',
         'description',
-        'created_at',
-        'updated_at',
-        'deleted_at',
+        'price',
+        'icon',
+        'features',
+        'image',
     ];
-     public function registerMediaConversions(Media $media = null): void
-    {
-        $this->addMediaConversion('thumb')->width(50)->height(50);
-    }
 
-     public function getPhotoAttribute()
-    {
-        $file = $this->getMedia('photo')->last();
+    protected $casts = [
+        'features' => 'array',
+    ];
 
-        if ($file) {
-            $file->url       = $file->getUrl();
-            $file->thumbnail = $file->getUrl('thumb');
-        }
-
-        return $file;
-    }
-
+    // ─── Relations ───────────────────────────────────────────
+    // ✅ مستخدمة في EmployeesController و main.blade.php
     public function employees()
     {
         return $this->belongsToMany(Employee::class);
     }
 
-    public function appointments()
-    {
-        return $this->belongsToMany(Appointment::class);
-    }
+    // ❌ تم حذف: appointments() — غير مستخدمة بعد حذف Appointments
 }

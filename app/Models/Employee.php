@@ -2,66 +2,51 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Employee extends Model implements HasMedia
 {
-    use SoftDeletes, InteractsWithMedia, HasFactory;
+    use InteractsWithMedia;
 
     public $table = 'employees';
-
-    protected $appends = [
-        'photo',
-    ];
-
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-    ];
 
     protected $fillable = [
         'name',
         'email',
         'phone',
-        'created_at',
-        'updated_at',
-        'deleted_at',
         'facebook',
         'instagram',
         'twitter',
         'linkedin',
     ];
 
+    // ─── Media ───────────────────────────────────────────────
     public function registerMediaConversions(Media $media = null): void
     {
-        $this->addMediaConversion('thumb')->width(50)->height(50);
+        $this->addMediaConversion('thumb')
+            ->width(50)
+            ->height(50);
     }
 
-    public function appointments()
+    public function registerMediaCollections(): void
     {
-        return $this->hasMany(Appointment::class, 'employee_id', 'id');
+        $this->addMediaCollection('photo')->singleFile();
     }
 
     public function getPhotoAttribute()
     {
-        $file = $this->getMedia('photo')->last();
-
-        if ($file) {
-            $file->url       = $file->getUrl();
-            $file->thumbnail = $file->getUrl('thumb');
-        }
-
-        return $file;
+        return $this->getFirstMedia('photo');
     }
 
+    // ─── Relations ───────────────────────────────────────────
+    // ✅ مستخدمة في الواجهة الأمامية (main.blade.php)
     public function services()
     {
         return $this->belongsToMany(Service::class);
     }
+
+    // ❌ تم حذف: appointments() — غير مستخدمة بعد حذف Appointments
 }
