@@ -74,7 +74,7 @@
           <li><a class="nav-link" href="{{ route('home') }}" class="active">{{ __('home.home') }}<br></a></li>
           <li><a class="nav-link" href="{{ url('/#about') }}">{{ __('home.about') }}</a></li>
            <li><a class="nav-link" href="{{ url('/#services') }}">{{ __('home.services') }}</a></li>
-          <li><a class="nav-link" href="{{ route('portfolio') }}">{{ __('home.portfolio') }}</a></li>
+          <li><a class="nav-link" href="{{ route('portfolio.index') }}">{{ __('home.portfolio') }}</a></li>
           <li><a class="nav-link" href="{{ url('/#team') }}">{{ __('home.team') }}</a></li>
           <li><a class="nav-link" href="{{ url('/#contact') }}">{{ __('home.contact') }}</a></li>
         </ul>

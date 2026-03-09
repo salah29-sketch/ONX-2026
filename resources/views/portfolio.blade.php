@@ -104,13 +104,13 @@
 
       <!-- Filters -->
       <div class="gallery-filters">
-        <a href="{{ route('portfolio') }}"
+        <a href="{{ route('portfolio.index') }}"
            class="btn btn-custom-filter {{ empty($filter) ? 'active' : '' }}">
            الكل
         </a>
 
         @foreach ($categories as $key => $label)
-          <a href="{{ route('portfolio', ['category' => $key]) }}"
+          <a href="{{ route('portfolio.index', ['category' => $key]) }}"
              class="btn btn-custom-filter {{ ($filter === $key) ? 'active' : '' }}">
              {{ $label }}
           </a>
@@ -130,7 +130,7 @@
             class="btn btn-custom-filter"
             data-page="2"
             data-filter="{{ $filter ?? '' }}"
-            data-url="{{ route('portfolio') }}"
+            data-url="{{ route('portfolio.index') }}"
           >
             <span class="btn-text">تحميل المزيد</span>
             <span class="spinner-border spinner-border-sm d-none"></span>

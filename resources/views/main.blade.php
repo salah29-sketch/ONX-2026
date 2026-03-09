@@ -168,7 +168,7 @@
         <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
 
           <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
-            <li class="filter-active"> <a style="color:white;" href ="{{ route('portfolio')}}"> Consultez plus  </a> </li>
+            <li class="filter-active"> <a style="color:white;" href ="{{ route('portfolio.index')}}"> Consultez plus  </a> </li>
           </ul>
 
           <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
