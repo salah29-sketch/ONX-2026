@@ -39,7 +39,7 @@
     {{-- ❌ lang.js removed — route was deleted --}}
 
     <!-- Admin CSS -->
-    <link href="{{ asset('css/admin.css') }}" rel="stylesheet" />
+    @vite(['resources/css/admin.css'])
 
     <style>
         .row-glow { animation: glowFlash 1.5s infinite alternate; }

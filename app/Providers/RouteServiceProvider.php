@@ -7,31 +7,20 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 
 class RouteServiceProvider extends ServiceProvider
 {
-    /**
-     * Define your route model bindings, pattern filters, etc.
-     *
-     * @return void
-     */
     public function boot()
     {
         parent::boot();
     }
 
-    /**
-     * Define the routes for the application.
-     *
-     * @return void
-     */
     public function map()
     {
         $this->mapApiRoutes();
         $this->mapWebRoutes();
+        $this->mapAdminRoutes();
     }
 
     /**
-     * Define the "web" routes for the application.
-     *
-     * @return void
+     * روابط الواجهة الأمامية
      */
     protected function mapWebRoutes()
     {
@@ -40,9 +29,16 @@ class RouteServiceProvider extends ServiceProvider
     }
 
     /**
-     * Define the "api" routes for the application.
-     *
-     * @return void
+     * روابط لوحة الإدارة
+     */
+    protected function mapAdminRoutes()
+    {
+        Route::middleware('web')
+            ->group(base_path('routes/admin.php'));
+    }
+
+    /**
+     * روابط الـ API
      */
     protected function mapApiRoutes()
     {

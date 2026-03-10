@@ -13,9 +13,7 @@
     </a>
 </div>
 
-@if(session('message'))
-    <div class="alert alert-success db-alert">{{ session('message') }}</div>
-@endif
+
 
 <div class="db-filter-bar">
     <form method="GET">

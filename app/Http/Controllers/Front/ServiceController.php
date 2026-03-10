@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Front;
 
-use Illuminate\View\View;
+use App\Http\Controllers\Controller;
 use App\Models\EventPackage;
 use App\Models\Adpackage;
 use App\Models\PortfolioItem;
+use Illuminate\View\View;
 
 class ServiceController extends Controller
 {
@@ -27,7 +28,7 @@ class ServiceController extends Controller
             ],
         ];
 
-        return view('services.index', compact('services'));
+        return view('front.services.index', compact('services'));
     }
 
     /**
@@ -48,14 +49,10 @@ class ServiceController extends Controller
         $before = $others->slice(0, $half);
         $after  = $others->slice($half);
 
-        $PackagesOrdered = collect();
-        $PackagesOrdered = $PackagesOrdered->merge($before);
-
-        if ($featured) {
-            $PackagesOrdered->push($featured);
-        }
-
-        $PackagesOrdered = $PackagesOrdered->merge($after);
+        $PackagesOrdered = collect()
+            ->merge($before)
+            ->when($featured, fn($c) => $c->push($featured))
+            ->merge($after);
 
         $travelNote = 'خارج ولاية سيدي بلعباس: تُضاف رسوم تنقل حسب الولاية.';
 
@@ -70,7 +67,7 @@ class ServiceController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return view('services.events', [
+        return view('front.services.events', [
             'Packages'   => $PackagesOrdered,
             'travelNote' => $travelNote,
             'eventWorks' => $eventWorks,
@@ -79,7 +76,6 @@ class ServiceController extends Controller
 
     /**
      * صفحة /services/marketing
-     * كل المحتوى من DB (monthly + custom)
      */
     public function marketing(): View
     {
@@ -106,6 +102,6 @@ class ServiceController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return view('services.marketing', compact('monthly', 'custom', 'marketingWorks'));
+        return view('front.services.marketing', compact('monthly', 'custom', 'marketingWorks'));
     }
 }

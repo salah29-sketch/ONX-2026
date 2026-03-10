@@ -15,9 +15,7 @@
     @endcan
 </div>
 
-@if(session('message'))
-    <div class="alert alert-success db-alert">{{ session('message') }}</div>
-@endif
+
 
 <div class="card db-card">
     <div class="db-card-header">قائمة العملاء</div>

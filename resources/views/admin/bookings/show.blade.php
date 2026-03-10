@@ -13,9 +13,7 @@
     </a>
 </div>
 
-@if(session('message'))
-    <div class="alert alert-success db-alert">{{ session('message') }}</div>
-@endif
+
 
 <div class="card db-card mb-4">
     <div class="db-card-header">بيانات الحجز</div>
@@ -101,7 +99,7 @@
                 <div class="db-detail-value">
                     @php
                         $statusClass = match($booking->status) {
-                            'unconfirmed', => 'db-badge-new',
+                            'unconfirmed' => 'db-badge-new',
                             'confirmed' => 'db-badge-confirmed',
                             'in_progress' => 'db-badge-progress',
                             'completed' => 'db-badge-completed',
@@ -149,7 +147,7 @@
     <div class="card-body db-card-body">
         <form action="{{ route('admin.bookings.updateDetails', $booking->id) }}" method="POST">
             @csrf
-
+            @method('PATCH') 
             <div class="row">
                 @if($booking->service_type === 'event')
                     <div class="col-md-4 mb-3">
@@ -207,7 +205,7 @@
     <div class="card-body db-card-body">
         <form action="{{ route('admin.bookings.updateStatus', $booking->id) }}" method="POST">
             @csrf
-
+            @method('PATCH')
             <div class="row">
                 <div class="col-md-4 mb-3">
                     <label class="db-label">الحالة</label>

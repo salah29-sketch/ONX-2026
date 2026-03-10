@@ -260,25 +260,7 @@
     </div>
 </section>
 
-@if(session('message'))
-    <section class="mx-auto mt-6 max-w-7xl px-6 lg:px-8">
-        <div class="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm font-bold text-emerald-300">
-            {{ session('message') }}
-        </div>
-    </section>
-@endif
 
-@if($errors->any())
-    <section class="mx-auto mt-6 max-w-7xl px-6 lg:px-8">
-        <div class="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
-            <ul class="space-y-1">
-                @foreach($errors->all() as $error)
-                    <li>• {{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    </section>
-@endif
 
 <section id="bookingForm" class="mx-auto max-w-7xl px-6 py-10 lg:px-8">
     <div class="mb-8 text-center">
