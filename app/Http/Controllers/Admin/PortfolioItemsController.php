@@ -57,6 +57,13 @@ class PortfolioItemsController extends Controller
             ])->withInput();
         }
 
+        $isFeatured = $request->boolean('is_featured');
+
+        // إذا تم تمييز هذا العمل، ألغِ التمييز عن جميع الأعمال الأخرى
+        if ($isFeatured) {
+            PortfolioItem::where('is_featured', true)->update(['is_featured' => false]);
+        }
+
         $data = [
             'title'         => $request->title,
             'service_type'  => $request->service_type,
@@ -69,7 +76,7 @@ class PortfolioItemsController extends Controller
             'location_name' => $request->location_name,
             'sort_order'    => $request->sort_order ?? 0,
             'published_at'  => $request->published_at,
-            'is_featured'   => $request->boolean('is_featured'),
+            'is_featured'   => $isFeatured,
             'is_active'     => $request->boolean('is_active', true),
         ];
 
@@ -143,6 +150,15 @@ class PortfolioItemsController extends Controller
             ])->withInput();
         }
 
+        $isFeatured = $request->boolean('is_featured');
+
+        // إذا تم تمييز هذا العمل، ألغِ التمييز عن جميع الأعمال الأخرى (باستثناء الحالي)
+        if ($isFeatured) {
+            PortfolioItem::where('is_featured', true)
+                ->where('id', '!=', $portfolioItem->id)
+                ->update(['is_featured' => false]);
+        }
+
         $data = [
             'title'         => $request->title,
             'service_type'  => $request->service_type,
@@ -155,7 +171,7 @@ class PortfolioItemsController extends Controller
             'location_name' => $request->location_name,
             'sort_order'    => $request->sort_order ?? 0,
             'published_at'  => $request->published_at,
-            'is_featured'   => $request->boolean('is_featured'),
+            'is_featured'   => $isFeatured,
             'is_active'     => $request->boolean('is_active', true),
         ];
 

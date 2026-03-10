@@ -698,4 +698,38 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="{{ asset('js/booking.js?v=3') }}"></script>
+{{-- ضع هذا الكود داخل @push('scripts') في booking.blade.php --}}
+{{-- بعد السطر: <script src="{{ asset('js/booking.js?v=3') }}"></script> --}}
+
+<script>
+    (function () {
+        const params = new URLSearchParams(window.location.search);
+        const notes  = params.get('notes');
+
+        if (!notes) return;
+
+        // انتظر حتى يتم تحميل الصفحة بالكامل
+        document.addEventListener('DOMContentLoaded', function () {
+            const notesField = document.querySelector('textarea[name="notes"]');
+            if (notesField && !notesField.value.trim()) {
+                notesField.value = decodeURIComponent(notes);
+
+                // إضاء بصرية لفت الانتباه
+                notesField.classList.add(
+                    'border-orange-500/60',
+                    'ring-2',
+                    'ring-orange-500/20'
+                );
+
+                setTimeout(() => {
+                    notesField.classList.remove(
+                        'border-orange-500/60',
+                        'ring-2',
+                        'ring-orange-500/20'
+                    );
+                }, 2500);
+            }
+        });
+    })();
+</script>
 @endpush

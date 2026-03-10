@@ -8,8 +8,13 @@
 <section class="relative isolate overflow-hidden border-b border-white/10">
     <div class="absolute inset-0 -z-10">
         @php
-            $heroItem = isset($featuredItems) && $featuredItems->count() ? $featuredItems->first() : ($items->first() ?? null);
-            $heroImage = $heroItem && !empty($heroItem->image_path) ? asset($heroItem->image_path) : asset('img/events.jpg');
+            $heroItem = isset($featuredItems) && $featuredItems->count()
+                ? $featuredItems->first()
+                : ($items->first() ?? null);
+
+            $heroImage = $heroItem && !empty($heroItem->image_path)
+                ? asset($heroItem->image_path)
+                : asset('img/events.jpg');
         @endphp
 
         <img src="{{ $heroImage }}"
@@ -105,13 +110,13 @@
 {{-- FEATURED --}}
 @if(isset($featuredItems) && $featuredItems->count())
 <section class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-    <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div class="mb-8 flex flex-col gap-3 items-center text-center">
         <div>
             <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.25em] text-orange-400">أعمال مختارة</p>
             <h2 class="text-2xl font-black sm:text-3xl">مشاريع نحب أن تبدأ بها</h2>
         </div>
 
-        <p class="max-w-2xl text-xs leading-7 text-white/65 sm:text-sm">
+        <p class="text-xs leading-7 text-white/65 sm:text-sm">
             مجموعة مختارة من الأعمال التي تعبّر عن أسلوبنا في الإعلانات والفعاليات
             عندما تكون الصورة جزءًا من قيمة المشروع نفسه.
         </p>
@@ -146,7 +151,7 @@
                         @if($coverImage)
                             <img src="{{ $coverImage }}"
                                  alt="{{ $item->title }}"
-                                 class="h-full w-full object-cover transition duration-700 group-hover:scale-110">
+                                 class="h-full w-full object-cover transition duration-700 grayscale group-hover:grayscale-0 group-hover:scale-110">
                         @else
                             <div class="flex h-full w-full items-center justify-center bg-white/5 text-xs font-bold text-white/40">
                                 لا توجد صورة
@@ -181,7 +186,7 @@
                             </div>
 
                             <div class="mt-3 inline-flex rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-[11px] font-extrabold text-white transition group-hover:border-orange-500/40 group-hover:bg-orange-500/10">
-                                عرض العمل
+                                فتح المعاينة
                             </div>
                         </div>
                     </div>
@@ -259,7 +264,7 @@
                             @if($coverImage)
                                 <img src="{{ $coverImage }}"
                                      alt="{{ $item->title }}"
-                                     class="h-full w-full object-cover transition duration-700 group-hover:scale-110">
+                                     class="h-full w-full object-cover transition duration-700 group-hover:grayscale-0 group-hover:scale-110">
                             @else
                                 <div class="flex h-full w-full items-center justify-center bg-white/5 text-xs font-bold text-white/40">
                                     لا توجد صورة
@@ -302,7 +307,7 @@
                                 </div>
 
                                 <div class="mt-3 inline-flex rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-[11px] font-extrabold text-white transition group-hover:border-orange-500/40 group-hover:bg-orange-500/10">
-                                    عرض التفاصيل
+                                    فتح المعاينة
                                 </div>
                             </div>
                         </div>
@@ -363,60 +368,61 @@
 {{-- VIEWER --}}
 <div
     id="portfolioViewer"
-    class="fixed inset-0 z-[999] hidden bg-black/90 p-4 backdrop-blur-sm"
+    class="fixed inset-0 z-[999] hidden bg-black/95 backdrop-blur-sm"
+    aria-hidden="true"
 >
-    <div class="mx-auto flex h-full max-w-6xl items-center justify-center">
-        <div class="relative w-full overflow-hidden rounded-[28px] border border-white/10 bg-[#0b0b0b] shadow-[0_30px_120px_rgba(0,0,0,0.5)]">
+    <div class="absolute inset-0 flex flex-col">
+        <div class="flex items-center justify-between px-4 md:px-8 py-4 border-b border-white/10">
+            <div class="text-sm uppercase tracking-[0.2em] text-white/45">
+                معرض الاعمال
+            </div>
+
             <button
                 id="closeViewer"
                 type="button"
-                class="absolute left-4 top-4 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white transition hover:border-orange-500/40 hover:bg-orange-500/10"
+                class="inline-flex items-center justify-center w-11 h-11 rounded-full border border-white/15 text-white hover:bg-white hover:text-black transition"
+                aria-label="Close viewer"
             >
                 ✕
             </button>
+        </div>
 
-            <button
-                id="prevItem"
-                type="button"
-                class="absolute right-4 top-1/2 z-20 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white transition hover:border-orange-500/40 hover:bg-orange-500/10"
-            >
-                →
-            </button>
+        <div class="flex-1 relative overflow-hidden">
+           {{-- زر السهم الأيسر (prev) --}}
+<button
+    id="prevItem"
+    type="button"
+    class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full border border-white/15 bg-black/40 text-orange-500 flex items-center justify-center hover:bg-white hover:text-black hover:scale-110 transition"
+    aria-label="Previous item"
+></button>
 
-            <button
-                id="nextItem"
-                type="button"
-                class="absolute left-4 top-1/2 z-20 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/40 text-white transition hover:border-orange-500/40 hover:bg-orange-500/10"
-            >
-                ←
-            </button>
+{{-- زر السهم الأيمن (next) --}}
+<button
+    id="nextItem"
+    type="button"
+    class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full border border-white/15 bg-black/40 text-orange-500 flex items-center justify-center hover:bg-white hover:text-black hover:scale-110 transition"
+    aria-label="Next item"
+></button>
 
-            <div class="grid min-h-[75vh] lg:grid-cols-[1.1fr_.9fr]">
-                <div id="viewerMedia" class="flex min-h-[360px] items-center justify-center bg-black p-4"></div>
+            <div class="h-full max-w-7xl mx-auto px-6 md:px-10 py-8 md:py-10 grid grid-cols-1 lg:grid-cols-[minmax(0,1.4fr)_380px] gap-8 items-center">
+                <div class="relative rounded-[2rem] overflow-hidden border border-white/10 bg-white/5 min-h-[300px] md:min-h-[520px] flex items-center justify-center">
+                    <div id="viewerMedia" class="w-full h-full flex items-center justify-center"></div>
+                </div>
 
-                <div class="flex flex-col justify-center border-t border-white/10 p-6 lg:border-r lg:border-t-0 lg:p-8">
-                    <div class="mb-4 flex flex-wrap gap-2">
-                        <span id="viewerService" class="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-extrabold text-white/80"></span>
-                        <span id="viewerType" class="hidden rounded-full border border-orange-500/30 bg-orange-500/10 px-3 py-1.5 text-[11px] font-extrabold text-orange-300"></span>
+                <div class="space-y-5">
+                    <div class="flex flex-wrap gap-2">
+                        <span id="viewerService" class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white border border-white/10"></span>
+                        <span id="viewerType" class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white border border-white/10 hidden"></span>
                     </div>
 
-                    <h3 id="viewerTitle" class="text-2xl font-black sm:text-3xl"></h3>
-                    <p id="viewerCaption" class="mt-4 text-sm leading-8 text-white/70"></p>
-
-                    <div class="mt-8">
-                        <a href="/booking"
-                           class="inline-flex rounded-full bg-orange-500 px-6 py-3 text-xs font-black text-black transition duration-300 hover:bg-orange-400">
-                            اطلب مشروعًا مشابهًا
-                        </a>
+                    <div>
+                        <h2 id="viewerTitle" class="text-3xl md:text-4xl font-semibold leading-tight"></h2>
+                        <p id="viewerCaption" class="mt-4 text-white/65 leading-relaxed text-base md:text-lg"></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-@push('scripts')
-<script src="{{ asset('js/front/portfolio.js') }}"></script>
-@endpush
 
 @endsection

@@ -21,9 +21,17 @@ class PortfolioController extends Controller
             ->orderBy('sort_order')
             ->orderByDesc('id');
 
-        $featuredItems = (clone $baseQuery)
-            ->where('is_featured', true)
-            ->take(3)
+        // الصورة المميزة في الـ hero — ثابتة دائماً
+        $heroItem = PortfolioItem::where('is_featured', true)
+            ->where('is_active', true)
+            ->first();
+
+        // أعمال مختارة — 3 صور عشوائية في كل زيارة (صور فقط، بدون يوتيوب)
+        $featuredItems = PortfolioItem::where('is_active', true)
+            ->where('media_type', 'image')
+            ->whereNotNull('image_path')
+            ->inRandomOrder()
+            ->limit(3)
             ->get();
 
         $items = (clone $baseQuery)->get();
@@ -31,6 +39,7 @@ class PortfolioController extends Controller
         return view('front.portfolio', [
             'items'         => $items,
             'featuredItems' => $featuredItems,
+            'heroItem'      => $heroItem,
             'categories'    => $this->categories,
         ]);
     }

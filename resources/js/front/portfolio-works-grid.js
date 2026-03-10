@@ -77,6 +77,7 @@ function closeImageModal() {
         document.body.style.overflow = '';
     }, 250);
 }
+
 function applyImageZoom() {
     const image = document.getElementById('imageModalSrc');
     if (!image) return;
@@ -97,13 +98,6 @@ function zoomOut() {
 function resetZoom() {
     imageZoomLevel = 1;
     applyImageZoom();
-}
-
-function applyImageZoom() {
-    const image = document.getElementById('imageModalSrc');
-    if (!image) return;
-
-    image.style.transform = `scale(${imageZoomLevel})`;
 }
 
 function bindPortfolioWorksGrid() {
