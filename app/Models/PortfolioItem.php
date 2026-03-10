@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class PortfolioItem extends Model
@@ -52,15 +51,9 @@ class PortfolioItem extends Model
         });
     }
 
-    public function placements(): HasMany
-    {
-        return $this->hasMany(PortfolioItemPlacement::class);
-    }
+   
 
-    public function activePlacements(): HasMany
-    {
-        return $this->hasMany(PortfolioItemPlacement::class)->where('is_active', true);
-    }
+  
 
     public function getYoutubeThumbnailAttribute(): ?string
     {

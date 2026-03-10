@@ -10,7 +10,7 @@ class PortfolioItemsController extends Controller
 {
     public function index()
     {
-        $items = PortfolioItem::with('placements')
+        $items = PortfolioItem::query()
             ->orderByDesc('is_featured')
             ->orderBy('sort_order')
             ->latest()
@@ -21,9 +21,7 @@ class PortfolioItemsController extends Controller
 
     public function create()
     {
-        $placementOptions = $this->placementOptions();
-
-        return view('admin.portfolioItems.create', compact('placementOptions'));
+        return view('admin.portfolioItems.create');
     }
 
     public function store(Request $request)
@@ -41,8 +39,6 @@ class PortfolioItemsController extends Controller
             'location_name' => 'nullable|string|max:255',
             'sort_order'    => 'nullable|integer|min:0',
             'published_at'  => 'nullable|date',
-            'placements'    => 'nullable|array',
-            'placements.*'  => 'string|max:100',
         ]);
 
         if ($request->input('media_type') === 'image' && !$request->hasFile('image')) {
@@ -59,7 +55,6 @@ class PortfolioItemsController extends Controller
 
         $isFeatured = $request->boolean('is_featured');
 
-        // إذا تم تمييز هذا العمل، ألغِ التمييز عن جميع الأعمال الأخرى
         if ($isFeatured) {
             PortfolioItem::where('is_featured', true)->update(['is_featured' => false]);
         }
@@ -89,15 +84,7 @@ class PortfolioItemsController extends Controller
             $data['image_path'] = null;
         }
 
-        $item = PortfolioItem::create($data);
-
-        foreach ($request->input('placements', []) as $index => $placementKey) {
-            $item->placements()->create([
-                'placement_key' => $placementKey,
-                'sort_order'    => $index,
-                'is_active'     => true,
-            ]);
-        }
+        PortfolioItem::create($data);
 
         return redirect()
             ->route('admin.portfolio-items.index')
@@ -106,17 +93,12 @@ class PortfolioItemsController extends Controller
 
     public function show(PortfolioItem $portfolioItem)
     {
-        $portfolioItem->load('placements');
-
         return view('admin.portfolioItems.show', compact('portfolioItem'));
     }
 
     public function edit(PortfolioItem $portfolioItem)
     {
-        $portfolioItem->load('placements');
-        $placementOptions = $this->placementOptions();
-
-        return view('admin.portfolioItems.edit', compact('portfolioItem', 'placementOptions'));
+        return view('admin.portfolioItems.edit', compact('portfolioItem'));
     }
 
     public function update(Request $request, PortfolioItem $portfolioItem)
@@ -134,8 +116,6 @@ class PortfolioItemsController extends Controller
             'location_name' => 'nullable|string|max:255',
             'sort_order'    => 'nullable|integer|min:0',
             'published_at'  => 'nullable|date',
-            'placements'    => 'nullable|array',
-            'placements.*'  => 'string|max:100',
         ]);
 
         if ($request->input('media_type') === 'image' && !$portfolioItem->image_path && !$request->hasFile('image')) {
@@ -152,7 +132,6 @@ class PortfolioItemsController extends Controller
 
         $isFeatured = $request->boolean('is_featured');
 
-        // إذا تم تمييز هذا العمل، ألغِ التمييز عن جميع الأعمال الأخرى (باستثناء الحالي)
         if ($isFeatured) {
             PortfolioItem::where('is_featured', true)
                 ->where('id', '!=', $portfolioItem->id)
@@ -186,16 +165,6 @@ class PortfolioItemsController extends Controller
 
         $portfolioItem->update($data);
 
-        $portfolioItem->placements()->delete();
-
-        foreach ($request->input('placements', []) as $index => $placementKey) {
-            $portfolioItem->placements()->create([
-                'placement_key' => $placementKey,
-                'sort_order'    => $index,
-                'is_active'     => true,
-            ]);
-        }
-
         return redirect()
             ->route('admin.portfolio-items.index')
             ->with('message', 'تم تحديث العمل بنجاح.');
@@ -212,15 +181,5 @@ class PortfolioItemsController extends Controller
         return redirect()
             ->route('admin.portfolio-items.index')
             ->with('message', 'تم حذف العمل بنجاح.');
-    }
-
-    private function placementOptions(): array
-    {
-        return [
-            'home_featured'      => 'الرئيسية - أعمال مختارة',
-            'portfolio_main'     => 'صفحة الأعمال الرئيسية',
-            'services_events'    => 'صفحة خدمات الحفلات',
-            'services_marketing' => 'صفحة خدمات الإعلانات',
-        ];
     }
 }

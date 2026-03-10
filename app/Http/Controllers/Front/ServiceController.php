@@ -10,9 +10,6 @@ use Illuminate\View\View;
 
 class ServiceController extends Controller
 {
-    /**
-     * صفحة /services
-     */
     public function index(): View
     {
         $services = [
@@ -31,10 +28,6 @@ class ServiceController extends Controller
         return view('front.services.index', compact('services'));
     }
 
-    /**
-     * صفحة /services/events
-     * يجعل featured في الوسط
-     */
     public function events(): View
     {
         $all = EventPackage::where('is_active', true)
@@ -56,15 +49,14 @@ class ServiceController extends Controller
 
         $travelNote = 'خارج ولاية سيدي بلعباس: تُضاف رسوم تنقل حسب الولاية.';
 
+        // صور عشوائية — بدون تحديد يدوي
         $eventWorks = PortfolioItem::query()
             ->where('is_active', true)
             ->where('service_type', 'event')
-            ->whereHas('placements', function ($q) {
-                $q->where('placement_key', 'services_events')
-                  ->where('is_active', true);
-            })
-            ->orderByDesc('is_featured')
-            ->orderBy('sort_order')
+            ->where('media_type', 'image')
+            ->whereNotNull('image_path')
+            ->inRandomOrder()
+            ->limit(6)
             ->get();
 
         return view('front.services.events', [
@@ -74,9 +66,6 @@ class ServiceController extends Controller
         ]);
     }
 
-    /**
-     * صفحة /services/marketing
-     */
     public function marketing(): View
     {
         $monthly = Adpackage::where('is_active', true)
@@ -91,15 +80,14 @@ class ServiceController extends Controller
             ->orderBy('sort_order')
             ->get();
 
+        // صور عشوائية — بدون تحديد يدوي
         $marketingWorks = PortfolioItem::query()
             ->where('is_active', true)
             ->where('service_type', 'ads')
-            ->whereHas('placements', function ($q) {
-                $q->where('placement_key', 'services_marketing')
-                  ->where('is_active', true);
-            })
-            ->orderByDesc('is_featured')
-            ->orderBy('sort_order')
+            ->where('media_type', 'image')
+            ->whereNotNull('image_path')
+            ->inRandomOrder()
+            ->limit(3)
             ->get();
 
         return view('front.services.marketing', compact('monthly', 'custom', 'marketingWorks'));

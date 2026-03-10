@@ -9,14 +9,13 @@ class HomeController extends Controller
 {
     public function index()
     {
+        // صور عشوائية في كل زيارة — بدون تحديد يدوي
         $homeFeatured = PortfolioItem::query()
             ->where('is_active', true)
-            ->whereHas('placements', function ($q) {
-                $q->where('placement_key', 'home_featured')
-                  ->where('is_active', true);
-            })
-            ->orderByDesc('is_featured')
-            ->orderBy('sort_order')
+            ->where('media_type', 'image')
+            ->whereNotNull('image_path')
+            ->inRandomOrder()
+            ->limit(3)
             ->get();
 
         return view('front.home', compact('homeFeatured'));

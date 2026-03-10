@@ -13,8 +13,6 @@
     </a>
 </div>
 
-
-
 <div class="card db-card">
     <div class="db-card-header">قائمة الأعمال</div>
 
@@ -31,7 +29,6 @@
                         <th>مميز</th>
                         <th>نشط</th>
                         <th>الترتيب</th>
-                        <th>أماكن الظهور</th>
                         <th>إجراءات</th>
                     </tr>
                 </thead>
@@ -63,13 +60,6 @@
                             <td>{{ $item->is_active ? 'نعم' : 'لا' }}</td>
                             <td>{{ $item->sort_order }}</td>
                             <td>
-                                @forelse($item->placements as $placement)
-                                    <span class="badge badge-info">{{ $placement->placement_key }}</span>
-                                @empty
-                                    —
-                                @endforelse
-                            </td>
-                            <td>
                                 <div class="db-actions">
                                     <a href="{{ route('admin.portfolio-items.show', $item->id) }}" class="db-icon-btn db-view-btn" title="عرض">
                                         <i class="fas fa-eye"></i>
@@ -91,7 +81,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="10">
+                            <td colspan="9">
                                 <div class="db-empty">
                                     <i class="fas fa-images"></i>
                                     لا توجد أعمال حاليًا.

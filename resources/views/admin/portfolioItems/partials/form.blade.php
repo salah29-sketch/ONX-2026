@@ -1,5 +1,4 @@
 @php
-    $selectedPlacements = old('placements', isset($portfolioItem) ? $portfolioItem->placements->pluck('placement_key')->toArray() : []);
     $currentMediaType = old('media_type', $portfolioItem->media_type ?? 'image');
 @endphp
 
@@ -180,8 +179,8 @@
         <div class="pf-section-head">
             <div>
                 <div class="pf-section-kicker">الظهور</div>
-                <h2 class="pf-section-title">الترتيب وأماكن الظهور</h2>
-                <p class="pf-section-text">حدّد ترتيب العنصر، حالة النشاط، وأين تريد إظهاره داخل الموقع.</p>
+                <h2 class="pf-section-title">الترتيب والنشر</h2>
+                <p class="pf-section-text">حدّد ترتيب العنصر وحالة نشاطه.</p>
             </div>
         </div>
 
@@ -207,7 +206,7 @@
                     >
                     <span>
                         <strong>مميز</strong>
-                        <small>إظهار العمل كعنصر بارز</small>
+                        <small>إظهار العمل كعنصر بارز في الـ Hero</small>
                     </span>
                 </label>
             </div>
@@ -225,29 +224,6 @@
                         <small>السماح بعرض العمل داخل الموقع</small>
                     </span>
                 </label>
-            </div>
-
-            <div class="col-12">
-                <label class="pf-label mb-3">أماكن الظهور</label>
-
-                <div class="row g-3">
-                    @foreach($placementOptions as $key => $label)
-                        <div class="col-md-6 col-xl-3">
-                            <label class="pf-placement-card">
-                                <input
-                                    type="checkbox"
-                                    name="placements[]"
-                                    value="{{ $key }}"
-                                    {{ in_array($key, $selectedPlacements) ? 'checked' : '' }}
-                                >
-                                <span class="pf-placement-content">
-                                    <strong>{{ $label }}</strong>
-                                    <small>{{ $key }}</small>
-                                </span>
-                            </label>
-                        </div>
-                    @endforeach
-                </div>
             </div>
         </div>
     </section>
