@@ -42,7 +42,7 @@ class BookingService
     }
 
     /**
-     * إيجاد أو إنشاء العميل عند الحجز (يُحفظ في جدول العملاء ويظهر في لوحة التحكم)
+     * إيجاد أو إنشاء العميل عند الحجز
      */
     public function findOrCreateClient(array $data): Client
     {
@@ -53,9 +53,7 @@ class BookingService
             $name = $phone ?: $email ?: 'عميل';
         }
 
-        // البحث بالهاتف أولاً (الأدق)
         $client = $phone ? Client::where('phone', $phone)->first() : null;
-        // إن لم يُوجد، البحث بالبريد
         if (!$client && $email) {
             $client = Client::where('email', $email)->first();
         }
@@ -90,6 +88,9 @@ class BookingService
 
     /**
      * جلب بيانات الباقة والموقع لصفحة التأكيد والـ PDF
+     *
+     * الإصلاح: نتحقق أن الباقة موجودة فعلاً في الجدول الصحيح.
+     * إذا كان service_type = 'ads' لكن package_id يشير لباقة حفل → لا نعرضها.
      */
     public function getBookingMeta(Booking $booking): array
     {
@@ -97,18 +98,27 @@ class BookingService
         $packagePrice = null;
         $package      = null;
 
-        // تحديد الباقة من service_type فقط (لا نستخدم package_type حتى لا تظهر باقة خاطئة)
-        if ($booking->service_type === 'event' && $booking->package_id) {
-            $package = EventPackage::find($booking->package_id);
-            if ($package) {
-                $packageName  = $package->name;
-                $packagePrice = $package->price;
-            }
-        } elseif ($booking->service_type === 'ads' && $booking->package_id) {
-            $package = AdPackage::find($booking->package_id);
-            if ($package) {
-                $packageName  = $package->name;
-                $packagePrice = $package->price ?? $package->price_note;
+        if ($booking->package_id) {
+            if ($booking->service_type === 'event') {
+                // نبحث فقط في event_packages
+                $candidate = EventPackage::find($booking->package_id);
+                if ($candidate) {
+                    $package      = $candidate;
+                    $packageName  = $candidate->name;
+                    $packagePrice = $candidate->price;
+                }
+                // إذا لم يُوجد في event_packages → الباقة غير صحيحة، نتركها فارغة
+
+            } elseif ($booking->service_type === 'ads') {
+                // نبحث فقط في ad_packages
+                $candidate = AdPackage::find($booking->package_id);
+                if ($candidate) {
+                    $package      = $candidate;
+                    $packageName  = $candidate->name;
+                    $packagePrice = $candidate->price ?? $candidate->price_note;
+                }
+                // إذا لم يُوجد في ad_packages → الباقة غير صحيحة، نتركها فارغة
+                // هذا يمنع ظهور باقة حفلات بدل باقة إعلانات
             }
         }
 
