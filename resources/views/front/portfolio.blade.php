@@ -1,7 +1,7 @@
 @extends('layouts.front_tailwind')
 
 @section('title', 'ONX | الأعمال')
-
+@section('meta_description', 'أعمال ONX — نماذج من مشاريعنا في الإعلانات، الفعاليات، والتجارب البصرية. تصوير حفلات وإعلانات تجارية بأسلوب سينمائي.')
 @section('content')
 
 {{-- HERO --}}

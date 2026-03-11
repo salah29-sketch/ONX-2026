@@ -10,6 +10,7 @@ class Booking extends Model
     use HasFactory;
 
     protected $fillable = [
+        'client_id',
         'service_type',
         'name',
         'phone',
@@ -24,6 +25,7 @@ class Booking extends Model
         'package_id',
         'notes',
         'status',
+        'final_video_path',
     ];
 
     protected $casts = [
@@ -47,7 +49,12 @@ class Booking extends Model
         return $this->belongsTo(AdPackage::class, 'package_id');
     }
     public function client()
-{
-    return $this->belongsTo(Client::class);
-}
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function photos()
+    {
+        return $this->hasMany(BookingPhoto::class, 'booking_id')->orderBy('sort_order');
+    }
 }

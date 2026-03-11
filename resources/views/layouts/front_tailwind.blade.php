@@ -3,15 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description" content="@yield('meta_description', 'ONX — إنتاج بصري فاخر للإعلانات والحفلات والمشاريع. تصوير سينمائي، إعلانات تجارية، وتجارب بصرية تترك انطباعًا لا يُنسى.')">
 
     <title>@yield('title', 'ONX')</title>
+
+    {{-- Open Graph --}}
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ar_SA">
+    <meta property="og:site_name" content="ONX">
+    <meta property="og:title" content="@yield('og_title', 'ONX | إنتاج بصري فاخر')">
+    <meta property="og:description" content="@yield('meta_description', 'إنتاج بصري فاخر للإعلانات والحفلات والمشاريع. تصوير سينمائي وإعلانات تجارية.')">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="@yield('og_image', asset('img/events.jpg'))">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    {{-- Twitter Card --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('og_title', 'ONX | إنتاج بصري فاخر')">
+    <meta name="twitter:description" content="@yield('meta_description', 'إنتاج بصري فاخر للإعلانات والحفلات والمشاريع.')">
+    <meta name="twitter:image" content="@yield('og_image', asset('img/events.jpg'))">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css'])
     @vite(['resources/js/app.js'])
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
     <style>
         body { font-family: 'Cairo', sans-serif; }
         [x-cloak] { display: none !important; }
@@ -44,6 +63,7 @@
                     <a href="/" class="transition hover:text-white">الرئيسية</a>
                     <a href="/services" class="transition hover:text-white">الخدمات</a>
                     <a href="/portfolio" class="transition hover:text-white">الأعمال</a>
+                    <a href="/contact" class="transition hover:text-white">تواصل معنا</a>
                     <a href="/booking" class="transition hover:text-white">الحجز</a>
                 </nav>
 
@@ -79,6 +99,7 @@
                         <a href="/" class="rounded-2xl px-4 py-3 text-sm font-bold text-white/80 transition hover:bg-white/5 hover:text-white">الرئيسية</a>
                         <a href="/services" class="rounded-2xl px-4 py-3 text-sm font-bold text-white/80 transition hover:bg-white/5 hover:text-white">الخدمات</a>
                         <a href="/portfolio" class="rounded-2xl px-4 py-3 text-sm font-bold text-white/80 transition hover:bg-white/5 hover:text-white">الأعمال</a>
+                        <a href="/contact" class="rounded-2xl px-4 py-3 text-sm font-bold text-white/80 transition hover:bg-white/5 hover:text-white">تواصل معنا</a>
                         <a href="/booking" class="rounded-2xl px-4 py-3 text-sm font-bold text-white/80 transition hover:bg-white/5 hover:text-white">الحجز</a>
                     </nav>
 
@@ -94,6 +115,13 @@
     </header>
 
     <main>
+        @if($errors->has('throttle'))
+            <div class="sticky top-0 z-40 mx-auto max-w-7xl px-6 py-3 lg:px-8">
+                <div class="rounded-2xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-center text-sm font-bold text-amber-200">
+                    {{ $errors->first('throttle') }}
+                </div>
+            </div>
+        @endif
         @yield('content')
     </main>
 
@@ -116,7 +144,10 @@
                     <li><a href="/" class="transition hover:text-white">الرئيسية</a></li>
                     <li><a href="/services" class="transition hover:text-white">الخدمات</a></li>
                     <li><a href="/portfolio" class="transition hover:text-white">الأعمال</a></li>
+                    <li><a href="/contact" class="transition hover:text-white">تواصل معنا</a></li>
+                    <li><a href="/faq" class="transition hover:text-white">الأسئلة الشائعة</a></li>
                     <li><a href="/booking" class="transition hover:text-white">الحجز</a></li>
+                    <li><a href="{{ route('client.login') }}" class="transition hover:text-white">منطقة العملاء</a></li>
                 </ul>
             </div>
 

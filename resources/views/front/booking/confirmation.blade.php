@@ -359,6 +359,29 @@
                     </a>
                 </div>
             </div>
+
+            <div class="confirm-card p-5 border-orange-500/20 bg-orange-500/5">
+                <h3 class="mb-3 text-sm font-black text-white">منطقة العملاء — بيانات الدخول</h3>
+                <p class="text-sm leading-7 text-white/70">
+                    النظام منحك حساباً لمتابعة طلبك: مشاهدة تفاصيل الحجز، تحميل ومشاهدة صور المشروع، اختيار حتى 200 صورة مميزة للطباعة، والفيديو النهائي. احفظ البيانات أدناه؛ لن تُعرض مرة أخرى.
+                </p>
+                @if(!empty($clientLogin) && !empty($clientPassword))
+                    <div class="mt-4 rounded-2xl border border-orange-500/30 bg-black/30 p-4 space-y-2">
+                        <div class="flex justify-between items-center gap-2">
+                            <span class="text-white/60 text-sm">اسم المستخدم (البريد أو الهاتف):</span>
+                            <strong class="text-orange-300 font-mono">{{ $clientLogin }}</strong>
+                        </div>
+                        <div class="flex justify-between items-center gap-2">
+                            <span class="text-white/60 text-sm">كلمة المرور:</span>
+                            <strong class="text-orange-300 font-mono">{{ $clientPassword }}</strong>
+                        </div>
+                    </div>
+                    <a href="{{ route('client.login') }}" class="mt-4 inline-flex w-full items-center justify-center rounded-full bg-orange-500 px-5 py-3 text-sm font-black text-black hover:bg-orange-400">دخول منطقة العملاء</a>
+                @else
+                    <p class="mt-2 text-xs text-white/60">لديك حساب مسبقاً. سجّل الدخول من الرابط أدناه.</p>
+                    <a href="{{ route('client.login') }}" class="mt-4 inline-flex w-full items-center justify-center rounded-full bg-orange-500 px-5 py-3 text-sm font-black text-black hover:bg-orange-400">دخول منطقة العملاء</a>
+                @endif
+            </div>
         </div>
     </div>
 </section>

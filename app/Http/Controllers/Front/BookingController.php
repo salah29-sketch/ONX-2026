@@ -70,7 +70,7 @@ class BookingController extends Controller
             'phone'        => 'required|string|max:50',
             'email'        => 'nullable|email|max:255',
             'notes'        => 'nullable|string',
-        ];
+            ];
 
         if ($serviceType === 'event') {
             $rules += [
@@ -107,6 +107,19 @@ class BookingController extends Controller
         // إنشاء الحجز
         $booking = $this->bookingService->createBooking($validated, $client);
 
+        // منح العميل كلمة مرور تلقائية إذا لم يكن لديه (تُعرض في صفحة التأكيد وفي PDF)
+        $clientLogin = $client->email ?: $client->phone;
+        if (!$client->password) {
+            $plainPassword = \Illuminate\Support\Str::random(10);
+            $client->password = $plainPassword;
+            $client->save();
+            session()->put('booking_' . $booking->id . '_client_login', $clientLogin);
+            session()->put('booking_' . $booking->id . '_client_password', $plainPassword);
+            return redirect()->route('booking.confirmation', $booking->id)
+                ->with('client_login', $clientLogin)
+                ->with('client_password', $plainPassword);
+        }
+
         return redirect()->route('booking.confirmation', $booking->id);
     }
 
@@ -140,12 +153,16 @@ class BookingController extends Controller
     public function confirmation(Booking $booking)
     {
         $meta = $this->bookingService->getBookingMeta($booking);
+        $clientLogin   = session('client_login') ?: session('booking_' . $booking->id . '_client_login');
+        $clientPassword = session('client_password') ?: session('booking_' . $booking->id . '_client_password');
 
         return view('front.booking.confirmation', [
-            'booking'      => $booking,
-            'packageName'  => $meta['packageName'],
-            'packagePrice' => $meta['packagePrice'],
-            'locationName' => $meta['locationName'],
+            'booking'        => $booking,
+            'packageName'   => $meta['packageName'],
+            'packagePrice'  => $meta['packagePrice'],
+            'locationName'  => $meta['locationName'],
+            'clientLogin'   => $clientLogin,
+            'clientPassword' => $clientPassword,
         ]);
     }
 
@@ -155,13 +172,22 @@ class BookingController extends Controller
     public function pdf(Booking $booking)
     {
         $meta = $this->bookingService->getBookingMeta($booking);
+        $client = $booking->client;
+        $clientLogin   = session('booking_' . $booking->id . '_client_login') ?: session('client_login') ?: ($client ? ($client->email ?: $client->phone) : ($booking->email ?: $booking->phone));
+        $clientPassword = session('booking_' . $booking->id . '_client_password') ?: session('client_password');
 
         $pdf = Pdf::loadView('front.booking.pdf', [
-            'booking'      => $booking,
-            'packageName'  => $meta['packageName'],
-            'packagePrice' => $meta['packagePrice'],
-            'locationName' => $meta['locationName'],
+            'booking'        => $booking,
+            'packageName'   => $meta['packageName'],
+            'packagePrice'  => $meta['packagePrice'],
+            'locationName'  => $meta['locationName'],
+            'clientLogin'   => $clientLogin,
+            'clientPassword' => $clientPassword,
         ]);
+
+        // إزالة كلمة السر من الجلسة بعد تضمينها في PDF (للمرور الواحد فقط)
+        session()->forget('booking_' . $booking->id . '_client_password');
+        session()->forget('booking_' . $booking->id . '_client_login');
 
         return $pdf->download('booking-' . $booking->id . '.pdf');
     }

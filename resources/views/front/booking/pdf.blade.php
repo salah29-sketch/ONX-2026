@@ -281,6 +281,31 @@
             color:#666;
         }
 
+        .client-login-box{
+            margin-top:14px;
+            padding:10px 12px;
+            border:1.5px solid #d65f13;
+            background:#fff9f5;
+            font-size:9px;
+            direction:rtl;
+            text-align:right;
+        }
+
+        .client-login-box .title{
+            font-weight:bold;
+            color:#c9540d;
+            margin-bottom:6px;
+            font-size:10px;
+        }
+
+        .client-login-box .row{
+            margin-bottom:4px;
+        }
+
+        .client-login-box .row:last-child{
+            margin-bottom:0;
+        }
+
         .footer{
             margin-top:11px;
             padding-top:7px;
@@ -503,6 +528,12 @@
             </td>
         </tr>
     </table>
+
+    <div class="client-login-box">
+        <div class="title">منطقة العملاء — بيانات الدخول</div>
+        <div class="row"><strong>اسم المستخدم (البريد أو الهاتف):</strong> {{ $clientLogin ?? '—' }}</div>
+        <div class="row"><strong>كلمة المرور:</strong> {{ $clientPassword ?? '— (تواصل معنا لإعادة التعيين)' }}</div>
+    </div>
 
     <div class="footer">
         <table class="footer-table">

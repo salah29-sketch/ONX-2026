@@ -63,6 +63,31 @@
             </li>
 
             {{-- ═══════════════════════════════════════
+                 الأسئلة الشائعة / آراء العملاء
+            ═══════════════════════════════════════ --}}
+            <li class="nav-item">
+                <a href="{{ route('admin.faqs.index') }}"
+                   class="nav-link {{ request()->is('admin/faqs*') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-question-circle"></i>
+                    الأسئلة الشائعة (FAQ)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.testimonials.index') }}"
+                   class="nav-link {{ request()->is('admin/testimonials*') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-comments"></i>
+                    آراء العملاء
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.client-messages.index') }}"
+                   class="nav-link {{ request()->is('admin/client-messages*') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-envelope"></i>
+                    رسائل العملاء
+                </a>
+            </li>
+
+            {{-- ═══════════════════════════════════════
                  الشركة
             ═══════════════════════════════════════ --}}
             <li class="nav-item nav-dropdown {{ request()->is('admin/company*') ? 'open' : '' }}">

@@ -43,5 +43,6 @@ class Kernel extends HttpKernel
         'bindings'      => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'auth.basic'    => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'only.iframe' => \App\Http\Middleware\OnlyIframe::class,
+        'client.auth' => \App\Http\Middleware\RedirectIfNotClient::class,
     ];
 }

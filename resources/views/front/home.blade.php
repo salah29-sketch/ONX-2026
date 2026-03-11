@@ -1,7 +1,7 @@
 @extends('layouts.front_tailwind')
 
 @section('title', 'ONX | الصفحة الرئيسية')
-
+@section('meta_description', 'ONX — شركة إنتاج بصري متخصصة في الإعلانات، الحفلات، والتغطيات الراقية. أفلام وإعلانات وتجارب بصرية تترك انطباعًا لا يُنسى. احجز مشروعك الآن.')
 @section('content')
 
 {{-- HERO --}}
@@ -321,6 +321,41 @@
             </div>
         </div>
     </div>
+</section>
+
+{{-- آراء العملاء --}}
+<section class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+    <div class="mb-10 text-center">
+        <p class="mb-2 text-[11px] font-extrabold uppercase tracking-[0.25em] text-orange-400">آراء العملاء</p>
+        <h2 class="text-2xl font-black text-white sm:text-3xl">ما قاله من تعاملوا معنا</h2>
+        <p class="mx-auto mt-3 max-w-2xl text-xs leading-7 text-white/65 sm:text-sm">
+            ثقة عملائنا جزء من هوية ONX. نشارككم بعض الانطباعات بعد انتهاء المشاريع.
+        </p>
+    </div>
+
+    @if(isset($testimonials) && $testimonials->isNotEmpty())
+        <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            @foreach($testimonials as $t)
+                <div class="rounded-[24px] border border-white/10 bg-white/5 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.25)] backdrop-blur-xl {{ $loop->last && $testimonials->count() % 3 === 1 ? 'md:col-span-2 xl:col-span-1' : '' }}">
+                    <div class="mb-4 flex gap-1 text-orange-500">
+                        @for($i = 0; $i < (int) $t->rating; $i++)<span>★</span>@endfor
+                    </div>
+                    <p class="text-sm leading-7 text-white/80">{{ $t->content }}</p>
+                    <div class="mt-4 flex items-center gap-3">
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-500/20 text-sm font-black text-orange-400">{{ $t->initial ?: mb_substr($t->client_name, 0, 1) }}</div>
+                        <div>
+                            <span class="block text-sm font-bold text-white">{{ $t->client_role ?: $t->client_name }}</span>
+                            @if($t->subtitle)<span class="text-xs text-white/50">{{ $t->subtitle }}</span>@endif
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <div class="rounded-[24px] border border-white/10 bg-white/5 p-8 text-center text-sm text-white/60">
+            سيتم عرض آراء العملاء هنا بعد إضافتها من لوحة التحكم.
+        </div>
+    @endif
 </section>
 
 {{-- CTA --}}

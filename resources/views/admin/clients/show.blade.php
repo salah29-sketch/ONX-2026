@@ -13,6 +13,18 @@
     </a>
 </div>
 
+@if(session('message'))
+    <div class="alert alert-success mb-4">{{ session('message') }}</div>
+@endif
+
+@if(session('new_password_once'))
+    <div class="alert alert-warning mb-4">
+        <strong>كلمة المرور الجديدة (احفظها، لن تُعرض مرة أخرى):</strong><br>
+        <code class="d-inline-block mt-2 p-2 bg-light rounded">{{ session('new_password_once') }}</code><br>
+        <span class="text-muted small">اسم المستخدم للدخول: {{ session('client_login_identifier') }}</span>
+    </div>
+@endif
+
 <div class="card db-card mb-4">
     <div class="db-card-header">بيانات العميل</div>
 
@@ -51,6 +63,45 @@
     </div>
 </div>
 
+<div class="card db-card mb-4 border-primary">
+    <div class="db-card-header bg-light">الدخول وكلمة المرور</div>
+    <div class="card-body db-card-body">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <strong>كلمة السر:</strong>
+                @if($client->hasPassword())
+                    <span class="badge badge-success">معرّفة</span>
+                @else
+                    <span class="badge badge-secondary">غير معرّفة</span>
+                @endif
+            </div>
+            <div class="col-md-4">
+                <strong>إمكانية الدخول:</strong>
+                @if($client->login_disabled)
+                    <span class="badge badge-danger">معطّل</span>
+                @else
+                    <span class="badge badge-success">مفعّل</span>
+                @endif
+            </div>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <form action="{{ route('admin.clients.toggle-login', $client) }}" method="POST" class="d-inline">
+                @csrf
+                @if($client->login_disabled)
+                    <button type="submit" class="btn btn-success btn-sm">تفعيل الدخول</button>
+                @else
+                    <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('تعطيل دخول هذا العميل؟');">تعطيل الدخول</button>
+                @endif
+            </form>
+            <form action="{{ route('admin.clients.reset-password', $client) }}" method="POST" class="d-inline" onsubmit="return confirm('سيتم إنشاء كلمة مرور جديدة وعرضها مرة واحدة. متابعة؟');">
+                @csrf
+                <button type="submit" class="btn btn-info btn-sm">إعادة تعيين كلمة المرور</button>
+            </form>
+        </div>
+        <p class="text-muted small mt-2 mb-0">كلمات السر مخزّنة مشفّرة ولا يمكن عرضها. استخدم «إعادة تعيين كلمة المرور» لتعيين كلمة جديدة وعرضها مرة واحدة.</p>
+    </div>
+</div>
+
 <div class="card db-card">
     <div class="db-card-header">الحجوزات المرتبطة بهذا العميل</div>
 
@@ -80,8 +131,8 @@
                             <td>
                                 @if($booking->service_type === 'event' && $booking->eventPackage)
                                     {{ $booking->eventPackage->name }}
-                                @elseif($booking->service_type === 'ads' && $booking->adpackage)
-                                    {{ $booking->adpackage->name }}
+                                @elseif($booking->service_type === 'ads' && $booking->adPackage)
+                                    {{ $booking->adPackage->name }}
                                 @else
                                     —
                                 @endif

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\PortfolioItem;
+use App\Models\Testimonial;
 
 class HomeController extends Controller
 {
@@ -18,6 +19,11 @@ class HomeController extends Controller
             ->limit(3)
             ->get();
 
-        return view('front.home', compact('homeFeatured'));
+        $testimonials = Testimonial::where('is_active', true)
+            ->where('status', \App\Models\Testimonial::STATUS_APPROVED)
+            ->inRandomOrder()
+            ->get();
+
+        return view('front.home', compact('homeFeatured', 'testimonials'));
     }
 }

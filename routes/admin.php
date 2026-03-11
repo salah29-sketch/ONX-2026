@@ -14,6 +14,9 @@ use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\PermissionsController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\BookingsCalendarController;
+use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\ClientMessagesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,16 +35,30 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::patch('bookings/{booking}/status',          [BookingsController::class, 'updateStatus'])->name('bookings.updateStatus');
     Route::patch('bookings/{booking}/details',         [BookingsController::class, 'updateDetails'])->name('bookings.updateDetails');
     Route::resource('bookings', BookingsController::class)->only(['index', 'show', 'destroy']);
+    Route::post('bookings/photos', [\App\Http\Controllers\Admin\BookingPhotosController::class, 'store'])->name('bookings.photos.store');
+    Route::delete('bookings/photos/{photo}', [\App\Http\Controllers\Admin\BookingPhotosController::class, 'destroy'])->name('bookings.photos.destroy');
 
     // ─── البورتفوليو ──────────────────────────────────────
     Route::resource('portfolio-items', PortfolioItemsController::class);
+
+    // ─── الأسئلة الشائعة ─────────────────────────────────
+    Route::resource('faqs', FaqController::class)->except(['show']);
+
+    // ─── آراء العملاء ───────────────────────────────────
+    Route::post('testimonials/{testimonial}/approve', [TestimonialController::class, 'approve'])->name('testimonials.approve');
+    Route::post('testimonials/{testimonial}/reject', [TestimonialController::class, 'reject'])->name('testimonials.reject');
+    Route::resource('testimonials', TestimonialController::class)->except(['show']);
 
     // ─── الباقات ──────────────────────────────────────────
     Route::resource('event-packages', EventPackagesController::class);
     Route::resource('ad-packages',    AdPackagesController::class);
 
     // ─── العملاء ──────────────────────────────────────────
+    Route::post('clients/{client}/toggle-login', [ClientsController::class, 'toggleLogin'])->name('clients.toggle-login');
+    Route::post('clients/{client}/reset-password', [ClientsController::class, 'resetPassword'])->name('clients.reset-password');
     Route::resource('clients', ClientsController::class)->only(['index', 'show', 'destroy']);
+    Route::get('client-messages', [ClientMessagesController::class, 'index'])->name('client-messages.index');
+    Route::patch('client-messages/{message}/read', [ClientMessagesController::class, 'markRead'])->name('client-messages.mark-read');
 
     // ─── الموظفون ─────────────────────────────────────────
     Route::delete('employees/destroy', [EmployeesController::class, 'massDestroy'])->name('employees.massDestroy');

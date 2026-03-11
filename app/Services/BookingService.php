@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Booking;
 use App\Models\Client;
 use App\Models\EventPackage;
-use App\Models\Adpackage;
+use App\Models\AdPackage;
 use App\Models\EventLocation;
 
 class BookingService
@@ -42,27 +42,35 @@ class BookingService
     }
 
     /**
-     * إيجاد أو إنشاء العميل
+     * إيجاد أو إنشاء العميل عند الحجز (يُحفظ في جدول العملاء ويظهر في لوحة التحكم)
      */
     public function findOrCreateClient(array $data): Client
     {
-        $client = Client::where('phone', $data['phone'])
-            ->when(!empty($data['email']), function ($query) use ($data) {
-                $query->orWhere('email', $data['email']);
-            })
-            ->first();
+        $phone = trim((string) ($data['phone'] ?? ''));
+        $email = isset($data['email']) ? trim((string) $data['email']) : null;
+        $name  = trim((string) ($data['name'] ?? ''));
+        if ($name === '') {
+            $name = $phone ?: $email ?: 'عميل';
+        }
+
+        // البحث بالهاتف أولاً (الأدق)
+        $client = $phone ? Client::where('phone', $phone)->first() : null;
+        // إن لم يُوجد، البحث بالبريد
+        if (!$client && $email) {
+            $client = Client::where('email', $email)->first();
+        }
 
         if (!$client) {
             $client = Client::create([
-                'name'  => $data['name'],
-                'phone' => $data['phone'],
-                'email' => $data['email'] ?? null,
+                'name'  => $name,
+                'phone' => $phone ?: null,
+                'email' => $email ?: null,
             ]);
         } else {
             $client->update([
-                'name'  => $data['name'],
-                'phone' => $data['phone'],
-                'email' => $data['email'] ?? $client->email,
+                'name'  => $name,
+                'phone' => $phone ?: $client->phone,
+                'email' => $email ?? $client->email,
             ]);
         }
 
@@ -87,20 +95,20 @@ class BookingService
     {
         $packageName  = null;
         $packagePrice = null;
+        $package      = null;
 
-        if ($booking->package_type === EventPackage::class) {
+        // تحديد الباقة من service_type فقط (لا نستخدم package_type حتى لا تظهر باقة خاطئة)
+        if ($booking->service_type === 'event' && $booking->package_id) {
             $package = EventPackage::find($booking->package_id);
             if ($package) {
                 $packageName  = $package->name;
                 $packagePrice = $package->price;
             }
-        }
-
-        if ($booking->package_type === Adpackage::class) {
-            $package = Adpackage::find($booking->package_id);
+        } elseif ($booking->service_type === 'ads' && $booking->package_id) {
+            $package = AdPackage::find($booking->package_id);
             if ($package) {
                 $packageName  = $package->name;
-                $packagePrice = $package->price;
+                $packagePrice = $package->price ?? $package->price_note;
             }
         }
 
@@ -116,6 +124,7 @@ class BookingService
         return [
             'packageName'  => $packageName,
             'packagePrice' => $packagePrice,
+            'package'      => $package,
             'locationName' => $locationName,
         ];
     }

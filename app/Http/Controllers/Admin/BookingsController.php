@@ -43,10 +43,15 @@ class BookingsController extends Controller
 
     public function show(Booking $booking)
     {
-        $booking->load(['client', 'eventLocation', 'eventPackage', 'adpackage']);
+        $booking->load(['client', 'eventLocation', 'eventPackage', 'adPackage', 'photos']);
         $eventLocations = EventLocation::pluck('name', 'id');
+        $clientSelectedPhotos = collect();
+        if ($booking->client) {
+            $selectedIds = $booking->client->selectedPhotos()->whereIn('booking_photo_id', $booking->photos->pluck('id'))->pluck('booking_photo_id');
+            $clientSelectedPhotos = $booking->photos->whereIn('id', $selectedIds);
+        }
 
-        return view('admin.bookings.show', compact('booking', 'eventLocations'));
+        return view('admin.bookings.show', compact('booking', 'eventLocations', 'clientSelectedPhotos'));
     }
 
     public function calendar()
@@ -74,7 +79,10 @@ class BookingsController extends Controller
 
     public function updateDetails(Request $request, Booking $booking)
     {
-        $rules = ['notes' => 'nullable|string'];
+        $rules = [
+            'notes' => 'nullable|string',
+            'final_video_path' => 'nullable|string|max:500',
+        ];
 
         if ($booking->service_type === 'event') {
             $rules += [

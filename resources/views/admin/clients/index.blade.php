@@ -29,6 +29,8 @@
                         <th>الاسم</th>
                         <th>الهاتف</th>
                         <th>البريد الإلكتروني</th>
+                        <th>كلمة السر</th>
+                        <th>الدخول</th>
                         <th>&nbsp;</th>
                     </tr>
                 </thead>
@@ -58,6 +60,8 @@
     { data: 'name', name: 'name' },
     { data: 'phone', name: 'phone' },
     { data: 'email', name: 'email' },
+    { data: 'has_password', name: 'has_password', orderable: false, searchable: false },
+    { data: 'login_disabled', name: 'login_disabled', orderable: false, searchable: false },
     { data: 'actions', name: '{{ trans('global.actions') }}', sortable: false, searchable: false }
 ],
 order: [[0, 'desc']],

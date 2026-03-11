@@ -7,8 +7,9 @@ use App\Http\Requests\MassDestroyClientRequest;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Models\Client;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -19,7 +20,9 @@ class ClientsController extends Controller
         
 
         if ($request->ajax()) {
-            $query = Client::query()->select(sprintf('%s.*', (new Client)->getTable()));
+            $query = Client::query()
+                ->select(sprintf('%s.*', (new Client)->getTable()))
+                ->orderBy('id', 'desc');
             $table = DataTables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -27,26 +30,21 @@ class ClientsController extends Controller
             $table->addColumn('actions', '&nbsp;');
 
             $table->editColumn('actions', function ($row) {
-                $viewGate      = 'client_show';
-                $editGate      = 'client_edit';
-                $deleteGate    = 'client_delete';
-                $crudRoutePart = 'clients';
-
-                return view('partials.datatablesActions', compact(
-                    'viewGate',
-                    'editGate',
-                    'deleteGate',
-                    'crudRoutePart',
-                    'row'
-                ));
+                return view('partials.datatablesActionsClients', ['row' => $row])->render();
             });
 
             $table->editColumn('id', fn($row) => $row->id ?? '');
             $table->editColumn('name', fn($row) => $row->name ?? '');
             $table->editColumn('phone', fn($row) => $row->phone ?? '');
             $table->editColumn('email', fn($row) => $row->email ?? '');
+            $table->addColumn('has_password', function ($row) {
+                return $row->hasPassword() ? '<span class="badge badge-success">معرّفة</span>' : '<span class="badge badge-secondary">غير معرّفة</span>';
+            });
+            $table->addColumn('login_disabled', function ($row) {
+                return $row->login_disabled ? '<span class="badge badge-danger">معطّل</span>' : '<span class="badge badge-success">مفعّل</span>';
+            });
 
-            $table->rawColumns(['actions', 'placeholder']);
+            $table->rawColumns(['actions', 'placeholder', 'has_password', 'login_disabled']);
 
             return $table->make(true);
         }
@@ -87,7 +85,7 @@ class ClientsController extends Controller
 
         $client->load([
             'bookings.eventPackage',
-            'bookings.adpackage',
+            'bookings.adPackage',
             'bookings.eventLocation',
         ]);
 
@@ -96,11 +94,29 @@ class ClientsController extends Controller
 
     public function destroy(Client $client)
     {
-        
-
         $client->delete();
-
         return back()->with('message', 'تم حذف العميل بنجاح.');
+    }
+
+    /** تعطيل أو تفعيل دخول العميل */
+    public function toggleLogin(Client $client)
+    {
+        $client->update(['login_disabled' => !$client->login_disabled]);
+        $label = $client->login_disabled ? 'تم تعطيل دخول العميل.' : 'تم تفعيل دخول العميل.';
+        return back()->with('message', $label);
+    }
+
+    /** إعادة تعيين كلمة المرور (يُعرض مرة واحدة فقط) */
+    public function resetPassword(Client $client)
+    {
+        $newPassword = Str::random(10);
+        $client->password = $newPassword;
+        $client->save();
+        return redirect()
+            ->route('admin.clients.show', $client)
+            ->with('message', 'تم تعيين كلمة مرور جديدة.')
+            ->with('new_password_once', $newPassword)
+            ->with('client_login_identifier', $client->email ?: $client->phone);
     }
 
     public function massDestroy(MassDestroyClientRequest $request)

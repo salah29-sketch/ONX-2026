@@ -188,6 +188,10 @@
                     <label class="db-label">ملاحظات</label>
                     <textarea name="notes" class="form-control db-input" rows="4">{{ $booking->notes }}</textarea>
                 </div>
+                <div class="col-12 mb-3">
+                    <label class="db-label">رابط الفيديو النهائي (يظهر للعميل في منطقة العملاء)</label>
+                    <input type="text" name="final_video_path" value="{{ $booking->final_video_path }}" placeholder="رابط فيديو أو مسار الملف" class="form-control db-input">
+                </div>
             </div>
 
             <div class="db-form-actions">
@@ -228,4 +232,50 @@
         </form>
     </div>
 </div>
+
+<div class="card db-card mt-4">
+    <div class="db-card-header">صور الحجز (العميل يشاهدها ويختار حتى 200 مميزة للطباعة)</div>
+    <div class="card-body db-card-body">
+        <form action="{{ route('admin.bookings.photos.store') }}" method="POST" enctype="multipart/form-data" class="mb-4">
+            @csrf
+            <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+            <div class="form-group">
+                <label class="db-label">رفع صور</label>
+                <input type="file" name="photos[]" multiple accept="image/*" class="form-control">
+            </div>
+            <button type="submit" class="db-btn-primary">رفع</button>
+        </form>
+        @if($booking->photos->isNotEmpty())
+            <div class="row">
+                @foreach($booking->photos as $p)
+                    <div class="col-md-3 col-6 mb-3">
+                        <img src="{{ asset($p->path) }}" alt="صورة" class="img-fluid rounded border">
+                        <form action="{{ route('admin.bookings.photos.destroy', $p) }}" method="POST" class="mt-1" onsubmit="return confirm('حذف الصورة؟');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-outline-danger">حذف</button>
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <p class="text-muted">لا توجد صور بعد. ارفع صور الحجز أعلاه.</p>
+        @endif
+    </div>
+</div>
+
+@if($booking->client && $clientSelectedPhotos->isNotEmpty())
+<div class="card db-card mt-4 border-success">
+    <div class="db-card-header bg-success text-white">ما اختاره العميل للطباعة ({{ $clientSelectedPhotos->count() }})</div>
+    <div class="card-body db-card-body">
+        <div class="row">
+            @foreach($clientSelectedPhotos as $p)
+                <div class="col-md-2 col-4 mb-2">
+                    <a href="{{ asset($p->path) }}" target="_blank"><img src="{{ asset($p->path) }}" alt="مختار" class="img-fluid rounded border border-success"></a>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+@endif
 @endsection

@@ -1,6 +1,6 @@
 @extends('layouts.front_tailwind')
 @section('title', 'الحجز - ONX')
-
+@section('meta_description', 'احجز خدمة التصوير أو الإعلانات مع ONX. اختر باقة الحفلات أو الإعلانات، حدد التاريخ، واتصل بنا. تصوير سينمائي واحترافي.')
 @push('styles')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
@@ -848,6 +848,19 @@
                     <p>• الحفلات تحتاج اختيار يوم متاح قبل الإرسال.</p>
                     <p>• الإعلانات لا تعتمد على التقويم ويمكن إرسالها مباشرة بعد اختيار الباقة.</p>
                     <p>• التأكيد النهائي يتم بعد مراجعة الطلب والتواصل معك.</p>
+                </div>
+            </div>
+
+            {{-- أسئلة شائعة --}}
+            <div class="rounded-[20px] border border-white/10 bg-white/[0.04] p-3 backdrop-blur-xl transition-all duration-500">
+                <div class="mb-2.5 flex items-center justify-between gap-3">
+                    <h3 class="text-sm font-black text-white">أسئلة شائعة</h3>
+                    <a href="/faq" class="text-xs font-extrabold text-orange-400 hover:text-orange-300">عرض الكل</a>
+                </div>
+                <div class="space-y-2 text-xs leading-6 text-white/55">
+                    <p><span class="font-bold text-white/75">• التوفر:</span> للحفلات اختر التاريخ من التقويم لمعرفة الأيام المتاحة.</p>
+                    <p><span class="font-bold text-white/75">• الإعلانات:</span> لا تحتاج تاريخًا—اختر الباقة وأرسل الطلب مباشرة.</p>
+                    <p><span class="font-bold text-white/75">• بعد الإرسال:</span> نتواصل معك لتأكيد التفاصيل والخطوات التالية.</p>
                 </div>
             </div>
         </div>
