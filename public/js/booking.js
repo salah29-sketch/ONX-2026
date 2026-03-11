@@ -2,378 +2,367 @@ document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('bookingFormEl');
   if (!form) return;
 
-  const serviceInput = document.getElementById('service_type');
-  const packageTypeInput = document.getElementById('package_type');
-  const packageIdInput = document.getElementById('package_id');
+  const serviceInput      = document.getElementById('service_type');
+  const packageTypeInput  = document.getElementById('package_type');
+  const packageIdInput    = document.getElementById('package_id');
 
-  const eventSection = document.getElementById('eventPackagesSection');
-  const adsSection = document.getElementById('adsPackagesSection');
-  const eventOnlySection = document.getElementById('eventOnlySection');
-  const adsOnlySection = document.getElementById('adsOnlySection');
-  const calendarCard = document.getElementById('calendarCard');
+  const eventSection      = document.getElementById('eventPackagesSection');
+  const adsSection        = document.getElementById('adsPackagesSection');
+  const eventOnlySection  = document.getElementById('eventOnlySection');
+  const adsOnlySection    = document.getElementById('adsOnlySection');
+  const calendarCard      = document.getElementById('calendarCard');
+  const bookingCard       = document.getElementById('bookingCard');
 
-  const eventDateInput = document.getElementById('event_date');
-  const eventDatePreview = document.getElementById('event_date_preview');
-  const submitBtn = document.getElementById('submitBtn');
-  const submitHelp = document.getElementById('submitHelp');
+  const eventDateInput    = document.getElementById('event_date');
+  const eventDatePreview  = document.getElementById('event_date_preview');
+  const submitBtn         = document.getElementById('submitBtn');
+  const submitHelp        = document.getElementById('submitHelp');
 
-  const statusBox = document.getElementById('onxStatus');
-  const statusText = document.getElementById('onxStatusText');
-  const dot = document.getElementById('onxDot');
+  const statusBox   = document.getElementById('onxStatus');
+  const statusText  = document.getElementById('onxStatusText');
+  const dot         = document.getElementById('onxDot');
 
-  const summaryService = document.getElementById('summaryService');
-  const summaryPackage = document.getElementById('summaryPackage');
-  const summaryDate = document.getElementById('summaryDate');
-  const summaryStatus = document.getElementById('summaryStatus');
+  const summaryService      = document.getElementById('summaryService');
+  const summaryPackage      = document.getElementById('summaryPackage');
+  const summaryDate         = document.getElementById('summaryDate');
+  const summaryStatus       = document.getElementById('summaryStatus');
+  const summaryLocation     = document.getElementById('summaryLocation');
+  const summaryDeadline     = document.getElementById('summaryDeadline');
+  const summaryDateRow      = document.getElementById('summaryDateRow');
+  const summaryLocationRow  = document.getElementById('summaryLocationRow');
+  const summaryDeadlineRow  = document.getElementById('summaryDeadlineRow');
   const packageContextBadge = document.getElementById('packageContextBadge');
 
-  const locationSelect = document.getElementById('event_location_id');
-  const customLocationWrap = document.getElementById('customLocationWrap');
+  const locationSelect      = document.getElementById('event_location_id');
+  const customLocationWrap  = document.getElementById('customLocationWrap');
+  const customLocationInput = document.getElementById('custom_event_location');
+  const deadlineInput       = document.getElementById('deadline');
 
-  const serviceCards = document.querySelectorAll('.onx-service-card');
+  const serviceCards  = document.querySelectorAll('.onx-service-card');
   const packageRadios = document.querySelectorAll('input[name="selected_package"]');
+  const monthSelect   = document.getElementById('calendarMonthSelect');
+  const yearSelect    = document.getElementById('calendarYearSelect');
 
-  const monthSelect = document.getElementById('calendarMonthSelect');
-  const yearSelect = document.getElementById('calendarYearSelect');
 
   const bookedDaysUrl = form.dataset.bookedDaysUrl;
-  const checkDateUrl = form.dataset.checkDateUrl;
+  const checkDateUrl  = form.dataset.checkDateUrl;
 
-  let confirmedDates = [];
-  let pendingDates = [];
-  let currentService = 'event';
+  let confirmedDates    = [];
+  let pendingDates      = [];
+  let currentService    = serviceInput?.value || 'event';
   let currentDateStatus = 'none';
-  let onxFp = null;
+  let onxFp             = null;
 
-  function formatYmdToArabic(ymd) {
+  /* ── helpers ───────────────────────────────────────────────── */
+  function fmt(ymd) {
     if (!ymd) return '';
     const [y, m, d] = ymd.split('-');
     return `${d}/${m}/${y}`;
   }
 
+  function empty(text) {
+    return `<span style="color:rgba(255,255,255,.35)">${text}</span>`;
+  }
+
+  function getCheckedPackage(service) {
+    const sel = document.querySelector('input[name="selected_package"]:checked');
+    if (!sel) return null;
+    if (service && sel.dataset.service !== service) return null;
+    return sel;
+  }
+
+  /* ── status ────────────────────────────────────────────────── */
   function setStatus(type, text) {
     currentDateStatus = type;
-    statusText.textContent = text;
+    if (statusText) statusText.textContent = text;
+    if (statusBox) {
+      statusBox.classList.remove('onx-status-success', 'onx-status-warning', 'onx-status-danger');
+      statusBox.style.borderColor = 'rgba(255,255,255,.10)';
+    }
+    if (dot) dot.style.background = 'rgba(255,255,255,.22)';
 
     if (type === 'available') {
-      statusBox.style.borderColor = 'rgba(25,135,84,.55)';
-      dot.style.background = 'rgba(25,135,84,.92)';
-      summaryStatus.innerHTML = '✅ متاح';
+      statusBox && statusBox.classList.add('onx-status-success');
+      if (dot) dot.style.background = 'rgba(34,197,94,.92)';
+      if (summaryStatus) summaryStatus.innerHTML = '<span style="color:#4ade80">✅ متاح</span>';
     } else if (type === 'pending') {
-      statusBox.style.borderColor = 'rgba(245,158,11,.55)';
-      dot.style.background = 'rgba(245,158,11,.95)';
-      summaryStatus.innerHTML = '🟠 حجز مؤقت';
+      statusBox && statusBox.classList.add('onx-status-warning');
+      if (dot) dot.style.background = 'rgba(245,158,11,.95)';
+      if (summaryStatus) summaryStatus.innerHTML = '<span style="color:#fb923c">🟠 حجز مؤقت</span>';
     } else if (type === 'booked') {
-      statusBox.style.borderColor = 'rgba(239,68,68,.55)';
-      dot.style.background = 'rgba(239,68,68,.92)';
-      summaryStatus.innerHTML = '🔴 محجوز ومؤكد';
+      statusBox && statusBox.classList.add('onx-status-danger');
+      if (dot) dot.style.background = 'rgba(239,68,68,.92)';
+      if (summaryStatus) summaryStatus.innerHTML = '<span style="color:#f87171">🔴 محجوز ومؤكد</span>';
     } else {
-      statusBox.style.borderColor = 'rgba(255,255,255,.10)';
-      dot.style.background = 'rgba(255,255,255,.22)';
-      summaryStatus.innerHTML = '<span class="onx-empty">بانتظار الاختيار</span>';
+      if (summaryStatus) summaryStatus.innerHTML = empty('بانتظار الاختيار');
     }
 
     updateSubmitState();
   }
 
+  /* ── submit state ──────────────────────────────────────────── */
   function updateSubmitState() {
-    const selectedPackage = document.querySelector('input[name="selected_package"]:checked');
-    const hasPackage = !!selectedPackage;
-
+    const hasPkg = !!getCheckedPackage(currentService);
     if (currentService === 'event') {
       const hasDate = !!eventDateInput.value;
-      submitBtn.disabled = !(hasPackage && hasDate && currentDateStatus === 'available');
-      submitHelp.textContent = 'للحفلات: يمكنك اختيار أي تاريخ، لكن لا يمكن الإرسال إلا إذا كان اليوم متاحًا.';
+      submitBtn.disabled = !(hasPkg && hasDate && currentDateStatus === 'available');
+      submitHelp.textContent = !hasPkg
+        ? 'اختر الباقة أولًا للمتابعة.'
+        : !hasDate
+          ? 'اختر يومًا من التقويم لإكمال الحجز.'
+          : currentDateStatus !== 'available'
+            ? 'اليوم المحدد غير متاح. اختر يومًا آخر.'
+            : 'البيانات مكتملة. يمكنك الآن إرسال طلب الحجز.';
     } else {
-      submitBtn.disabled = !hasPackage;
-      submitHelp.textContent = 'للإعلانات: اختر الباقة ثم أكمل البيانات ويمكنك الإرسال مباشرة.';
+      submitBtn.disabled = !hasPkg;
+      submitHelp.textContent = hasPkg
+        ? 'البيانات جاهزة. يمكنك الآن إرسال طلب الإعلان.'
+        : 'اختر الباقة أولًا للمتابعة.';
     }
   }
 
+  /* ── summary ───────────────────────────────────────────────── */
   function updateSummaryPackage() {
-    const selected = document.querySelector('input[name="selected_package"]:checked');
-
-    if (!selected) {
-      summaryPackage.innerHTML = '<span class="onx-empty">لم يتم الاختيار</span>';
-      packageTypeInput.value = '';
-      packageIdInput.value = '';
-      updateSubmitState();
-      return;
+    const sel = getCheckedPackage(currentService);
+    if (!sel) {
+      if (summaryPackage) summaryPackage.innerHTML = empty('لم يتم الاختيار');
+      packageTypeInput.value = ''; packageIdInput.value = '';
+    } else {
+      if (summaryPackage) summaryPackage.textContent = sel.dataset.name || 'تم الاختيار';
+      packageTypeInput.value = sel.dataset.packageType || '';
+      packageIdInput.value   = sel.dataset.packageId   || '';
     }
-
-    summaryPackage.textContent = selected.dataset.name || 'تم الاختيار';
-    packageTypeInput.value = selected.dataset.packageType || '';
-    packageIdInput.value = selected.dataset.packageId || '';
     updateSubmitState();
+  }
+
+  function updateSummaryLocation() {
+    if (!summaryLocation) return;
+    if (currentService !== 'event' || !locationSelect?.value)
+      return void (summaryLocation.innerHTML = empty(currentService !== 'event' ? 'غير مطلوب' : 'غير محدد'));
+    summaryLocation.textContent = locationSelect.value === 'other'
+      ? (customLocationInput?.value?.trim() || 'مكان آخر')
+      : (locationSelect.selectedOptions?.[0]?.textContent?.trim() || 'غير محدد');
+  }
+
+  function updateSummaryDeadline() {
+    if (!summaryDeadline) return;
+    summaryDeadline.innerHTML = deadlineInput?.value ? deadlineInput.value : empty('غير محدد');
   }
 
   function clearOtherServicePackages(service) {
-    packageRadios.forEach((radio) => {
-      if (radio.dataset.service !== service) {
-        radio.checked = false;
-      }
-    });
+    packageRadios.forEach(r => { if (r.dataset.service !== service) r.checked = false; });
     updateSummaryPackage();
   }
 
+  /* ── service mode ──────────────────────────────────────────── */
   function applyServiceMode(type) {
-    currentService = type;
-    serviceInput.value = type;
-
-    serviceCards.forEach((card) => {
-      card.classList.toggle('active', card.dataset.type === type);
-    });
+    currentService = type; serviceInput.value = type;
+    serviceCards.forEach(c => c.classList.toggle('active', c.dataset.type === type));
+    if (bookingCard) bookingCard.classList.toggle('mode-ads', type === 'ads');
 
     if (type === 'event') {
-      eventSection.style.display = '';
-      adsSection.style.display = 'none';
-      eventOnlySection.style.display = '';
-      adsOnlySection.style.display = 'none';
-      calendarCard.style.display = '';
+      eventSection.style.display     = ''; adsSection.style.display       = 'none';
+      eventOnlySection.style.display = ''; adsOnlySection.style.display   = 'none';
+      calendarCard.style.display     = '';
       packageContextBadge.textContent = 'باقات الحفلات';
-      summaryService.textContent = 'حفلات';
-
+      summaryService.textContent      = 'حفلات';
+      if (summaryDateRow)     summaryDateRow.style.display     = '';
+      if (summaryLocationRow) summaryLocationRow.style.display = '';
+      if (summaryDeadlineRow) summaryDeadlineRow.style.display = 'none';
       clearOtherServicePackages('event');
-
-      summaryDate.innerHTML = eventDateInput.value
-        ? formatYmdToArabic(eventDateInput.value)
-        : '<span class="onx-empty">لم يتم الاختيار</span>';
-
-      if (eventDateInput.value) {
-        checkDate(eventDateInput.value);
-      } else {
-        setStatus('none', 'اختر يومًا');
-      }
+      summaryDate.innerHTML = eventDateInput.value ? fmt(eventDateInput.value) : empty('لم يتم الاختيار');
+      updateSummaryLocation();
+      eventDateInput.value ? checkDate(eventDateInput.value) : setStatus('none', 'اختر يومًا');
     } else {
-      eventSection.style.display = 'none';
-      adsSection.style.display = '';
-      eventOnlySection.style.display = 'none';
-      adsOnlySection.style.display = '';
-      calendarCard.style.display = 'none';
-
+      eventSection.style.display     = 'none'; adsSection.style.display       = '';
+      eventOnlySection.style.display = 'none'; adsOnlySection.style.display   = '';
+      calendarCard.style.display     = 'none';
       packageContextBadge.textContent = 'باقات الإعلانات';
-      summaryService.textContent = 'إعلانات';
-
-      eventDateInput.value = '';
-      eventDatePreview.value = '';
-      summaryDate.innerHTML = '<span class="onx-empty">غير مطلوب</span>';
+      summaryService.textContent      = 'إعلانات';
+      eventDateInput.value = ''; if (eventDatePreview) eventDatePreview.value = '';
+      currentDateStatus = 'none';
+      if (onxFp) onxFp.clear();
+      if (summaryDateRow)     summaryDateRow.style.display     = 'none';
+      if (summaryLocationRow) summaryLocationRow.style.display = 'none';
+      if (summaryDeadlineRow) summaryDeadlineRow.style.display = '';
+      summaryDate.innerHTML = empty('غير مطلوب');
+      updateSummaryDeadline();
       setStatus('none', 'غير مطلوب للإعلانات');
-
       clearOtherServicePackages('ads');
-      updateSubmitState();
     }
+    updateSummaryPackage(); updateSubmitState();
   }
 
-  function attachServiceEvents() {
-    serviceCards.forEach((card) => {
-      card.addEventListener('click', function () {
-        applyServiceMode(this.dataset.type);
-      });
-    });
-  }
-
-  function attachPackageEvents() {
-    packageRadios.forEach((radio) => {
-      radio.addEventListener('change', function () {
-        updateSummaryPackage();
-      });
-    });
-  }
-
-  function attachLocationEvents() {
-    if (!locationSelect) return;
-
-    locationSelect.addEventListener('change', function () {
-      if (this.value === 'other') {
-        customLocationWrap.style.display = 'block';
-      } else {
-        customLocationWrap.style.display = 'none';
-        const customInput = document.getElementById('custom_event_location');
-        if (customInput) customInput.value = '';
-      }
-    });
-  }
-
+  /* ── check date ────────────────────────────────────────────── */
   function checkDate(date) {
     if (!date || currentService !== 'event') return;
-
     fetch(`${checkDateUrl}?date=${encodeURIComponent(date)}&service_type=event`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.status === 'booked') {
-          setStatus('booked', 'هذا اليوم محجوز ومؤكد');
-        } else if (data.status === 'pending') {
-          setStatus('pending', 'هذا اليوم محجوز مؤقتًا بانتظار العربون');
-        } else if (data.status === 'available') {
-          setStatus('available', 'هذا اليوم متاح');
-        } else {
-          setStatus('none', 'اختر يومًا');
-        }
+      .then(r => r.json())
+      .then(data => {
+        if      (data.status === 'booked')    setStatus('booked',    'هذا اليوم محجوز ومؤكد');
+        else if (data.status === 'pending')   setStatus('pending',   'هذا اليوم محجوز مؤقتًا');
+        else if (data.status === 'available') setStatus('available', 'هذا اليوم متاح');
+        else                                  setStatus('none',      'اختر يومًا');
       })
       .catch(() => setStatus('none', 'تعذر التحقق من اليوم'));
   }
 
+  /* ── calendar ──────────────────────────────────────────────── */
   function buildCalendar() {
     onxFp = flatpickr('#onxCalendar', {
       inline: true,
       dateFormat: 'Y-m-d',
       minDate: 'today',
       monthSelectorType: 'static',
-      locale: {
-        firstDayOfWeek: 0
+      locale: { firstDayOfWeek: 0 },
+
+      onDayCreate(selectedDates, dateStr, instance, dayElem) {
+        dayElem.classList.remove('today');
       },
 
-      onDayCreate: function (dObj, dStr, fp, dayElem) {
-        const y = dayElem.dateObj.getFullYear();
-        const m = String(dayElem.dateObj.getMonth() + 1).padStart(2, '0');
-        const d = String(dayElem.dateObj.getDate()).padStart(2, '0');
-        const ymd = `${y}-${m}-${d}`;
-
-        if (confirmedDates.includes(ymd)) {
-          dayElem.classList.add('onx-booked-day');
-          dayElem.setAttribute('title', 'Booked');
-        } else if (pendingDates.includes(ymd)) {
-          dayElem.classList.add('onx-pending-day');
-          dayElem.setAttribute('title', 'Pending');
-        }
+      onReady(selectedDates, dateStr, instance) {
+        syncCalendarSelects(instance);
       },
 
-      onReady: function (selectedDates, dateStr, instance) {
-        if (monthSelect) {
-          monthSelect.value = String(instance.currentMonth);
-          monthSelect.dispatchEvent(new Event('change'));
-        }
-        if (yearSelect) {
-          yearSelect.value = String(instance.currentYear);
-          yearSelect.dispatchEvent(new Event('change'));
-        }
+      onMonthChange(selectedDates, dateStr, instance) {
+        syncCalendarSelects(instance);
       },
 
-      onMonthChange: function (selectedDates, dateStr, instance) {
-        if (monthSelect) {
-          monthSelect.value = String(instance.currentMonth);
-          monthSelect.dispatchEvent(new Event('change'));
-        }
-        if (yearSelect) {
-          yearSelect.value = String(instance.currentYear);
-          yearSelect.dispatchEvent(new Event('change'));
-        }
+      onYearChange(selectedDates, dateStr, instance) {
+        syncCalendarSelects(instance);
       },
 
-      onYearChange: function (selectedDates, dateStr, instance) {
-        if (monthSelect) {
-          monthSelect.value = String(instance.currentMonth);
-          monthSelect.dispatchEvent(new Event('change'));
-        }
-        if (yearSelect) {
-          yearSelect.value = String(instance.currentYear);
-          yearSelect.dispatchEvent(new Event('change'));
-        }
-      },
-
-      onChange: function (selectedDates, dateStr) {
+      onChange(selectedDates, dateStr) {
         eventDateInput.value = dateStr;
-        eventDatePreview.value = formatYmdToArabic(dateStr);
-        summaryDate.textContent = formatYmdToArabic(dateStr);
+        if (eventDatePreview) eventDatePreview.value = fmt(dateStr);
+        if (summaryDate) summaryDate.textContent = fmt(dateStr);
         checkDate(dateStr);
-      }
+          }
     });
 
-    if (monthSelect) {
-      monthSelect.addEventListener('change', function () {
-        if (!onxFp) return;
-        const selectedMonth = parseInt(this.value, 10);
-        const diff = selectedMonth - onxFp.currentMonth;
-        if (diff !== 0) onxFp.changeMonth(diff);
-      });
-    }
+    if (monthSelect) monthSelect.addEventListener('change', function () {
+      if (!onxFp) return;
+      const diff = parseInt(this.value, 10) - onxFp.currentMonth;
+      if (diff !== 0) onxFp.changeMonth(diff, false);
+    });
+    if (yearSelect) yearSelect.addEventListener('change', function () {
+      if (!onxFp) return;
+      const y = parseInt(this.value, 10);
+      if (y !== onxFp.currentYear) onxFp.changeYear(y);
+    });
+  }
 
-    if (yearSelect) {
-      yearSelect.addEventListener('change', function () {
-        if (!onxFp) return;
-        const selectedYear = parseInt(this.value, 10);
-        if (selectedYear !== onxFp.currentYear) onxFp.changeYear(selectedYear);
-      });
-    }
+  function syncCalendarSelects(inst) {
+    if (monthSelect) { monthSelect.value = String(inst.currentMonth); syncLabel('calendarMonthSelect'); }
+    if (yearSelect)  { yearSelect.value  = String(inst.currentYear);  syncLabel('calendarYearSelect'); }
+  }
+
+  /* ── custom selects ────────────────────────────────────────── */
+  function syncLabel(id) {
+    const real = document.getElementById(id);
+    const wrap = document.querySelector(`.onx-select[data-select="${id}"]`);
+    if (!real || !wrap) return;
+    const lbl = wrap.querySelector('.onx-select-label');
+    const opts = wrap.querySelectorAll('.onx-select-option');
+    if (!lbl) return;
+    let found = false;
+    opts.forEach(o => {
+      const a = String(o.dataset.value) === String(real.value);
+      o.classList.toggle('selected', a);
+      if (a) { lbl.textContent = o.textContent.trim(); found = true; }
+    });
+    if (!found && real.selectedOptions?.[0]) lbl.textContent = real.selectedOptions[0].textContent.trim();
   }
 
   function initCustomSelects() {
-    const customSelects = document.querySelectorAll('.onx-select');
+    document.querySelectorAll('.onx-select').forEach(wrap => {
+      const real = document.getElementById(wrap.dataset.select);
+      const trig = wrap.querySelector('.onx-select-trigger');
+      const lbl  = wrap.querySelector('.onx-select-label');
+      const opts = wrap.querySelectorAll('.onx-select-option');
+      if (!real || !trig || !lbl || !opts.length) return;
 
-    customSelects.forEach((select) => {
-      const realSelectId = select.dataset.select;
-      const realSelect = document.getElementById(realSelectId);
-      const trigger = select.querySelector('.onx-select-trigger');
-      const label = select.querySelector('.onx-select-label');
-      const options = select.querySelectorAll('.onx-select-option');
-
-      if (!realSelect || !trigger || !label || !options.length) return;
-
-      function syncFromRealSelect() {
-        const currentValue = realSelect.value;
-        const matched = Array.from(options).find((opt) => String(opt.dataset.value) === String(currentValue));
-
-        options.forEach((opt) => opt.classList.remove('selected'));
-
-        if (matched) {
-          matched.classList.add('selected');
-          label.textContent = matched.textContent.trim();
-        }
+      function sync() {
+        const v = real.value; let found = false;
+        opts.forEach(o => {
+          const a = String(o.dataset.value) === String(v);
+          o.classList.toggle('selected', a);
+          if (a) { lbl.textContent = o.textContent.trim(); found = true; }
+        });
+        if (!found && real.selectedOptions?.[0]) lbl.textContent = real.selectedOptions[0].textContent.trim();
       }
-
-      trigger.addEventListener('click', function () {
-        document.querySelectorAll('.onx-select').forEach((other) => {
-          if (other !== select) other.classList.remove('open');
-        });
-        select.classList.toggle('open');
+      trig.addEventListener('click', () => {
+        document.querySelectorAll('.onx-select').forEach(o => o !== wrap && o.classList.remove('open'));
+        wrap.classList.toggle('open');
       });
-
-      options.forEach((opt) => {
-        opt.addEventListener('click', function () {
-          const value = this.dataset.value;
-          realSelect.value = value;
-          realSelect.dispatchEvent(new Event('change', { bubbles: true }));
-          syncFromRealSelect();
-          select.classList.remove('open');
-        });
-      });
-
-      realSelect.addEventListener('change', syncFromRealSelect);
-      syncFromRealSelect();
+      opts.forEach(o => o.addEventListener('click', function () {
+        real.value = this.dataset.value;
+        real.dispatchEvent(new Event('change', { bubbles: true }));
+        sync(); wrap.classList.remove('open');
+      }));
+      real.addEventListener('change', sync);
+      sync();
     });
-
-    document.addEventListener('click', function (e) {
-      if (!e.target.closest('.onx-select')) {
-        document.querySelectorAll('.onx-select').forEach((select) => {
-          select.classList.remove('open');
-        });
-      }
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.onx-select'))
+        document.querySelectorAll('.onx-select').forEach(s => s.classList.remove('open'));
     });
   }
 
+  /* ── location & deadline ───────────────────────────────────── */
+  function attachLocationEvents() {
+    if (!locationSelect) return;
+    const sync = () => {
+      if (customLocationWrap) customLocationWrap.style.display = locationSelect.value === 'other' ? '' : 'none';
+      if (locationSelect.value !== 'other' && customLocationInput) customLocationInput.value = '';
+      updateSummaryLocation();
+    };
+    locationSelect.addEventListener('change', sync);
+    if (customLocationInput) customLocationInput.addEventListener('input', updateSummaryLocation);
+    sync();
+  }
+
+  function attachDeadlineEvents() {
+    if (!deadlineInput) return;
+    ['input','change'].forEach(ev => deadlineInput.addEventListener(ev, updateSummaryDeadline));
+  }
+
+  /* ── booked days ───────────────────────────────────────────── */
   function loadBookedDays() {
     return fetch(`${bookedDaysUrl}?service_type=event`)
-      .then((r) => r.json())
-      .then((data) => {
-        confirmedDates = Array.isArray(data.confirmed_days) ? data.confirmed_days : [];
-        pendingDates = Array.isArray(data.pending_days) ? data.pending_days : [];
+      .then(r => r.json())
+      .then(d => {
+        confirmedDates = Array.isArray(d.confirmed_days) ? d.confirmed_days : [];
+        pendingDates   = Array.isArray(d.pending_days)   ? d.pending_days   : [];
       })
-      .catch(() => {
-        confirmedDates = [];
-        pendingDates = [];
-      });
+      .catch(() => { confirmedDates = []; pendingDates = []; });
   }
 
+  /* ── init ──────────────────────────────────────────────────── */
   initCustomSelects();
-  attachServiceEvents();
-  attachPackageEvents();
   attachLocationEvents();
+  attachDeadlineEvents();
+  serviceCards.forEach(c => c.addEventListener('click', function () { applyServiceMode(this.dataset.type); }));
+  packageRadios.forEach(r => r.addEventListener('change', updateSummaryPackage));
 
   loadBookedDays().then(() => {
     buildCalendar();
-    applyServiceMode('event');
+    applyServiceMode(currentService);
     updateSummaryPackage();
-    summaryDate.innerHTML = '<span class="onx-empty">لم يتم الاختيار</span>';
-    setStatus('none', 'اختر يومًا');
+    updateSummaryLocation();
+    updateSummaryDeadline();
+    if (currentService === 'event') {
+      if (eventDateInput.value) {
+        summaryDate.textContent = fmt(eventDateInput.value);
+        checkDate(eventDateInput.value);
+      } else {
+        summaryDate.innerHTML = empty('لم يتم الاختيار');
+        setStatus('none', 'اختر يومًا');
+      }
+    } else {
+      summaryDate.innerHTML = empty('غير مطلوب');
+      setStatus('none', 'غير مطلوب للإعلانات');
+    }
+    updateSubmitState();
   });
 });
