@@ -103,8 +103,8 @@ document.addEventListener('DOMContentLoaded', function () {
   /* ── submit state ──────────────────────────────────────────── */
   function updateSubmitState() {
     const hasPkg = !!getCheckedPackage(currentService);
+    const hasDate = !!eventDateInput.value;
     if (currentService === 'event') {
-      const hasDate = !!eventDateInput.value;
       submitBtn.disabled = !(hasPkg && hasDate && currentDateStatus === 'available');
       submitHelp.textContent = !hasPkg
         ? 'اختر الباقة أولًا للمتابعة.'
@@ -114,10 +114,12 @@ document.addEventListener('DOMContentLoaded', function () {
             ? 'اليوم المحدد غير متاح. اختر يومًا آخر.'
             : 'البيانات مكتملة. يمكنك الآن إرسال طلب الحجز.';
     } else {
-      submitBtn.disabled = !hasPkg;
-      submitHelp.textContent = hasPkg
-        ? 'البيانات جاهزة. يمكنك الآن إرسال طلب الإعلان.'
-        : 'اختر الباقة أولًا للمتابعة.';
+      submitBtn.disabled = !(hasPkg && hasDate);
+      submitHelp.textContent = !hasPkg
+        ? 'اختر الباقة أولًا للمتابعة.'
+        : !hasDate
+          ? 'اختر يومًا من التقويم (مطلوب للإعلانات أيضًا).'
+          : 'البيانات جاهزة. يمكنك الآن إرسال طلب الإعلان.';
     }
   }
 
@@ -176,18 +178,18 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
       eventSection.style.display     = 'none'; adsSection.style.display       = '';
       eventOnlySection.style.display = 'none'; adsOnlySection.style.display   = '';
-      calendarCard.style.display     = 'none';
+      calendarCard.style.display     = '';
       packageContextBadge.textContent = 'باقات الإعلانات';
       summaryService.textContent      = 'إعلانات';
       eventDateInput.value = ''; if (eventDatePreview) eventDatePreview.value = '';
       currentDateStatus = 'none';
       if (onxFp) onxFp.clear();
-      if (summaryDateRow)     summaryDateRow.style.display     = 'none';
+      if (summaryDateRow)     summaryDateRow.style.display     = '';
       if (summaryLocationRow) summaryLocationRow.style.display = 'none';
       if (summaryDeadlineRow) summaryDeadlineRow.style.display = '';
-      summaryDate.innerHTML = empty('غير مطلوب');
+      summaryDate.innerHTML = empty('لم يتم الاختيار');
       updateSummaryDeadline();
-      setStatus('none', 'غير مطلوب للإعلانات');
+      setStatus('none', 'اختر يومًا من التقويم');
       clearOtherServicePackages('ads');
     }
     updateSummaryPackage(); updateSubmitState();
@@ -195,7 +197,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ── check date ────────────────────────────────────────────── */
   function checkDate(date) {
-    if (!date || currentService !== 'event') return;
+    if (!date) return;
+    if (currentService === 'ads') {
+      setStatus('available', 'تم اختيار اليوم');
+      if (summaryStatus) summaryStatus.innerHTML = '<span style="color:#4ade80">تم اختيار اليوم</span>';
+      updateSubmitState();
+      return;
+    }
     fetch(`${checkDateUrl}?date=${encodeURIComponent(date)}&service_type=event`)
       .then(r => r.json())
       .then(data => {
@@ -237,18 +245,20 @@ document.addEventListener('DOMContentLoaded', function () {
         if (eventDatePreview) eventDatePreview.value = fmt(dateStr);
         if (summaryDate) summaryDate.textContent = fmt(dateStr);
         checkDate(dateStr);
-          }
+      }
     });
 
     if (monthSelect) monthSelect.addEventListener('change', function () {
       if (!onxFp) return;
-      const diff = parseInt(this.value, 10) - onxFp.currentMonth;
-      if (diff !== 0) onxFp.changeMonth(diff, false);
+      const targetMonth = parseInt(this.value, 10);
+      if (targetMonth === onxFp.currentMonth) return;
+      onxFp.changeMonth(targetMonth, false);
     });
     if (yearSelect) yearSelect.addEventListener('change', function () {
       if (!onxFp) return;
       const y = parseInt(this.value, 10);
-      if (y !== onxFp.currentYear) onxFp.changeYear(y);
+      if (y === onxFp.currentYear) return;
+      onxFp.changeYear(y);
     });
   }
 
@@ -360,8 +370,8 @@ document.addEventListener('DOMContentLoaded', function () {
         setStatus('none', 'اختر يومًا');
       }
     } else {
-      summaryDate.innerHTML = empty('غير مطلوب');
-      setStatus('none', 'غير مطلوب للإعلانات');
+      summaryDate.innerHTML = empty('لم يتم الاختيار');
+      setStatus('none', 'اختر يومًا من التقويم');
     }
     updateSubmitState();
   });

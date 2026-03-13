@@ -4,13 +4,17 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\BookingFile;
 use App\Models\ClientMessage;
 use App\Models\BookingPhoto;
 use App\Models\ClientSelectedPhoto;
 use App\Models\Testimonial;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
 class DashboardController extends Controller
 {
@@ -19,23 +23,71 @@ class DashboardController extends Controller
         $this->middleware('client.auth');
     }
 
+    /**
+     * Helper: يرجع العميل الحالي مع type hint صحيح لـ Intelephense
+     */
+    private function client(): \App\Models\Client
+    {
+        /** @var \App\Models\Client $client */
+        $client = Auth::guard('client')->user();
+        return $client;
+    }
+
+    // ─── Dashboard ───────────────────────────────────────────────
+
     public function dashboard()
     {
-        $client = Auth::guard('client')->user();
-        $bookings = $client->bookings()->latest()->take(5)->get();
+        $client         = $this->client();
+        $bookings       = $client->bookings()->with('photos')->latest()->take(5)->get();
         $unreadMessages = $client->messages()->whereNull('admin_read_at')->count();
-        return view('client.dashboard', compact('client', 'bookings', 'unreadMessages'));
+        // الحجز النشط: مؤكد أو قيد التنفيذ؛ إن لم يوجد فأحدث حجز (ليظهر دائماً)
+        $activeBooking  = $client->bookings()
+            ->whereIn('status', ['confirmed', 'in_progress'])
+            ->with(['photos', 'visibleFiles', 'payments'])
+            ->latest()->first();
+        if (!$activeBooking) {
+            $activeBooking = $client->bookings()
+                ->with(['photos', 'visibleFiles', 'payments'])
+                ->latest()->first();
+        }
+        $lastMessage    = $client->messages()->latest()->first();
+        $hasNewFilesOrVideo = $activeBooking && (
+            filled($activeBooking->final_video_path) ||
+            $activeBooking->visibleFiles->isNotEmpty()
+        );
+        // رقم الطلب للعميل: 1، 2، 3... (حسب ترتيب الطلبات)، وليس الـ ID الداخلي
+        $clientOrderMap = $this->clientOrderMap($client);
+
+        return view('client.dashboard', compact(
+            'client', 'bookings', 'unreadMessages', 'activeBooking',
+            'lastMessage', 'hasNewFilesOrVideo', 'clientOrderMap'
+        ));
     }
+
+    /**
+     * خريطة: booking_id => رقم الطلب للعميل (1 = أول طلب، 2 = ثاني طلب، ...)
+     */
+    private function clientOrderMap(\App\Models\Client $client): array
+    {
+        $ids = $client->bookings()->orderBy('created_at')->orderBy('id')->pluck('id');
+        $map = [];
+        foreach ($ids as $i => $id) {
+            $map[$id] = $i + 1;
+        }
+        return $map;
+    }
+
+    // ─── Profile ─────────────────────────────────────────────────
 
     public function profile()
     {
-        $client = Auth::guard('client')->user();
+        $client = $this->client();
         return view('client.profile', compact('client'));
     }
 
     public function updateProfile(Request $request)
     {
-        $client = Auth::guard('client')->user();
+        $client = $this->client();
         $request->validate([
             'name'  => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
@@ -51,7 +103,7 @@ class DashboardController extends Controller
             'current_password' => 'required',
             'password'         => 'required|string|min:6|confirmed',
         ]);
-        $client = Auth::guard('client')->user();
+        $client = $this->client();
         if (!Hash::check($request->current_password, $client->password)) {
             return back()->withErrors(['current_password' => 'كلمة المرور الحالية غير صحيحة.']);
         }
@@ -60,27 +112,213 @@ class DashboardController extends Controller
         return back()->with('success', 'تم تغيير كلمة المرور.');
     }
 
+    // ─── Bookings ────────────────────────────────────────────────
+
     public function bookings()
     {
-        $client = Auth::guard('client')->user();
-        $bookings = $client->bookings()->latest()->paginate(10);
-        return view('client.bookings', compact('bookings'));
+        $client         = $this->client();
+        $bookings       = $client->bookings()->latest()->paginate(10);
+        $clientOrderMap = $this->clientOrderMap($client);
+        return view('client.bookings', compact('bookings', 'clientOrderMap'));
     }
 
     public function bookingDetail(Booking $booking)
     {
-        $client = Auth::guard('client')->user();
-        if ($booking->client_id !== $client->id) {
-            abort(404);
-        }
-        $booking->load('photos');
+        $client = $this->client();
+        if ($booking->client_id !== $client->id) abort(404);
+
+        $booking->load(['photos', 'payments', 'visibleFiles']);
         $meta = app(\App\Services\BookingService::class)->getBookingMeta($booking);
-        return view('client.booking-detail', compact('booking', 'meta'));
+        // رقم الطلب للعميل (1، 2، 3...) وليس الـ ID الداخلي
+        $idx = $client->bookings()->orderBy('created_at')->orderBy('id')->pluck('id')->search($booking->id);
+        $clientOrderNumber = $idx !== false ? $idx + 1 : 1;
+
+        return view('client.booking-detail', compact('booking', 'meta', 'clientOrderNumber'));
     }
+
+    // ─── Payments (صفحة مدفوعاتي) ─────────────────────────────────
+
+    public function payments()
+    {
+        $client         = $this->client();
+        $bookings       = $client->bookings()->with(['payments', 'photos'])->latest()->get();
+        $clientOrderMap = $this->clientOrderMap($client);
+        return view('client.payments', compact('bookings', 'clientOrderMap'));
+    }
+
+    // ─── Media (الميديا: صور + فيديوهات + فلتر) ─────────────────────
+
+    public function media(Request $request)
+    {
+        $client = $this->client();
+        $filter = $request->get('filter', 'all'); // all | images | videos
+
+        $bookingsWithPhotos = $client->bookings()
+            ->whereHas('photos')
+            ->with(['photos' => fn ($q) => $q->orderBy('sort_order')])
+            ->latest()
+            ->get();
+
+        $videoFiles = BookingFile::whereHas('booking', fn ($q) => $q->where('client_id', $client->id))
+            ->where('is_visible', true)
+            ->where('type', 'video')
+            ->with('booking:id,service_type,project_type,event_date')
+            ->orderByDesc('created_at')
+            ->get();
+
+        $otherFiles = BookingFile::whereHas('booking', fn ($q) => $q->where('client_id', $client->id))
+            ->where('is_visible', true)
+            ->whereIn('type', ['pdf', 'zip', 'other'])
+            ->with('booking:id,service_type,project_type')
+            ->orderByDesc('created_at')
+            ->get();
+
+        // مصفوفة مسطحة لمعرض الصور (للاستخدام في Lightbox: الضغط يكبر الصورة + إعجاب)
+        $galleryItems = [];
+        foreach ($bookingsWithPhotos as $booking) {
+            foreach ($booking->photos as $photo) {
+                $galleryItems[] = [
+                    'url'        => asset($photo->path),
+                    'download'   => asset($photo->path),
+                    'booking_id' => $booking->id,
+                    'photo_id'   => $photo->id,
+                ];
+            }
+        }
+        $selectedPhotoIds = $client->selectedPhotos()->pluck('booking_photo_id')->toArray();
+
+        // حجوزات تحتوي على ملفات ظاهرة — للتقسيم حسب الطلب في قسم "الملفات"
+        $bookingsWithFiles = $client->bookings()
+            ->whereHas('visibleFiles')
+            ->with(['visibleFiles' => fn ($q) => $q->orderByDesc('created_at')])
+            ->latest()
+            ->get();
+        $clientOrderMap = $this->clientOrderMap($client);
+
+        return view('client.media', compact(
+            'bookingsWithPhotos',
+            'videoFiles',
+            'otherFiles',
+            'bookingsWithFiles',
+            'clientOrderMap',
+            'filter',
+            'galleryItems',
+            'selectedPhotoIds'
+        ));
+    }
+
+    // ─── Files (ملفاتي — تحميلات PDF/ZIP، يُعاد توجيهها للميديا أو تبقى للتوافق)
+    public function files()
+    {
+        return redirect()->route('client.media', ['filter' => 'videos']);
+    }
+
+    // ─── Invoice PDF ─────────────────────────────────────────────
+
+    public function invoicePdf(Booking $booking)
+    {
+        $client = $this->client();
+        if ($booking->client_id !== $client->id) abort(404);
+
+        $booking->load(['payments', 'eventPackage', 'adPackage', 'eventLocation']);
+        $meta = app(\App\Services\BookingService::class)->getBookingMeta($booking);
+
+        $pdf = Pdf::loadView('client.invoice-pdf', compact('booking', 'meta', 'client'));
+        return $pdf->download('invoice-' . $booking->id . '.pdf');
+    }
+
+    /**
+     * ملخص الحجز للطباعة / التصدير (صفحة طباعة)
+     */
+    public function bookingSummary(Booking $booking)
+    {
+        $client = $this->client();
+        if ($booking->client_id !== $client->id) abort(404);
+
+        $booking->load(['photos', 'payments', 'visibleFiles']);
+        $meta = app(\App\Services\BookingService::class)->getBookingMeta($booking);
+
+        return view('client.booking-summary', compact('booking', 'meta', 'client'));
+    }
+
+    // ─── File Download ───────────────────────────────────────────
+
+    public function downloadFile(BookingFile $file)
+    {
+        $client  = $this->client();
+        $booking = $file->booking;
+
+        if ($booking->client_id !== $client->id) abort(403);
+        if (!$file->is_visible) abort(403);
+
+        // التحقق من الملف
+        if (str_starts_with($file->path, 'storage/')) {
+            $rel = str_replace('storage/', '', $file->path);
+            if (!Storage::disk('public')->exists($rel)) {
+                return back()->withErrors(['file' => 'الملف غير موجود.']);
+            }
+            return Storage::disk('public')->download($rel, $file->label);
+        }
+
+        // مسار مباشر
+        $fullPath = public_path($file->path);
+        if (!file_exists($fullPath)) {
+            return back()->withErrors(['file' => 'الملف غير موجود.']);
+        }
+
+        return response()->download($fullPath, $file->label);
+    }
+
+    // ─── ZIP Download (selected photos) ──────────────────────────
+
+    public function downloadSelectedPhotosZip(Booking $booking)
+    {
+        $client = $this->client();
+        if ($booking->client_id !== $client->id) abort(403);
+
+        $selectedIds = $client->selectedPhotos()
+            ->whereIn('booking_photo_id', $booking->photos->pluck('id'))
+            ->pluck('booking_photo_id');
+
+        $photos = $booking->photos->whereIn('id', $selectedIds);
+
+        if ($photos->isEmpty()) {
+            return back()->withErrors(['zip' => 'لم تختر أي صور بعد.']);
+        }
+
+        // بناء ZIP في storage/temp
+        $zipName = 'photos-booking-' . $booking->id . '-' . time() . '.zip';
+        $zipPath = storage_path('app/tmp/' . $zipName);
+
+        if (!is_dir(storage_path('app/tmp'))) {
+            mkdir(storage_path('app/tmp'), 0755, true);
+        }
+
+        $zip = new ZipArchive();
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            return back()->withErrors(['zip' => 'فشل إنشاء ملف ZIP.']);
+        }
+
+        foreach ($photos as $photo) {
+            $filePath = str_starts_with($photo->path, 'storage/')
+                ? public_path($photo->path)
+                : $photo->path;
+
+            if (file_exists($filePath)) {
+                $zip->addFile($filePath, basename($filePath));
+            }
+        }
+
+        $zip->close();
+
+        return response()->download($zipPath, 'صوري-المميزة.zip')->deleteFileAfterSend(true);
+    }
+
+    // ─── Messages ─────────────────────────────────────────────────
 
     public function messages()
     {
-        $client = Auth::guard('client')->user();
+        $client   = $this->client();
         $messages = $client->messages()->latest()->paginate(15);
         return view('client.messages', compact('messages'));
     }
@@ -91,7 +329,7 @@ class DashboardController extends Controller
             'subject' => 'nullable|string|max:255',
             'message' => 'required|string|max:2000',
         ]);
-        $client = Auth::guard('client')->user();
+        $client = $this->client();
         $client->messages()->create([
             'subject' => $request->subject,
             'message' => $request->message,
@@ -99,8 +337,16 @@ class DashboardController extends Controller
         return back()->with('success', 'تم إرسال رسالتك.');
     }
 
+    // ─── Reviews ──────────────────────────────────────────────────
+
     public function createReview()
     {
+        $client = $this->client();
+        $canReview = $client->bookings()->where('status', 'completed')->exists();
+        if (!$canReview) {
+            return redirect()->route('client.dashboard')
+                ->with('info', 'يمكنك إضافة رأيك بعد اكتمال حجز واحد على الأقل.');
+        }
         return view('client.review-create');
     }
 
@@ -110,7 +356,7 @@ class DashboardController extends Controller
             'content' => 'required|string|max:2000',
             'rating'  => 'required|integer|min:1|max:5',
         ]);
-        $client = Auth::guard('client')->user();
+        $client = $this->client();
         Testimonial::create([
             'client_id'   => $client->id,
             'client_name' => $client->name,
@@ -120,49 +366,66 @@ class DashboardController extends Controller
             'status'      => Testimonial::STATUS_PENDING,
             'is_active'   => false,
         ]);
-        return redirect()->route('client.dashboard')->with('success', 'تم إرسال رأيك. سيظهر في الموقع بعد المصادقة.');
+        return redirect()->route('client.dashboard')
+            ->with('success', 'تم إرسال رأيك. سيظهر في الموقع بعد المصادقة.');
     }
 
-    /** قائمة مشاريعك التي تحتوي على صور (مشاهدة وتحميل واختيار حتى 200 مميزة) */
+    // ─── Project Photos ───────────────────────────────────────────
+
     public function projectPhotos()
     {
-        $client = Auth::guard('client')->user();
-        $bookings = $client->bookings()->whereHas('photos')->latest()->get();
+        $client        = $this->client();
+        $bookings      = $client->bookings()->whereHas('photos')->latest()->get();
         $selectedCount = $client->selectedPhotos()->count();
         return view('client.project-photos', compact('bookings', 'selectedCount'));
     }
 
-    /** صور حجز واحد: مشاهدة، تحميل، اختيار كمميزة (حد 200 إجمالاً) */
     public function projectPhotosBooking(Booking $booking)
     {
-        $client = Auth::guard('client')->user();
-        if ($booking->client_id !== $client->id) {
-            abort(404);
-        }
-        $photos = $booking->photos()->orderBy('sort_order')->get();
-        $selectedIds = $client->selectedPhotos()->pluck('booking_photo_id')->toArray();
+        $client = $this->client();
+        if ($booking->client_id !== $client->id) abort(404);
+
+        $photos        = $booking->photos()->orderBy('sort_order')->get();
+        $selectedIds   = $client->selectedPhotos()->pluck('booking_photo_id')->toArray();
         $selectedCount = $client->selectedPhotos()->count();
-        return view('client.project-photos-booking', compact('booking', 'photos', 'selectedIds', 'selectedCount'));
+
+        return view('client.project-photos-booking',
+            compact('booking', 'photos', 'selectedIds', 'selectedCount'));
     }
 
-    /** تفعيل/إلغاء اختيار صورة كمميزة (الحد 200) */
     public function toggleSelectedPhoto(Request $request)
     {
         $request->validate(['booking_photo_id' => 'required|exists:booking_photos,id']);
-        $client = Auth::guard('client')->user();
-        $photo = BookingPhoto::findOrFail($request->booking_photo_id);
+        $client = $this->client();
+        $photo  = BookingPhoto::findOrFail($request->booking_photo_id);
+
         if ($photo->booking->client_id !== $client->id) {
             return response()->json(['ok' => false], 403);
         }
-        $existing = ClientSelectedPhoto::where('client_id', $client->id)->where('booking_photo_id', $photo->id)->first();
+
+        $existing = ClientSelectedPhoto::where('client_id', $client->id)
+            ->where('booking_photo_id', $photo->id)->first();
+
         if ($existing) {
             $existing->delete();
-            return response()->json(['ok' => true, 'selected' => false, 'count' => $client->selectedPhotos()->count()]);
+            return response()->json([
+                'ok' => true, 'selected' => false,
+                'count' => $client->selectedPhotos()->count(),
+            ]);
         }
+
         if ($client->selectedPhotos()->count() >= 200) {
-            return response()->json(['ok' => false, 'message' => 'الحد الأقصى 200 صورة مميزة.'], 422);
+            return response()->json([
+                'ok'      => false,
+                'message' => 'الحد الأقصى 200 صورة مميزة.',
+            ], 422);
         }
+
         ClientSelectedPhoto::create(['client_id' => $client->id, 'booking_photo_id' => $photo->id]);
-        return response()->json(['ok' => true, 'selected' => true, 'count' => $client->selectedPhotos()->count()]);
+
+        return response()->json([
+            'ok' => true, 'selected' => true,
+            'count' => $client->selectedPhotos()->count(),
+        ]);
     }
 }

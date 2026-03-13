@@ -16,12 +16,12 @@
 
     <div class="mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-20">
         <div class="mx-auto max-w-2xl text-center">
-            <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/70 backdrop-blur">
+            <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/70 opacity-0 backdrop-blur animate-fade-in-up">
                 <span class="h-2 w-2 rounded-full bg-orange-500"></span>
                 ONX • FAQ
             </div>
-            <h1 class="text-3xl font-black text-white sm:text-4xl lg:text-5xl">الأسئلة الشائعة</h1>
-            <p class="mt-4 text-sm leading-7 text-white/70 sm:text-base">
+            <h1 class="text-3xl font-black text-white opacity-0 sm:text-4xl lg:text-5xl animate-fade-in-up animate-delay-100">الأسئلة الشائعة</h1>
+            <p class="mt-4 text-sm leading-7 text-white/70 opacity-0 sm:text-base animate-fade-in-up animate-delay-200">
                 إجابات سريعة تساعدك قبل الحجز. إذا لم تجد جوابًا، تواصل معنا مباشرة.
             </p>
         </div>
@@ -31,9 +31,9 @@
 <section class="mx-auto max-w-7xl px-6 py-14 lg:px-8">
     <div class="mx-auto max-w-3xl space-y-3">
         @if($faqs->isNotEmpty())
-            <div x-data="{ open: null }" class="space-y-3">
+            <div x-data="{ open: null }" class="space-y-3 opacity-0 animate-fade-in-up animate-delay-200">
                 @foreach($faqs as $faq)
-                    <div class="overflow-hidden rounded-[20px] border border-white/10 bg-white/5 backdrop-blur-xl">
+                    <div class="overflow-hidden rounded-[20px] border border-white/10 bg-white/5 backdrop-blur-xl transition duration-300 hover:border-white/20">
                         <button type="button"
                                 @click="open = open === {{ $faq->id }} ? null : {{ $faq->id }}"
                                 class="flex w-full items-center justify-between gap-4 px-5 py-4 text-right">

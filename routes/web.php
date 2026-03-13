@@ -53,6 +53,11 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // FAQ
 Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 
+// صفحة حالة الخدمة (عامة)
+Route::get('/status', function () {
+    return view('front.status');
+})->name('status');
+
 // تواصل معنا (حد الإرسال: 5 رسائل في الدقيقة)
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
@@ -106,5 +111,26 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('project-photos', [\App\Http\Controllers\Client\DashboardController::class, 'projectPhotos'])->name('project-photos');
         Route::get('project-photos/booking/{booking}', [\App\Http\Controllers\Client\DashboardController::class, 'projectPhotosBooking'])->name('project-photos.booking');
         Route::post('project-photos/toggle', [\App\Http\Controllers\Client\DashboardController::class, 'toggleSelectedPhoto'])->name('project-photos.toggle');
-    });
+        Route::get('payments', [\App\Http\Controllers\Client\DashboardController::class, 'payments'])->name('payments');
+        Route::get('media', [\App\Http\Controllers\Client\DashboardController::class, 'media'])->name('media');
+        Route::get('files', [\App\Http\Controllers\Client\DashboardController::class, 'files'])->name('files');
+   // فاتورة PDF
+        Route::get('bookings/{booking}/invoice',
+        [\App\Http\Controllers\Client\DashboardController::class, 'invoicePdf'])
+        ->name('bookings.invoice');
+        Route::get('bookings/{booking}/summary',
+        [\App\Http\Controllers\Client\DashboardController::class, 'bookingSummary'])
+        ->name('bookings.summary');
+
+    // تحميل ملف
+        Route::get('files/{file}/download',
+        [\App\Http\Controllers\Client\DashboardController::class, 'downloadFile'])
+        ->name('files.download');
+
+    // تحميل الصور المميزة ZIP
+        Route::post('project-photos/booking/{booking}/zip',
+        [\App\Http\Controllers\Client\DashboardController::class, 'downloadSelectedPhotosZip'])
+        ->name('project-photos.zip');
+   
+        });
 });

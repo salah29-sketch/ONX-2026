@@ -439,7 +439,7 @@
     <div class="mb-6 text-center">
         <h2 class="text-xl font-black text-white">نظام الحجز</h2>
         <p class="mt-1.5 text-sm text-white/60">
-            للحفلات: اختر التاريخ وتحقق من التوفر. للإعلانات: اختر الباقة وأرسل طلبك مباشرة.
+            للحفلات والإعلانات: اختر يومًا من التقويم، ثم الباقة والتفاصيل.
         </p>
 
         <div class="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs font-bold">
@@ -486,7 +486,7 @@
                             data-type="ads">
                             <span class="svc-icon">📢</span>
                             <h3 class="text-sm font-black text-white">إعلانات</h3>
-                            <p class="mt-1 text-xs text-white/55">اشتراك شهري أو إعلان حسب الطلب بدون الاعتماد على التقويم.</p>
+                            <p class="mt-1 text-xs text-white/55">اشتراك شهري أو إعلان حسب الطلب. يُطلب اختيار يوم من التقويم أيضًا.</p>
                         </button>
                     </div>
                 </div>
@@ -594,26 +594,33 @@
                     </div>
                 </div>
 
-                {{-- 3a. تفاصيل الحفلة --}}
+                {{-- التاريخ (مطلوب للحفلات والإعلانات) — يظهر التقويم دائماً في الشريط الجانبي --}}
+                <div id="dateSection" class="space-y-3">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="text-sm font-extrabold text-white">التاريخ المختار</div>
+                        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-bold text-white/70">مطلوب</span>
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-xs font-bold text-white/70">اختر يومًا من التقويم</label>
+                        <input class="onx-input {{ $errors->has('event_date') ? 'onx-field-error' : '' }}"
+                            id="event_date_preview" placeholder="اختر من التقويم"
+                            value="{{ old('event_date') }}" readonly>
+                        @error('event_date')
+                            <p class="mt-1.5 text-xs font-bold text-red-300">{{ $message }}</p>
+                        @else
+                            <p class="mt-1.5 text-xs text-white/45">الحفلات: تحقق من التوفر. الإعلانات: حدد اليوم المطلوب.</p>
+                        @enderror
+                    </div>
+                </div>
+
+                {{-- 3a. تفاصيل الحفلة (المكان — للحفلات فقط) --}}
                 <div id="eventOnlySection" class="space-y-3" {{ old('service_type', 'event') === 'ads' ? 'style=display:none;' : '' }}>
                     <div class="flex items-center justify-between gap-3">
-                        <div class="text-sm font-extrabold text-white">التاريخ وتفاصيل الحفلة</div>
-                        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-bold text-white/70">مطلوب</span>
+                        <div class="text-sm font-extrabold text-white">مكان الحفل</div>
+                        <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-bold text-white/70">مطلوب للحفلات</span>
                     </div>
 
                     <div class="grid gap-3 md:grid-cols-2">
-                        <div>
-                            <label class="mb-1.5 block text-xs font-bold text-white/70">التاريخ المختار</label>
-                            <input class="onx-input {{ $errors->has('event_date') ? 'onx-field-error' : '' }}"
-                                id="event_date_preview" placeholder="اختر من التقويم"
-                                value="{{ old('event_date') }}" readonly>
-                            @error('event_date')
-                                <p class="mt-1.5 text-xs font-bold text-red-300">{{ $message }}</p>
-                            @else
-                                <p class="mt-1.5 text-xs text-white/45">اختر يومًا من التقويم وستظهر حالة التوفر مباشرة.</p>
-                            @enderror
-                        </div>
-
                         <div>
                             <label class="mb-1.5 block text-xs font-bold text-white/70">مكان الحفل</label>
                             <div class="onx-select" data-select="event_location_id">
@@ -845,32 +852,20 @@
             <div class="rounded-[20px] border border-white/10 bg-white/[0.04] p-3 backdrop-blur-xl transition-all duration-500">
                 <h3 class="mb-2.5 text-sm font-black text-white">ملاحظات سريعة</h3>
                 <div class="space-y-2 text-xs leading-6 text-white/55">
-                    <p>• الحفلات تحتاج اختيار يوم متاح قبل الإرسال.</p>
-                    <p>• الإعلانات لا تعتمد على التقويم ويمكن إرسالها مباشرة بعد اختيار الباقة.</p>
+                    <p>• الحفلات والإعلانات: اختر يومًا من التقويم (مطلوب) ثم الباقة والتفاصيل.</p>
+                    <p>• للحفلات يتم التحقق من توفر اليوم؛ للإعلانات حدد اليوم المطلوب للتسليم أو التصوير.</p>
                     <p>• التأكيد النهائي يتم بعد مراجعة الطلب والتواصل معك.</p>
                 </div>
             </div>
 
-            {{-- أسئلة شائعة --}}
-            <div class="rounded-[20px] border border-white/10 bg-white/[0.04] p-3 backdrop-blur-xl transition-all duration-500">
-                <div class="mb-2.5 flex items-center justify-between gap-3">
-                    <h3 class="text-sm font-black text-white">أسئلة شائعة</h3>
-                    <a href="/faq" class="text-xs font-extrabold text-orange-400 hover:text-orange-300">عرض الكل</a>
-                </div>
-                <div class="space-y-2 text-xs leading-6 text-white/55">
-                    <p><span class="font-bold text-white/75">• التوفر:</span> للحفلات اختر التاريخ من التقويم لمعرفة الأيام المتاحة.</p>
-                    <p><span class="font-bold text-white/75">• الإعلانات:</span> لا تحتاج تاريخًا—اختر الباقة وأرسل الطلب مباشرة.</p>
-                    <p><span class="font-bold text-white/75">• بعد الإرسال:</span> نتواصل معك لتأكيد التفاصيل والخطوات التالية.</p>
-                </div>
             </div>
-        </div>
     </div>
 </section>
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="{{ asset('js/booking.js?v=5') }}"></script>
+<script src="{{ asset('js/booking.js?v=9') }}"></script>
 
 {{-- ملء حقل الملاحظات من URL param إن وُجد --}}
 <script>

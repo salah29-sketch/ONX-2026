@@ -27,53 +27,53 @@
 
     <div class="mx-auto grid min-h-[72vh] max-w-7xl items-center gap-10 px-6 py-14 lg:grid-cols-[1.02fr_.98fr] lg:px-8 lg:py-16">
         <div class="order-2 lg:order-1">
-            <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/70 backdrop-blur">
+            <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/70 opacity-0 backdrop-blur animate-fade-in-up">
                 <span class="h-2 w-2 rounded-full bg-orange-500"></span>
                 ONX • Portfolio
             </div>
 
-            <h1 class="max-w-4xl text-3xl font-black leading-[1.1] text-white sm:text-4xl lg:text-5xl">
+            <h1 class="max-w-4xl text-3xl font-black leading-[1.1] text-white opacity-0 sm:text-4xl lg:text-5xl animate-fade-in-up animate-delay-100">
                 أعمال
                 <span class="text-orange-500">تُرى وتُتذكر</span>
                 <span class="block">وتكشف أسلوبنا في الصورة</span>
             </h1>
 
-            <p class="mt-5 max-w-2xl text-xs leading-7 text-white/70 sm:text-sm">
+            <p class="mt-5 max-w-2xl text-xs leading-7 text-white/70 opacity-0 sm:text-sm animate-fade-in-up animate-delay-200">
                 هنا نستعرض نماذج من مشاريعنا في الإعلانات، الفعاليات، والتجارب البصرية
                 التي صُممت لتكون أنيقة، واضحة، ومؤثرة من أول لقطة إلى آخر frame.
             </p>
 
-            <div class="mt-7 flex flex-wrap gap-3">
+            <div class="mt-7 flex flex-wrap gap-3 opacity-0 animate-fade-in-up animate-delay-300">
                 <a href="#portfolio-grid"
-                   class="inline-flex items-center justify-center rounded-full bg-orange-500 px-6 py-2.5 text-xs font-black text-black transition duration-300 hover:-translate-y-1 hover:bg-orange-400 hover:shadow-[0_0_30px_rgba(249,115,22,0.3)]">
+                   class="inline-flex items-center justify-center rounded-full bg-orange-500 px-6 py-2.5 text-xs font-black text-black transition duration-300 hover:-translate-y-1 hover:bg-orange-400 hover:shadow-[0_0_30px_rgba(249,115,22,0.3)] active:scale-[0.98]">
                     استكشف الأعمال
                 </a>
 
                 <a href="/booking"
-                   class="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-6 py-2.5 text-xs font-extrabold text-white transition duration-300 hover:-translate-y-1 hover:border-orange-500/50 hover:bg-orange-500/10">
+                   class="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-6 py-2.5 text-xs font-extrabold text-white transition duration-300 hover:-translate-y-1 hover:border-orange-500/50 hover:bg-orange-500/10 active:scale-[0.98]">
                     ابدأ مشروعك
                 </a>
             </div>
 
             <div class="mt-7 grid max-w-3xl gap-3 sm:grid-cols-3">
-                <div class="rounded-[18px] border border-white/10 bg-white/5 p-3.5 backdrop-blur-xl">
+                <div class="rounded-[18px] border border-white/10 bg-white/5 p-3.5 opacity-0 backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:border-white/20 animate-fade-in-up animate-delay-400">
                     <div class="text-sm font-black text-white">Visual Impact</div>
                     <div class="mt-1.5 text-[11px] leading-5 text-white/55">مشاريع تعكس حضورًا بصريًا يلفت ويثبت في الذاكرة</div>
                 </div>
 
-                <div class="rounded-[18px] border border-white/10 bg-white/5 p-3.5 backdrop-blur-xl">
+                <div class="rounded-[18px] border border-white/10 bg-white/5 p-3.5 opacity-0 backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:border-white/20 animate-fade-in-up animate-delay-500">
                     <div class="text-sm font-black text-white">Curated Work</div>
                     <div class="mt-1.5 text-[11px] leading-5 text-white/55">أعمال منتقاة تعبّر عن أسلوب ONX في التنفيذ والإخراج</div>
                 </div>
 
-                <div class="rounded-[18px] border border-white/10 bg-white/5 p-3.5 backdrop-blur-xl">
+                <div class="rounded-[18px] border border-white/10 bg-white/5 p-3.5 opacity-0 backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:border-white/20 animate-fade-in-up animate-delay-600">
                     <div class="text-sm font-black text-white">Brand Presence</div>
                     <div class="mt-1.5 text-[11px] leading-5 text-white/55">صورة ترفع قيمة المشروع وتمنحه هيئة تليق به</div>
                 </div>
             </div>
         </div>
 
-        <div class="order-1 lg:order-2">
+        <div class="order-1 lg:order-2 opacity-0 animate-fade-in-up animate-delay-300">
             <div class="relative mx-auto max-w-lg">
                 <div class="absolute -inset-8 rounded-[38px] bg-orange-500/10 blur-3xl"></div>
 
@@ -110,7 +110,7 @@
 {{-- FEATURED --}}
 @if(isset($featuredItems) && $featuredItems->count())
 <section class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-    <div class="mb-8 flex flex-col gap-3 items-center text-center">
+    <div class="mb-8 flex flex-col gap-3 items-center text-center opacity-0 animate-fade-in-up animate-delay-200">
         <div>
             <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.25em] text-orange-400">أعمال مختارة</p>
             <h2 class="text-2xl font-black sm:text-3xl">مشاريع نحب أن تبدأ بها</h2>
@@ -134,10 +134,11 @@
                 }
 
                 $serviceLabel = $categories[$item->service_type] ?? 'أعمال';
+                $stagger = ['animate-delay-300', 'animate-delay-400', 'animate-delay-500'][$loop->index % 3];
             @endphp
 
             <article
-                class="portfolio-card group relative overflow-hidden rounded-[24px] border border-white/10 bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.35)]"
+                class="portfolio-card group relative overflow-hidden rounded-[24px] border border-white/10 bg-white/5 opacity-0 shadow-[0_20px_50px_rgba(0,0,0,0.35)] transition duration-300 hover:-translate-y-1 hover:border-white/20 animate-fade-in-up {{ $stagger }}"
                 data-service="{{ $item->service_type }}"
                 data-title="{{ e($item->title) }}"
                 data-caption="{{ e($item->caption) }}"
@@ -199,7 +200,7 @@
 
 {{-- FILTERS + GRID --}}
 <section id="portfolio-grid" class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div class="mb-8 flex flex-col gap-4 opacity-0 sm:flex-row sm:items-end sm:justify-between animate-fade-in-up animate-delay-200">
         <div>
             <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.25em] text-orange-400">كل الأعمال</p>
             <h2 class="text-2xl font-black sm:text-3xl">نماذج من شغلنا</h2>
@@ -208,7 +209,7 @@
         <button
             id="randomShotBtn"
             type="button"
-            class="inline-flex w-fit rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-extrabold text-white/80 transition hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-white"
+            class="inline-flex w-fit rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-extrabold text-white/80 transition duration-200 hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-white active:scale-[0.98]"
         >
             اختر عملاً عشوائيًا
         </button>
@@ -216,7 +217,7 @@
 
     <div class="mb-8 flex flex-wrap gap-3">
         <button
-            class="filter-btn inline-flex rounded-full bg-orange-500 px-5 py-2.5 text-xs font-black text-black transition"
+            class="filter-btn inline-flex rounded-full bg-orange-500 px-5 py-2.5 text-xs font-black text-black transition duration-200 active:scale-[0.98]"
             type="button"
             data-filter="all"
         >
@@ -225,7 +226,7 @@
 
         @foreach($categories as $key => $label)
             <button
-                class="filter-btn inline-flex rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-xs font-extrabold text-white transition hover:border-orange-500/40 hover:bg-orange-500/10"
+                class="filter-btn inline-flex rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-xs font-extrabold text-white transition duration-200 hover:border-orange-500/40 hover:bg-orange-500/10 active:scale-[0.98]"
                 type="button"
                 data-filter="{{ $key }}"
             >
@@ -250,7 +251,7 @@
                 @endphp
 
                 <article
-                    class="portfolio-card group relative overflow-hidden rounded-[24px] border border-white/10 bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.35)]"
+                    class="portfolio-card group relative overflow-hidden rounded-[24px] border border-white/10 bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.35)] transition duration-300 hover:-translate-y-1 hover:border-white/20"
                     data-service="{{ $item->service_type }}"
                     data-title="{{ e($item->title) }}"
                     data-caption="{{ e($item->caption) }}"

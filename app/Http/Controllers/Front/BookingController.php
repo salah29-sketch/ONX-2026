@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\BookingService;
 use App\Models\EventLocation;
 use App\Models\EventPackage;
-use App\Models\Adpackage;
+use App\Models\AdPackage;
 use App\Models\Booking;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -29,13 +29,13 @@ class BookingController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        $adMonthlyPackages = Adpackage::where('is_active', true)
+        $adMonthlyPackages = AdPackage::where('is_active', true)
             ->where('type', 'monthly')
             ->orderByDesc('is_featured')
             ->orderBy('sort_order')
             ->get();
 
-        $adCustomPackages = Adpackage::where('is_active', true)
+        $adCustomPackages = AdPackage::where('is_active', true)
             ->where('type', 'custom')
             ->orderByDesc('is_featured')
             ->orderBy('sort_order')
@@ -82,6 +82,7 @@ class BookingController extends Controller
 
         if ($serviceType === 'ads') {
             $rules += [
+                'event_date'    => 'required|date|after_or_equal:today',
                 'business_name' => 'nullable|string|max:255',
                 'budget'        => 'nullable|numeric|min:0',
                 'deadline'      => 'nullable|date|after_or_equal:today',

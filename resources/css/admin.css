@@ -18,8 +18,58 @@ table.dataTable{
   font-size:.85rem !important;
 }
 
+/* شريط أدوات الجدول موحد (بدون Show entries) */
 .dataTables_wrapper{
-  padding-top:10px;
+  padding-top:12px;
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_length label{
+  display:none !important;
+}
+
+.dataTables_wrapper .dataTables_filter{
+  margin-bottom:12px;
+}
+
+.dataTables_wrapper .dataTables_filter label{
+  font-weight:600;
+  color:#374151;
+}
+
+.dataTables_wrapper .dataTables_filter input{
+  border-radius:12px;
+  border:1px solid #e5e7eb;
+  padding:8px 14px;
+  margin-right:8px;
+}
+
+.dataTables_wrapper .dt-buttons{
+  margin-bottom:12px;
+}
+
+.dataTables_wrapper .dt-buttons:empty{
+  display:none !important;
+}
+
+.dataTables_wrapper .dt-buttons .btn{
+  border-radius:12px !important;
+  font-weight:600 !important;
+}
+
+.dataTables_wrapper .dataTables_info{
+  padding-top:12px;
+  color:#6b7280;
+  font-size:14px;
+}
+
+.dataTables_wrapper .dataTables_paginate{
+  padding-top:12px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+  border-radius:10px !important;
+  font-weight:600 !important;
 }
 
 /* =========================================================
@@ -44,6 +94,13 @@ table.dataTable{
 .db-page-subtitle{
   color:#6c757d;
   font-size:14px;
+}
+
+.db-page-head-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
 /* =========================================================
@@ -189,6 +246,12 @@ table.dataTable{
   margin-top:20px;
 }
 
+.db-form-actions-lg{
+  margin-top:28px;
+  padding-top:20px;
+  border-top:1px solid #e5e7eb;
+}
+
 /* =========================================================
    BUTTONS
 ========================================================= */
@@ -329,6 +392,142 @@ table.dataTable{
   border-radius:16px;
   padding:16px;
   margin-bottom:18px;
+}
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+.db-dash-row{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:16px;
+  margin-bottom:20px;
+}
+
+@media(max-width:992px){
+  .db-dash-row{ grid-template-columns:repeat(2, 1fr); }
+}
+
+@media(max-width:576px){
+  .db-dash-row{ grid-template-columns:1fr; }
+}
+
+.db-dash-stat{
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+  border:none;
+  overflow:hidden;
+  text-decoration:none !important;
+  color:inherit;
+  display:block;
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+
+.db-dash-stat:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 36px rgba(0,0,0,.08);
+  color:inherit;
+}
+
+.db-dash-stat-body{
+  padding:20px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+
+.db-dash-stat-icon{
+  width:52px;
+  height:52px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.5rem;
+  flex-shrink:0;
+}
+
+.db-dash-stat-icon.primary{ background:rgba(37,99,235,.12); color:#1d4ed8; }
+.db-dash-stat-icon.success{ background:rgba(16,185,129,.12); color:#047857; }
+.db-dash-stat-icon.warning{ background:rgba(245,158,11,.14); color:#b45309; }
+.db-dash-stat-icon.info{ background:rgba(14,165,233,.12); color:#0284c7; }
+.db-dash-stat-icon.danger{ background:rgba(239,68,68,.12); color:#b91c1c; }
+
+.db-dash-stat-num{
+  font-size:1.75rem;
+  font-weight:800;
+  color:#111827;
+  line-height:1.2;
+}
+
+.db-dash-stat-label{
+  font-size:.9rem;
+  font-weight:700;
+  color:#6b7280;
+  margin-top:2px;
+}
+
+.db-dash-alerts{
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:16px;
+  margin-bottom:20px;
+}
+
+@media(max-width:768px){
+  .db-dash-alerts{ grid-template-columns:1fr; }
+}
+
+.db-dash-alert-card{
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+  border:1px solid #e5e7eb;
+  padding:18px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  text-decoration:none !important;
+  color:inherit;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+
+.db-dash-alert-card:hover{
+  border-color:#f97316;
+  box-shadow:0 12px 32px rgba(249,115,22,.08);
+  color:inherit;
+}
+
+.db-dash-alert-card .num{
+  font-size:1.5rem;
+  font-weight:800;
+  color:#111827;
+}
+
+.db-dash-alert-card .label{
+  font-size:.95rem;
+  font-weight:700;
+  color:#374151;
+}
+
+.db-dash-alert-card .go{
+  font-size:.85rem;
+  font-weight:700;
+  color:#f97316;
+}
+
+.db-dash-recent .db-card-body{
+  padding:0;
+}
+
+.db-dash-recent .table{
+  margin:0;
+}
+
+.db-dash-recent .table td{
+  vertical-align:middle;
 }
 
 /* =========================================================

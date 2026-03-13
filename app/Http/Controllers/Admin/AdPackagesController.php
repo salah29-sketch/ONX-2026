@@ -15,12 +15,12 @@ class AdPackagesController extends Controller
             ->latest('id')
             ->paginate(20);
 
-        return view('admin.adPackages.index', compact('adPackages'));
+        return view('admin.ad-packages.index', compact('adPackages'));
     }
 
     public function create()
     {
-        return view('admin.adPackages.create');
+        return view('admin.ad-packages.create');
     }
 
     public function store(Request $request)
@@ -61,14 +61,14 @@ $data['price_note']  = $request->filled('price_note') ? $request->input('price_n
     {
         $adPackage = $ad_package;
 
-        return view('admin.adPackages.show', compact('adPackage'));
+        return view('admin.ad-packages.show', compact('adPackage'));
     }
 
     public function edit(AdPackage $ad_package)
     {
         $adPackage = $ad_package;
 
-        return view('admin.adPackages.edit', compact('adPackage'));
+        return view('admin.ad-packages.edit', compact('adPackage'));
     }
 
     public function update(Request $request, AdPackage $ad_package)

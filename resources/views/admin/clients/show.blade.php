@@ -7,10 +7,16 @@
         <div class="db-page-subtitle">عرض بيانات العميل والحجوزات المرتبطة به.</div>
     </div>
 
-    <a href="{{ route('admin.clients.index') }}" class="db-btn-secondary">
-        <i class="fas fa-arrow-right"></i>
-        رجوع
-    </a>
+    <div class="db-page-head-actions">
+        <a href="{{ route('admin.clients.edit', $client) }}" class="db-btn-primary">
+            <i class="fas fa-edit"></i>
+            تعديل
+        </a>
+        <a href="{{ route('admin.clients.index') }}" class="db-btn-secondary">
+            <i class="fas fa-arrow-right"></i>
+            رجوع
+        </a>
+    </div>
 </div>
 
 @if(session('message'))

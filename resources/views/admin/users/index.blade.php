@@ -1,22 +1,28 @@
 @extends('layouts.admin')
+
 @section('content')
-@can('user_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route("admin.users.create") }}">
-                {{ trans('global.add') }} {{ trans('cruds.user.title_singular') }}
-            </a>
-        </div>
+<div class="db-page-head">
+    <div>
+        <h1 class="db-page-title">{{ trans('cruds.user.title_singular') }}</h1>
+        <div class="db-page-subtitle">{{ trans('cruds.user.title_singular') }} {{ trans('global.list') }}</div>
     </div>
-@endcan
-<div class="card">
-    <div class="card-header">
+    @can('user_create')
+        <a class="db-btn-primary" href="{{ route('admin.users.create') }}">
+            <i class="fas fa-plus"></i>
+            {{ trans('global.add') }} {{ trans('cruds.user.title_singular') }}
+        </a>
+    @endcan
+</div>
+
+<div class="card db-card">
+    <div class="db-card-header">
+        <i class="fas fa-users mr-2"></i>
         {{ trans('cruds.user.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body">
+    <div class="card-body db-card-body">
         <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-User">
+            <table class="table table-bordered table-striped table-hover datatable datatable-User db-table text-center">
                 <thead>
                     <tr>
                         <th width="10">
@@ -66,26 +72,27 @@
                                 @endforeach
                             </td>
                             <td>
-                                @can('user_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.users.show', $user->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
-
-                                @can('user_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.users.edit', $user->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
-
-                                @can('user_delete')
-                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
-
+                                <div class="db-actions">
+                                    @can('user_show')
+                                        <a class="db-icon-btn db-view-btn" href="{{ route('admin.users.show', $user->id) }}" title="{{ trans('global.view') }}">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    @endcan
+                                    @can('user_edit')
+                                        <a class="db-icon-btn db-edit-btn" href="{{ route('admin.users.edit', $user->id) }}" title="{{ trans('global.edit') }}">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    @endcan
+                                    @can('user_delete')
+                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="db-icon-btn db-delete-btn" title="{{ trans('global.delete') }}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endcan
+                                </div>
                             </td>
 
                         </tr>
@@ -93,8 +100,6 @@
                 </tbody>
             </table>
         </div>
-
-
     </div>
 </div>
 @endsection
@@ -135,7 +140,7 @@
 
   $.extend(true, $.fn.dataTable.defaults, {
     order: [[ 1, 'desc' ]],
-    pageLength: 100,
+    pageLength: 25,
   });
   $('.datatable-User:not(.ajaxTable)').DataTable({ buttons: dtButtons })
     $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){

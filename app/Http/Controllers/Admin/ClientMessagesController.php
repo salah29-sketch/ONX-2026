@@ -14,6 +14,15 @@ class ClientMessagesController extends Controller
         return view('admin.client-messages.index', compact('messages'));
     }
 
+    public function show(ClientMessage $message)
+    {
+        $message->load('client');
+        if (!$message->admin_read_at) {
+            $message->update(['admin_read_at' => now()]);
+        }
+        return view('admin.client-messages.show', compact('message'));
+    }
+
     public function markRead(ClientMessage $message)
     {
         $message->update(['admin_read_at' => now()]);

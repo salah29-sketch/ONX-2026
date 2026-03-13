@@ -5,54 +5,22 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\EventPackage;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
 
 class EventPackagesController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        if ($request->ajax()) {
-            $query = EventPackage::query()->select(sprintf('%s.*', (new EventPackage)->getTable()));
-            $table = DataTables::of($query);
+        $eventPackages = EventPackage::orderByDesc('is_featured')
+            ->orderBy('sort_order')
+            ->latest('id')
+            ->paginate(20);
 
-            $table->addColumn('placeholder', '&nbsp;');
-            $table->addColumn('actions', '&nbsp;');
-
-            $table->editColumn('actions', function ($row) {
-                $viewGate = null;
-                $editGate = null;
-                $deleteGate = null;
-                $crudRoutePart = 'event-packages';
-
-                return view('partials.datatablesActions', compact(
-                    'viewGate',
-                    'editGate',
-                    'deleteGate',
-                    'crudRoutePart',
-                    'row'
-                ));
-            });
-
-            $table->editColumn('id', fn ($row) => $row->id ?? '');
-            $table->editColumn('name', fn ($row) => $row->name ?? '');
-            $table->editColumn('subtitle', fn ($row) => $row->subtitle ?? '');
-            $table->editColumn('price', fn ($row) => $row->price !== null ? number_format((float) $row->price, 0) . ' DA' : '');
-            $table->editColumn('old_price', fn ($row) => $row->old_price !== null ? number_format((float) $row->old_price, 0) . ' DA' : '');
-            $table->editColumn('is_featured', fn ($row) => $row->is_featured ? 'Yes' : 'No');
-            $table->editColumn('is_active', fn ($row) => $row->is_active ? 'Yes' : 'No');
-            $table->editColumn('sort_order', fn ($row) => $row->sort_order ?? 0);
-
-            $table->rawColumns(['actions', 'placeholder']);
-
-            return $table->make(true);
-        }
-
-        return view('admin.eventPackages.index');
+        return view('admin.event-packages.index', compact('eventPackages'));
     }
 
     public function create()
     {
-        return view('admin.eventPackages.create');
+        return view('admin.event-packages.create');
     }
 
     public function store(Request $request)
@@ -94,7 +62,7 @@ class EventPackagesController extends Controller
     {
         $eventPackage = $event_package;
 
-        return view('admin.eventPackages.edit', compact('eventPackage'));
+        return view('admin.event-packages.edit', compact('eventPackage'));
     }
 
     public function update(Request $request, EventPackage $event_package)
@@ -140,7 +108,7 @@ class EventPackagesController extends Controller
     {
         $eventPackage = $event_package;
 
-        return view('admin.eventPackages.show', compact('eventPackage'));
+        return view('admin.event-packages.show', compact('eventPackage'));
     }
 
     public function destroy(EventPackage $event_package)

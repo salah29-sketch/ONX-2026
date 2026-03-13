@@ -14,57 +14,57 @@
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,106,0,0.14),transparent_28%),radial-gradient(circle_at_20%_80%,rgba(255,106,0,0.06),transparent_26%)]"></div>
     </div>
 
-    <div class="mx-auto grid min-h-[82vh] max-w-7xl items-center gap-10 px-6 py-14 lg:grid-cols-[1.02fr_.98fr] lg:px-8 lg:py-16">
+    <div class="mx-auto grid min-h-[82vh] max-w-7xl items-center gap-10 px-6 py-14 lg:grid-cols-[1.02fr_.98fr] lg:px-8 lg:py-16" data-reveal>
         <div class="order-2 lg:order-1">
-            <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/70 backdrop-blur">
+            <div class="reveal-item reveal-delay-1 mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/70 backdrop-blur">
                 <span class="h-2 w-2 rounded-full bg-orange-500"></span>
                 ONX • Creative Production
             </div>
 
-            <h1 class="max-w-4xl text-3xl font-black leading-[1.1] text-white sm:text-4xl lg:text-5xl">
+            <h1 class="reveal-item reveal-delay-2 max-w-4xl text-3xl font-black leading-[1.1] text-white sm:text-4xl lg:text-5xl">
                 نصنع
                 <span class="text-orange-500">أفلامًا وإعلانات</span>
                 وتجارب بصرية
                 <span class="block">تترك انطباعًا لا يُنسى</span>
             </h1>
 
-            <p class="mt-5 max-w-2xl text-xs leading-7 text-white/70 sm:text-sm">
+            <p class="reveal-item reveal-delay-3 mt-5 max-w-2xl text-xs leading-7 text-white/70 sm:text-sm">
                 شركة إنتاج بصري متخصصة في الإعلانات، الحفلات، والتغطيات الراقية.
                 نحول الفكرة إلى صورة ذات حضور، ونقدم تنفيذًا يحترم التفاصيل، الإيقاع،
                 والهوية البصرية للمشروع.
             </p>
 
-            <div class="mt-7 flex flex-wrap gap-3">
+            <div class="reveal-item reveal-delay-4 mt-7 flex flex-wrap gap-3">
                 <a href="/booking"
-                   class="inline-flex items-center justify-center rounded-full bg-orange-500 px-6 py-2.5 text-xs font-black text-black transition duration-300 hover:-translate-y-1 hover:bg-orange-400 hover:shadow-[0_0_30px_rgba(249,115,22,0.3)]">
+                   class="inline-flex items-center justify-center rounded-full bg-orange-500 px-6 py-2.5 text-xs font-black text-black transition duration-300 hover:-translate-y-1 hover:bg-orange-400 hover:shadow-[0_0_30px_rgba(249,115,22,0.3)] active:scale-[0.98]">
                     احجز مشروعك
                 </a>
 
                 <a href="/services"
-                   class="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-6 py-2.5 text-xs font-extrabold text-white transition duration-300 hover:-translate-y-1 hover:border-orange-500/50 hover:bg-orange-500/10">
+                   class="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-6 py-2.5 text-xs font-extrabold text-white transition duration-300 hover:-translate-y-1 hover:border-orange-500/50 hover:bg-orange-500/10 active:scale-[0.98]">
                     اكتشف الخدمات
                 </a>
             </div>
 
             <div class="mt-7 grid max-w-3xl gap-3 sm:grid-cols-3">
-                <div class="rounded-[18px] border border-white/10 bg-white/5 p-3.5 backdrop-blur-xl">
+                <div class="reveal-card reveal-delay-5 rounded-[18px] border border-white/10 bg-white/5 p-3.5 backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:border-white/20">
                     <div class="text-sm font-black text-white">Cinema Look</div>
                     <div class="mt-1.5 text-[11px] leading-5 text-white/55">لقطات محسوبة وهوية بصرية ذات مزاج سينمائي</div>
                 </div>
 
-                <div class="rounded-[18px] border border-white/10 bg-white/5 p-3.5 backdrop-blur-xl">
+                <div class="reveal-card reveal-delay-6 rounded-[18px] border border-white/10 bg-white/5 p-3.5 backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:border-white/20">
                     <div class="text-sm font-black text-white">Precise Flow</div>
                     <div class="mt-1.5 text-[11px] leading-5 text-white/55">تنفيذ منظم من الفكرة إلى التسليم بدون فوضى</div>
                 </div>
 
-                <div class="rounded-[18px] border border-white/10 bg-white/5 p-3.5 backdrop-blur-xl">
+                <div class="reveal-card reveal-delay-7 rounded-[18px] border border-white/10 bg-white/5 p-3.5 backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:border-white/20">
                     <div class="text-sm font-black text-white">Brand Impact</div>
                     <div class="mt-1.5 text-[11px] leading-5 text-white/55">صورة ترفع قيمة البراند وتترك أثرًا واضحًا</div>
                 </div>
             </div>
         </div>
 
-        <div class="order-1 lg:order-2">
+        <div class="reveal-card reveal-delay-4 order-1 lg:order-2">
             <div class="relative mx-auto max-w-lg">
                 <div class="absolute -inset-8 rounded-[38px] bg-orange-500/10 blur-3xl"></div>
 
@@ -100,9 +100,9 @@
 </section>
 
 {{-- ABOUT --}}
-<section class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+<section class="mx-auto max-w-7xl px-6 py-16 lg:px-8" data-reveal>
     <div class="grid gap-6 lg:grid-cols-[1.08fr_.92fr]">
-        <div class="relative overflow-hidden rounded-[28px] border border-white/10 bg-white/5 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.3)] backdrop-blur-xl sm:p-7">
+        <div class="reveal-card reveal-delay-1 relative overflow-hidden rounded-[28px] border border-white/10 bg-white/5 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.3)] backdrop-blur-xl sm:p-7">
             <div class="absolute -left-20 top-10 h-36 w-36 rounded-full bg-orange-500/10 blur-3xl"></div>
             <div class="relative">
                 <p class="mb-3 text-[11px] font-extrabold uppercase tracking-[0.25em] text-orange-400">
@@ -121,7 +121,7 @@
         </div>
 
         <div class="grid gap-4">
-            <div class="rounded-[22px] border border-white/10 bg-white/5 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.22)]">
+            <div class="reveal-card reveal-delay-2 rounded-[22px] border border-white/10 bg-white/5 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.22)] transition duration-300 hover:-translate-y-0.5 hover:border-white/20">
                 <div class="mb-2.5 text-2xl">🎬</div>
                 <h3 class="text-base font-black">رؤية سينمائية</h3>
                 <p class="mt-2 text-xs leading-6 text-white/65">
@@ -129,7 +129,7 @@
                 </p>
             </div>
 
-            <div class="rounded-[22px] border border-white/10 bg-white/5 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.22)]">
+            <div class="reveal-card reveal-delay-3 rounded-[22px] border border-white/10 bg-white/5 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.22)] transition duration-300 hover:-translate-y-0.5 hover:border-white/20">
                 <div class="mb-2.5 text-2xl">⚡</div>
                 <h3 class="text-base font-black">تنفيذ احترافي</h3>
                 <p class="mt-2 text-xs leading-6 text-white/65">
@@ -141,8 +141,8 @@
 </section>
 
 {{-- SERVICES --}}
-<section class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-    <div class="mb-8 text-center">
+<section class="mx-auto max-w-7xl px-6 py-16 lg:px-8" data-reveal>
+    <div class="reveal-item reveal-delay-1 mb-8 text-center">
         <p class="mb-2 text-[11px] font-extrabold uppercase tracking-[0.25em] text-orange-400">الخدمات</p>
         <h2 class="text-2xl font-black sm:text-3xl">حلول بصرية تُبنى لتُلفت وتُقنع</h2>
         <p class="mx-auto mt-3 max-w-2xl text-xs leading-7 text-white/65 sm:text-sm">
@@ -152,7 +152,7 @@
 
     <div class="grid gap-5 lg:grid-cols-2">
         <a href="/services/events"
-           class="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.32)] transition duration-500 hover:-translate-y-2 hover:border-orange-500/30">
+           class="reveal-card reveal-delay-2 group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.32)] transition duration-500 hover:-translate-y-2 hover:border-orange-500/30">
             <div class="absolute inset-0">
                 <img src="{{ asset('img/events.jpg') }}"
                      alt="تصوير الحفلات"
@@ -176,7 +176,7 @@
         </a>
 
         <a href="/services/marketing"
-           class="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.32)] transition duration-500 hover:-translate-y-2 hover:border-orange-500/30">
+           class="reveal-card reveal-delay-3 group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.32)] transition duration-500 hover:-translate-y-2 hover:border-orange-500/30">
             <div class="absolute inset-0">
                 <img src="{{ asset('img/marketing.jpg') }}"
                      alt="الإعلانات"
@@ -202,15 +202,15 @@
 </section>
 
 {{-- SHOWCASE --}}
-<section class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-    <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+<section class="mx-auto max-w-7xl px-6 py-16 lg:px-8" data-reveal>
+    <div class="reveal-item reveal-delay-1 mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
             <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.25em] text-orange-400">لقطات من الروح</p>
             <h2 class="text-2xl font-black sm:text-3xl">أعمال لا تكتفي بأن تبدو جميلة</h2>
         </div>
 
         <a href="/portfolio"
-           class="inline-flex w-fit rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-extrabold text-white/80 transition hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-white">
+           class="inline-flex w-fit rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-xs font-extrabold text-white/80 transition duration-200 hover:border-orange-500/40 hover:bg-orange-500/10 hover:text-white active:scale-[0.98]">
             شاهد الأعمال
         </a>
     </div>
@@ -228,9 +228,10 @@
                     }
 
                     $serviceLabel = $item->service_type === 'ads' ? 'BRAND WORK' : 'EVENT STORY';
+                    $stagger = ['reveal-delay-2', 'reveal-delay-3', 'reveal-delay-4'][$loop->index % 3];
                 @endphp
 
-                <div class="group relative overflow-hidden rounded-[24px] border border-white/10 bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
+                <div class="reveal-card {{ $stagger }} group relative overflow-hidden rounded-[24px] border border-white/10 bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.35)] transition duration-300 hover:-translate-y-1 hover:border-white/20">
                     <div class="relative h-[320px] w-full overflow-hidden">
                         @if($coverImage)
                             <img src="{{ $coverImage }}"
@@ -280,15 +281,15 @@
 </section>
 
 {{-- WHY ONX --}}
-<section class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-    <div class="rounded-[30px] border border-white/10 bg-white/5 p-6 shadow-[0_25px_70px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-7">
+<section class="mx-auto max-w-7xl px-6 py-16 lg:px-8" data-reveal>
+    <div class="reveal-card reveal-delay-1 rounded-[30px] border border-white/10 bg-white/5 p-6 shadow-[0_25px_70px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-7">
         <div class="mb-7 text-center">
             <p class="mb-2 text-[11px] font-extrabold uppercase tracking-[0.25em] text-orange-400">لماذا ONX</p>
             <h2 class="text-2xl font-black sm:text-3xl">لأن النتيجة النهائية يجب أن تبدو بمستوى يليق بك</h2>
         </div>
 
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <div class="rounded-[20px] border border-white/10 bg-black/20 p-4">
+            <div class="rounded-[20px] border border-white/10 bg-black/20 p-4 transition duration-300 hover:-translate-y-0.5 hover:border-white/20">
                 <div class="mb-2.5 text-2xl">🎥</div>
                 <h3 class="text-sm font-black">زاوية نظر مدروسة</h3>
                 <p class="mt-2 text-xs leading-6 text-white/65">
@@ -296,7 +297,7 @@
                 </p>
             </div>
 
-            <div class="rounded-[20px] border border-white/10 bg-black/20 p-4">
+            <div class="rounded-[20px] border border-white/10 bg-black/20 p-4 transition duration-300 hover:-translate-y-0.5 hover:border-white/20">
                 <div class="mb-2.5 text-2xl">🧠</div>
                 <h3 class="text-sm font-black">فهم الهدف</h3>
                 <p class="mt-2 text-xs leading-6 text-white/65">
@@ -304,7 +305,7 @@
                 </p>
             </div>
 
-            <div class="rounded-[20px] border border-white/10 bg-black/20 p-4">
+            <div class="rounded-[20px] border border-white/10 bg-black/20 p-4 transition duration-300 hover:-translate-y-0.5 hover:border-white/20">
                 <div class="mb-2.5 text-2xl">⚙️</div>
                 <h3 class="text-sm font-black">تنفيذ منظم</h3>
                 <p class="mt-2 text-xs leading-6 text-white/65">
@@ -312,7 +313,7 @@
                 </p>
             </div>
 
-            <div class="rounded-[20px] border border-white/10 bg-black/20 p-4">
+            <div class="rounded-[20px] border border-white/10 bg-black/20 p-4 transition duration-300 hover:-translate-y-0.5 hover:border-white/20">
                 <div class="mb-2.5 text-2xl">🔥</div>
                 <h3 class="text-sm font-black">حضور بصري قوي</h3>
                 <p class="mt-2 text-xs leading-6 text-white/65">
@@ -324,8 +325,8 @@
 </section>
 
 {{-- آراء العملاء --}}
-<section class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-    <div class="mb-10 text-center">
+<section class="mx-auto max-w-7xl px-6 py-16 lg:px-8" data-reveal>
+    <div class="reveal-item reveal-delay-1 mb-10 text-center">
         <p class="mb-2 text-[11px] font-extrabold uppercase tracking-[0.25em] text-orange-400">آراء العملاء</p>
         <h2 class="text-2xl font-black text-white sm:text-3xl">ما قاله من تعاملوا معنا</h2>
         <p class="mx-auto mt-3 max-w-2xl text-xs leading-7 text-white/65 sm:text-sm">
@@ -336,7 +337,8 @@
     @if(isset($testimonials) && $testimonials->isNotEmpty())
         <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             @foreach($testimonials as $t)
-                <div class="rounded-[24px] border border-white/10 bg-white/5 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.25)] backdrop-blur-xl {{ $loop->last && $testimonials->count() % 3 === 1 ? 'md:col-span-2 xl:col-span-1' : '' }}">
+                @php $d = [ 'reveal-delay-2', 'reveal-delay-3', 'reveal-delay-4', 'reveal-delay-3', 'reveal-delay-4', 'reveal-delay-5' ][$loop->index % 6]; @endphp
+                <div class="reveal-card {{ $d }} rounded-[24px] border border-white/10 bg-white/5 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.25)] backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:border-white/20 {{ $loop->last && $testimonials->count() % 3 === 1 ? 'md:col-span-2 xl:col-span-1' : '' }}">
                     <div class="mb-4 flex gap-1 text-orange-500">
                         @for($i = 0; $i < (int) $t->rating; $i++)<span>★</span>@endfor
                     </div>
@@ -359,8 +361,8 @@
 </section>
 
 {{-- CTA --}}
-<section class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-    <div class="relative overflow-hidden rounded-[30px] border border-orange-500/20 bg-gradient-to-br from-orange-500/12 via-white/5 to-white/5 p-7 shadow-[0_30px_90px_rgba(0,0,0,0.4)] sm:p-9">
+<section class="mx-auto max-w-7xl px-6 py-16 lg:px-8" data-reveal>
+    <div class="reveal-card reveal-delay-1 relative overflow-hidden rounded-[30px] border border-orange-500/20 bg-gradient-to-br from-orange-500/12 via-white/5 to-white/5 p-7 shadow-[0_30px_90px_rgba(0,0,0,0.4)] sm:p-9">
         <div class="absolute -left-24 top-1/2 h-52 w-52 -translate-y-1/2 rounded-full bg-orange-500/10 blur-3xl"></div>
         <div class="absolute -right-16 top-0 h-36 w-36 rounded-full bg-white/5 blur-3xl"></div>
 
@@ -376,12 +378,12 @@
 
             <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
                 <a href="/booking"
-                   class="inline-flex rounded-full bg-orange-500 px-6 py-3 text-xs font-black text-black transition duration-300 hover:-translate-y-1 hover:bg-orange-400 hover:shadow-[0_0_30px_rgba(249,115,22,0.35)]">
+                   class="inline-flex rounded-full bg-orange-500 px-6 py-3 text-xs font-black text-black transition duration-300 hover:-translate-y-1 hover:bg-orange-400 hover:shadow-[0_0_30px_rgba(249,115,22,0.35)] active:scale-[0.98]">
                     احجز الآن
                 </a>
 
                 <a href="https://wa.me/213540573518" target="_blank"
-                   class="inline-flex rounded-full border border-white/15 bg-white/5 px-6 py-3 text-xs font-extrabold text-white transition duration-300 hover:-translate-y-1 hover:border-orange-500/50 hover:bg-orange-500/10">
+                   class="inline-flex rounded-full border border-white/15 bg-white/5 px-6 py-3 text-xs font-extrabold text-white transition duration-300 hover:-translate-y-1 hover:border-orange-500/50 hover:bg-orange-500/10 active:scale-[0.98]">
                     واتساب
                 </a>
             </div>

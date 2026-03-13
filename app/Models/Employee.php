@@ -41,12 +41,4 @@ class Employee extends Model implements HasMedia
         return $this->getFirstMedia('photo');
     }
 
-    // ─── Relations ───────────────────────────────────────────
-    // ✅ مستخدمة في الواجهة الأمامية (main.blade.php)
-    public function services()
-    {
-        return $this->belongsToMany(Service::class);
-    }
-
-    // ❌ تم حذف: appointments() — غير مستخدمة بعد حذف Appointments
 }

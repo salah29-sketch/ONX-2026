@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Models\EventPackage;
-use App\Models\Adpackage;
+use App\Models\AdPackage;
 use App\Models\PortfolioItem;
 use Illuminate\View\View;
 
@@ -68,13 +68,13 @@ class ServiceController extends Controller
 
     public function marketing(): View
     {
-        $monthly = Adpackage::where('is_active', true)
+        $monthly = AdPackage::where('is_active', true)
             ->where('type', 'monthly')
             ->orderByDesc('is_featured')
             ->orderBy('sort_order')
             ->get();
 
-        $custom = Adpackage::where('is_active', true)
+        $custom = AdPackage::where('is_active', true)
             ->where('type', 'custom')
             ->orderByDesc('is_featured')
             ->orderBy('sort_order')

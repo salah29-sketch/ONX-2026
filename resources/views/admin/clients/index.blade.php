@@ -7,18 +7,21 @@
         <div class="db-page-subtitle">إدارة العملاء ومراجعة بياناتهم وحجوزاتهم المرتبطة.</div>
     </div>
 
-    @can('client_create')
-        <a class="db-btn-primary" href="{{ route('admin.clients.create') }}">
-            <i class="fas fa-plus"></i>
-            إضافة عميل
-        </a>
-    @endcan
+    <a class="db-btn-primary" href="{{ route('admin.clients.create') }}">
+        <i class="fas fa-plus"></i>
+        إضافة عميل
+    </a>
 </div>
 
+@if(session('message'))
+    <div class="alert alert-success db-alert">{{ session('message') }}</div>
+@endif
 
-
-<div class="card db-card">
-    <div class="db-card-header">قائمة العملاء</div>
+<div class="card db-card db-card-clients">
+    <div class="db-card-header">
+        <i class="fas fa-users mr-2"></i>
+        قائمة العملاء
+    </div>
 
     <div class="card-body db-card-body">
         <div class="table-responsive">
@@ -44,31 +47,18 @@
 @parent
 <script>
     $(function () {
-        let dtOverrideGlobals = {
-            processing: true,
-            serverSide: true,
-            retrieve: true,
-            searching: false,
-            lengthChange: false,
-            info: false,
-            paging: false,
-            ordering: true,
-            aaSorting: [],
+        var dtOverrideGlobals = Object.assign({}, window.dtArabicAjaxDefaults || {}, {
             ajax: "{{ route('admin.clients.index') }}",
             columns: [
-    { data: 'id', name: 'id' },
-    { data: 'name', name: 'name' },
-    { data: 'phone', name: 'phone' },
-    { data: 'email', name: 'email' },
-    { data: 'has_password', name: 'has_password', orderable: false, searchable: false },
-    { data: 'login_disabled', name: 'login_disabled', orderable: false, searchable: false },
-    { data: 'actions', name: '{{ trans('global.actions') }}', sortable: false, searchable: false }
-],
-order: [[0, 'desc']],
-            scrollX: false,
-            dom: 'rt'
-        };
-
+                { data: 'id', name: 'id', width: '60px' },
+                { data: 'name', name: 'name' },
+                { data: 'phone', name: 'phone' },
+                { data: 'email', name: 'email' },
+                { data: 'has_password', name: 'has_password', orderable: false, searchable: false },
+                { data: 'login_disabled', name: 'login_disabled', orderable: false, searchable: false },
+                { data: 'actions', name: 'actions', orderable: false, searchable: false, width: '180px' }
+            ]
+        });
         $('.datatable-Client').DataTable(dtOverrideGlobals);
     });
 </script>

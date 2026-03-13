@@ -16,27 +16,27 @@
 
     <div class="mx-auto max-w-7xl px-6 py-20 lg:px-8 lg:py-24">
         <div class="mx-auto max-w-4xl text-center">
-            <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold text-white/70 backdrop-blur">
+            <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-bold text-white/70 opacity-0 backdrop-blur animate-fade-in-up">
                 <span class="h-2 w-2 rounded-full bg-orange-500"></span>
                 ONX • Services
             </div>
 
-            <h1 class="text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
+            <h1 class="text-4xl font-black leading-tight text-white opacity-0 sm:text-5xl lg:text-6xl animate-fade-in-up animate-delay-100">
                 خدمات الإنتاج الإبداعي
             </h1>
 
-            <p class="mx-auto mt-6 max-w-2xl text-sm leading-8 text-white/70 sm:text-base">
+            <p class="mx-auto mt-6 max-w-2xl text-sm leading-8 text-white/70 opacity-0 sm:text-base animate-fade-in-up animate-delay-200">
                 حفلات وإعلانات بجودة سينمائية — من سيدي بلعباس إلى كل الولايات.
             </p>
 
-            <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <div class="mt-8 flex flex-wrap items-center justify-center gap-3 opacity-0 animate-fade-in-up animate-delay-300">
                 <a href="/services/events"
-                   class="inline-flex items-center justify-center rounded-full bg-orange-500 px-7 py-3 text-sm font-black text-black transition duration-300 hover:-translate-y-1 hover:bg-orange-400 hover:shadow-[0_0_30px_rgba(249,115,22,0.3)]">
+                   class="inline-flex items-center justify-center rounded-full bg-orange-500 px-7 py-3 text-sm font-black text-black transition duration-300 hover:-translate-y-1 hover:bg-orange-400 hover:shadow-[0_0_30px_rgba(249,115,22,0.3)] active:scale-[0.98]">
                     تصوير الحفلات
                 </a>
 
                 <a href="/services/marketing"
-                   class="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-7 py-3 text-sm font-extrabold text-white transition duration-300 hover:-translate-y-1 hover:border-orange-500/50 hover:bg-orange-500/10">
+                   class="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-7 py-3 text-sm font-extrabold text-white transition duration-300 hover:-translate-y-1 hover:border-orange-500/50 hover:bg-orange-500/10 active:scale-[0.98]">
                     الإعلانات
                 </a>
             </div>
@@ -46,7 +46,7 @@
 
 {{-- SERVICES CARDS --}}
 <section class="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-    <div class="mb-10 text-center">
+    <div class="mb-10 text-center opacity-0 animate-fade-in-up animate-delay-200">
         <h2 class="text-3xl font-black sm:text-4xl">خدماتنا</h2>
         <p class="mx-auto mt-4 max-w-2xl text-sm leading-8 text-white/65 sm:text-base">
             اختر الخدمة المناسبة وابدأ معنا بسهولة.
@@ -55,7 +55,7 @@
 
     <div class="grid gap-6 lg:grid-cols-2">
         {{-- Events --}}
-        <div class="group relative overflow-hidden rounded-[30px] border border-white/10 bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.32)] transition duration-500 hover:-translate-y-2 hover:border-orange-500/30">
+        <div class="group relative overflow-hidden rounded-[30px] border border-white/10 bg-white/5 opacity-0 shadow-[0_20px_50px_rgba(0,0,0,0.32)] transition duration-500 hover:-translate-y-2 hover:border-orange-500/30 animate-fade-in-up animate-delay-300">
             <div class="absolute inset-0">
                 <img src="{{ asset('img/events.jpg') }}"
                      alt="تصوير الحفلات"
@@ -83,7 +83,7 @@
         </div>
 
         {{-- Marketing --}}
-        <div class="group relative overflow-hidden rounded-[30px] border border-white/10 bg-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.32)] transition duration-500 hover:-translate-y-2 hover:border-orange-500/30">
+        <div class="group relative overflow-hidden rounded-[30px] border border-white/10 bg-white/5 opacity-0 shadow-[0_20px_50px_rgba(0,0,0,0.32)] transition duration-500 hover:-translate-y-2 hover:border-orange-500/30 animate-fade-in-up animate-delay-400">
             <div class="absolute inset-0">
                 <img src="{{ asset('img/marketing.jpg') }}"
                      alt="الإعلانات"

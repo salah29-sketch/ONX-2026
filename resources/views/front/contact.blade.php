@@ -17,14 +17,14 @@
 
     <div class="mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-20">
         <div class="mx-auto max-w-2xl text-center">
-            <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/70 backdrop-blur">
+            <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/70 opacity-0 backdrop-blur animate-fade-in-up">
                 <span class="h-2 w-2 rounded-full bg-orange-500"></span>
                 ONX • Contact
             </div>
-            <h1 class="text-3xl font-black text-white sm:text-4xl lg:text-5xl">
+            <h1 class="text-3xl font-black text-white opacity-0 sm:text-4xl lg:text-5xl animate-fade-in-up animate-delay-100">
                 تواصل معنا
             </h1>
-            <p class="mt-4 text-sm leading-7 text-white/70 sm:text-base">
+            <p class="mt-4 text-sm leading-7 text-white/70 opacity-0 sm:text-base animate-fade-in-up animate-delay-200">
                 لديك سؤال أو فكرة مشروع؟ املأ النموذج وسنتواصل معك في أقرب وقت.
             </p>
         </div>
@@ -34,7 +34,7 @@
 {{-- FORM + SUCCESS --}}
 <section class="mx-auto max-w-7xl px-6 py-14 lg:px-8">
     @if(session('success'))
-        <div class="mx-auto max-w-xl rounded-[24px] border border-orange-500/30 bg-orange-500/10 p-8 text-center">
+        <div class="mx-auto max-w-xl rounded-[24px] border border-orange-500/30 bg-orange-500/10 p-8 text-center opacity-0 animate-fade-in-up">
             <div class="mb-4 text-4xl">✓</div>
             <h2 class="text-xl font-black text-white">تم الإرسال بنجاح</h2>
             <p class="mt-3 text-sm text-white/80">{{ session('success') }}</p>
@@ -43,7 +43,7 @@
             </a>
         </div>
     @else
-        <div class="mx-auto max-w-xl">
+        <div class="mx-auto max-w-xl opacity-0 animate-fade-in-up animate-delay-200">
             <form action="{{ route('contact.store') }}" method="post" class="space-y-5">
                 @csrf
 

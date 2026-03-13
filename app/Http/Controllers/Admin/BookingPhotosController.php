@@ -15,7 +15,7 @@ class BookingPhotosController extends Controller
         $request->validate([
             'booking_id' => 'required|exists:bookings,id',
             'photos'     => 'required|array',
-            'photos.*'   => 'image|max:10240',
+            'photos.*'   => 'image|max:20480', // 20 MB بالكيلوبايت
         ]);
         $booking = Booking::findOrFail($request->booking_id);
         $paths = [];

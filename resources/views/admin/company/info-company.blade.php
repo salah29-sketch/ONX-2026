@@ -1,63 +1,79 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="card">
-    <div class="card-header">{{ __('panel.company_info') }}</div>
-    <div class="card-body">
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
+<div class="db-page-head">
+    <div>
+        <h1 class="db-page-title">{{ __('panel.company_info') }}</h1>
+        <div class="db-page-subtitle">معلومات الشركة والاتصال المعروضة في الموقع.</div>
+    </div>
+</div>
 
+@if(session('success'))
+    <div class="alert alert-success db-alert">{{ session('success') }}</div>
+@endif
+
+<div class="card db-card">
+    <div class="db-card-header">
+        <i class="fas fa-building mr-2"></i>
+        {{ __('panel.company_info') }}
+    </div>
+
+    <div class="card-body db-card-body">
         <form action="{{ route('admin.company.update') }}" method="POST">
             @csrf
             @method('POST')
 
             <div class="form-group">
-                <label>{{ __('panel.company_name') }}</label>
-                <input type="text" name="company_name" class="form-control" value="{{ $setting->company_name ?? '' }}">
+                <label class="db-label">{{ __('panel.company_name') }}</label>
+                <input type="text" name="company_name" class="form-control db-input" value="{{ $setting->company_name ?? '' }}">
             </div>
 
             <div class="form-group">
-                <label>{{ __('panel.address') }}</label>
-                <input type="text" name="address" class="form-control" value="{{ $setting->address ?? '' }}">
+                <label class="db-label">{{ __('panel.address') }}</label>
+                <input type="text" name="address" class="form-control db-input" value="{{ $setting->address ?? '' }}">
             </div>
 
             <div class="form-group">
-                <label>{{ __('panel.phone') }}</label>
-                <input type="text" name="phone" class="form-control" value="{{ $setting->phone ?? '' }}">
+                <label class="db-label">{{ __('panel.phone') }}</label>
+                <input type="text" name="phone" class="form-control db-input" value="{{ $setting->phone ?? '' }}">
             </div>
 
             <div class="form-group">
-                <label>{{ __('panel.email') }}</label>
-                <input type="email" name="email" class="form-control" value="{{ $setting->email ?? '' }}">
+                <label class="db-label">{{ __('panel.email') }}</label>
+                <input type="email" name="email" class="form-control db-input" value="{{ $setting->email ?? '' }}">
             </div>
 
             <div class="form-group">
-                <label>{{ __('panel.facebook') }}</label>
-                <input type="url" name="facebook" class="form-control" value="{{ $setting->facebook ?? '' }}">
+                <label class="db-label">{{ __('panel.facebook') }}</label>
+                <input type="url" name="facebook" class="form-control db-input" value="{{ $setting->facebook ?? '' }}">
             </div>
 
             <div class="form-group">
-                <label>{{ __('panel.instagram') }}</label>
-                <input type="url" name="instagram" class="form-control" value="{{ $setting->instagram ?? '' }}">
+                <label class="db-label">{{ __('panel.instagram') }}</label>
+                <input type="url" name="instagram" class="form-control db-input" value="{{ $setting->instagram ?? '' }}">
             </div>
 
             <div class="form-group">
-                <label>{{ __('panel.twitter') }}</label>
-                <input type="url" name="twitter" class="form-control" value="{{ $setting->twitter ?? '' }}">
+                <label class="db-label">{{ __('panel.twitter') }}</label>
+                <input type="url" name="twitter" class="form-control db-input" value="{{ $setting->twitter ?? '' }}">
             </div>
 
             <div class="form-group">
-                <label>{{ __('panel.linkedin') }}</label>
-                <input type="url" name="linkedin" class="form-control" value="{{ $setting->linkedin ?? '' }}">
+                <label class="db-label">{{ __('panel.linkedin') }}</label>
+                <input type="url" name="linkedin" class="form-control db-input" value="{{ $setting->linkedin ?? '' }}">
             </div>
 
             <div class="form-group">
-                <label>{{ __('panel.map_embed') }}</label>
-                <textarea name="map_embed" class="form-control" rows="4">{{ $setting->map_embed ?? '' }}</textarea>
+                <label class="db-label">{{ __('panel.map_embed') }}</label>
+                <textarea name="map_embed" class="form-control db-input" rows="4">{{ $setting->map_embed ?? '' }}</textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary">{{ __('panel.update') }}</button>
+            <div class="db-form-actions db-form-actions-lg">
+                <button type="submit" class="db-btn-success">
+                    <i class="fas fa-save"></i>
+                    {{ __('panel.update') }}
+                </button>
+            </div>
         </form>
     </div>
 </div>

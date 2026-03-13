@@ -16,12 +16,12 @@ class PortfolioItemsController extends Controller
             ->latest()
             ->paginate(20);
 
-        return view('admin.portfolioItems.index', compact('items'));
+        return view('admin.portfolio-items.index', compact('items'));
     }
 
     public function create()
     {
-        return view('admin.portfolioItems.create');
+        return view('admin.portfolio-items.create');
     }
 
     public function store(Request $request)
@@ -93,12 +93,12 @@ class PortfolioItemsController extends Controller
 
     public function show(PortfolioItem $portfolioItem)
     {
-        return view('admin.portfolioItems.show', compact('portfolioItem'));
+        return view('admin.portfolio-items.show', compact('portfolioItem'));
     }
 
     public function edit(PortfolioItem $portfolioItem)
     {
-        return view('admin.portfolioItems.edit', compact('portfolioItem'));
+        return view('admin.portfolio-items.edit', compact('portfolioItem'));
     }
 
     public function update(Request $request, PortfolioItem $portfolioItem)

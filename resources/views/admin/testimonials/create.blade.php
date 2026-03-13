@@ -10,7 +10,11 @@
 </div>
 
 <div class="card db-card">
-    <div class="card-body">
+    <div class="db-card-header">
+        <i class="fas fa-plus mr-2"></i>
+        إضافة رأي
+    </div>
+    <div class="card-body db-card-body">
         <form method="POST" action="{{ route('admin.testimonials.store') }}">
             @csrf
 
@@ -70,9 +74,13 @@
                 </label>
             </div>
 
-            <hr>
-            <button type="submit" class="btn btn-primary">حفظ الرأي</button>
-            <a href="{{ route('admin.testimonials.index') }}" class="btn btn-secondary">إلغاء</a>
+            <div class="db-form-actions db-form-actions-lg">
+                <button type="submit" class="db-btn-success">
+                    <i class="fas fa-save"></i>
+                    حفظ الرأي
+                </button>
+                <a href="{{ route('admin.testimonials.index') }}" class="db-btn-secondary">إلغاء</a>
+            </div>
         </form>
     </div>
 </div>

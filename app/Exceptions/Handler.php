@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\PostTooLargeException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 
 class Handler extends ExceptionHandler
@@ -44,6 +45,14 @@ class Handler extends ExceptionHandler
                 ->withErrors([
                     'throttle' => 'تم إرسال عدد كبير من الطلبات. يرجى الانتظار دقيقة ثم المحاولة مرة أخرى.',
                 ]);
+        });
+
+        $this->renderable(function (PostTooLargeException $e, $request) {
+            $message = 'حجم الملفات أو البيانات المرسلة أكبر من المسموح. قلّل حجم الصور أو عددها، أو راجع إعدادات الخادم (post_max_size و upload_max_filesize في php.ini).';
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $message], 413);
+            }
+            return redirect()->back()->withErrors(['post_size' => $message]);
         });
     }
 }

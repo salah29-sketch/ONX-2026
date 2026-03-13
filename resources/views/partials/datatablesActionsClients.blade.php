@@ -1,6 +1,9 @@
-{{-- إجراءات العملاء: عرض، تعطيل الدخول، إعادة تعيين كلمة السر، حذف --}}
+{{-- إجراءات العملاء: عرض، تعديل، تعطيل الدخول، إعادة تعيين كلمة السر، حذف --}}
 <a class="btn btn-xs btn-primary mr-1 mb-1" href="{{ route('admin.clients.show', $row->id) }}" title="عرض التفاصيل">
     <i class="fas fa-eye"></i>
+</a>
+<a class="btn btn-xs btn-info mr-1 mb-1" href="{{ route('admin.clients.edit', $row->id) }}" title="تعديل">
+    <i class="fas fa-edit"></i>
 </a>
 
 <form action="{{ route('admin.clients.toggle-login', $row->id) }}" method="POST" class="d-inline-block mr-1 mb-1" onsubmit="return confirm('{{ $row->login_disabled ? 'تفعيل دخول هذا العميل؟' : 'تعطيل دخول هذا العميل؟' }}');">
@@ -17,10 +20,8 @@
     <button type="submit" class="btn btn-xs btn-info" title="إعادة تعيين كلمة المرور"><i class="fas fa-key"></i></button>
 </form>
 
-@can('client_delete')
 <form action="{{ route('admin.clients.destroy', $row->id) }}" method="POST" class="d-inline-block mb-1" onsubmit="return confirm('{{ trans('global.areYouSure') }}');">
     @csrf
     @method('DELETE')
     <button type="submit" class="btn btn-xs btn-danger" title="حذف"><i class="fas fa-trash-alt"></i></button>
 </form>
-@endcan

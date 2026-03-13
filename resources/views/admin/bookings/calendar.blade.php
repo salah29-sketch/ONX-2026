@@ -104,8 +104,17 @@
     .dot-completed{ background:#0f172a; }
     .dot-cancelled{ background:#ef4444; }
 
+    /* حجم ثابت للتقويم — إخفاء شريط التمرير واستيعاب 6 أسابيع */
     #bookingsCalendar{
         min-height: 0;
+    }
+
+    #bookingsCalendar .fc-scroller-liquid{
+        overflow: hidden !important;
+    }
+
+    #bookingsCalendar .fc-scroller{
+        overflow: hidden !important;
     }
 
     #bookingsCalendar .fc{
@@ -168,8 +177,26 @@
         background:#fff7ed !important;
     }
 
+    /* تلوين كامل مساحة اليوم عند وجود حجز */
+    #bookingsCalendar .fc-daygrid-day.bk-day-has-booking{
+        background: rgba(249,115,22,.12) !important;
+    }
+
+    #bookingsCalendar .fc-daygrid-day.bk-day-has-booking:hover{
+        background: rgba(249,115,22,.18) !important;
+    }
+
+    #bookingsCalendar .fc-daygrid-day.bk-day-has-booking.fc-day-today{
+        background: rgba(249,115,22,.22) !important;
+    }
+
+    #bookingsCalendar .fc-daygrid-day.bk-day-has-booking.selected-day{
+        background: #fff7ed !important;
+        box-shadow: inset 0 0 0 2px #f97316;
+    }
+
     #bookingsCalendar .fc-daygrid-day-frame{
-        min-height:88px;
+        min-height: 64px;
     }
 
     #bookingsCalendar .fc-event{
@@ -375,27 +402,27 @@
 <div class="bk-stats">
     <div class="bk-stat">
         <div class="bk-stat-label">إجمالي الحجوزات</div>
-        <div class="bk-stat-value" id="statTotal">0</div>
+        <div class="bk-stat-value" id="statTotal">{{ $stats['total'] ?? 0 }}</div>
     </div>
 
     <div class="bk-stat">
         <div class="bk-stat-label">غير مؤكدة</div>
-        <div class="bk-stat-value" id="statUnconfirmed">0</div>
+        <div class="bk-stat-value" id="statUnconfirmed">{{ $stats['unconfirmed'] ?? 0 }}</div>
     </div>
 
     <div class="bk-stat">
         <div class="bk-stat-label">مؤكدة</div>
-        <div class="bk-stat-value" id="statConfirmed">0</div>
+        <div class="bk-stat-value" id="statConfirmed">{{ $stats['confirmed'] ?? 0 }}</div>
     </div>
 
     <div class="bk-stat">
         <div class="bk-stat-label">ملغاة</div>
-        <div class="bk-stat-value" id="statCancelled">0</div>
+        <div class="bk-stat-value" id="statCancelled">{{ $stats['cancelled'] ?? 0 }}</div>
     </div>
 </div>
 
 <div class="bk-wrap">
-    <div class="bk-panel">
+    <div class="card db-card bk-panel">
         <div class="bk-calendar-head">
             <div>
                 <h2 class="bk-calendar-title">تقويم الشهر</h2>
@@ -414,12 +441,15 @@
         </div>
     </div>
 
-    <div class="bk-panel">
-        <h2 class="bk-side-title" id="selectedDayTitle">اختر يومًا</h2>
-        <div class="bk-side-subtitle" id="selectedDaySubtitle">ستظهر هنا الحجوزات الخاصة بهذا اليوم.</div>
-
+    <div class="card db-card bk-panel">
+        <div class="db-card-header py-3">
+            <span class="text-white font-weight-bold" id="selectedDayTitle">اختر يومًا</span>
+        </div>
+        <div class="card-body db-card-body">
+        <div class="bk-side-subtitle mb-2" id="selectedDaySubtitle">ستظهر هنا الحجوزات الخاصة بهذا اليوم.</div>
         <div class="bk-day-list" id="selectedDayList">
             <div class="bk-empty">اختر يومًا من التقويم لعرض الحجوزات الموجودة فيه.</div>
+        </div>
         </div>
     </div>
 </div>
@@ -427,13 +457,16 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/locales-all.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('bookingsCalendar');
     const rawItems = @json($calendarItems);
 
     function normalizeStatus(status) {
-        return status || 'unconfirmed';
+        const s = (status || 'unconfirmed').toString();
+        if (['confirmed', 'in_progress', 'completed', 'cancelled'].includes(s)) return s;
+        return 'unconfirmed';
     }
 
     function statusLabel(status) {
@@ -456,25 +489,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function renderStats(items) {
-        let total = items.length;
-        let unconfirmed = 0;
-        let confirmed = 0;
-        let cancelled = 0;
-
-        items.forEach(item => {
-            const status = normalizeStatus(item.status);
-            if (status === 'unconfirmed') unconfirmed++;
-            if (status === 'confirmed') confirmed++;
-            if (status === 'cancelled') cancelled++;
-        });
-
-        document.getElementById('statTotal').textContent = total;
-        document.getElementById('statUnconfirmed').textContent = unconfirmed;
-        document.getElementById('statConfirmed').textContent = confirmed;
-        document.getElementById('statCancelled').textContent = cancelled;
-    }
-
     function renderDayDetails(dateStr) {
         const dayItems = rawItems.filter(item => item.start === dateStr);
 
@@ -493,11 +507,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const service = item.service_type === 'ads' ? 'إعلانات' : 'حفلات';
             const location = item.location_name || item.location || '—';
             const url = item.url || '#';
+            const title = (item.title || 'حجز').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
             return `
                 <div class="bk-card">
                     <div class="bk-badge ${status}">${statusLabel(status)}</div>
-                    <div class="bk-card-title">${item.title || 'حجز'}</div>
+                    <div class="bk-card-title">${title}</div>
                     <div class="bk-card-meta">
                         <div><strong>الخدمة:</strong> ${service}</div>
                         <div><strong>المكان:</strong> ${location}</div>
@@ -508,19 +523,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }).join('');
     }
 
-    renderStats(rawItems);
-
     const events = rawItems.map(item => ({
-    ...item,
-    title: item.service_type === 'ads' ? 'Pub' : 'mariage',
-    classNames: [fcClass(normalizeStatus(item.status))]
+        ...item,
+        title: (item.title || (item.service_type === 'ads' ? 'Pub' : 'حفل')),
+        classNames: [fcClass(normalizeStatus(item.status))]
     }));
+
+    const datesWithEvents = new Set(rawItems.map(item => item.start));
 
     const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-        locale: 'ar',
-        direction: 'rtl',
-        height: 560,
+        locale: 'fr',
+        direction: 'ltr',
+        height: 490,
+        contentHeight: 430,
+        fixedWeekCount: true,
         headerToolbar: {
             start: 'title',
             center: '',
@@ -528,6 +545,14 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         dayMaxEvents: 2,
         events: events,
+        dayCellDidMount: function(info) {
+            const dateStr = info.date.getFullYear() + '-' +
+                String(info.date.getMonth() + 1).padStart(2, '0') + '-' +
+                String(info.date.getDate()).padStart(2, '0');
+            if (datesWithEvents.has(dateStr)) {
+                info.el.classList.add('bk-day-has-booking');
+            }
+        },
         dateClick: function(info) {
             document.querySelectorAll('#bookingsCalendar .fc-daygrid-day').forEach(el => {
                 el.classList.remove('selected-day');

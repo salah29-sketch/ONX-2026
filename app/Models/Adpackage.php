@@ -31,8 +31,8 @@ class AdPackage extends Model
     ];
 
     public function bookings()
-{
-    return $this->hasMany(\App\Models\Booking::class, 'package_id')
-        ->where('service_type', 'ads');
-}
+    {
+        return $this->hasMany(Booking::class, 'package_id')
+            ->where('service_type', 'ads');
+    }
 }

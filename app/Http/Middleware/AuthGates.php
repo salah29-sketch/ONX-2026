@@ -14,6 +14,14 @@ class AuthGates
         $user = Auth::user();
 
         if (!app()->runningInConsole() && $user) {
+            // صاحب الموقع: كامل الصلاحيات دائماً (بالبريد من .env أو المستخدم الأول)
+            Gate::before(function ($user, $ability) {
+                if ($this->isSiteOwner($user)) {
+                    return true;
+                }
+                return null;
+            });
+
             $roles            = Role::with('permissions')->get();
             $permissionsArray = [];
 
@@ -31,5 +39,18 @@ class AuthGates
         }
 
         return $next($request);
+    }
+
+    /**
+     * هل هذا المستخدم صاحب الموقع (له كامل الصلاحيات)؟
+     * يُحدد عبر: APP_OWNER_EMAIL في .env أو المستخدم رقم 1
+     */
+    protected function isSiteOwner($user): bool
+    {
+        $ownerEmail = config('app.owner_email');
+        if ($ownerEmail && $user->email && strcasecmp($user->email, $ownerEmail) === 0) {
+            return true;
+        }
+        return $user->id === 1;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Company;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,6 +32,24 @@ class AppServiceProvider extends ServiceProvider
         // غيّر هذا حسب اسم موديل/جدول إعدادات الشركة عندك
         $companySettings = \App\Models\Company::first();
         $view->with('companySettings', $companySettings);
+    });
+
+    // بيانات بوابة العملاء للـ sidebar و bottom nav
+    View::composer('client.layout', function ($view) {
+        if (!Auth::guard('client')->check()) {
+            return;
+        }
+        $client = Auth::guard('client')->user();
+        $unreadMessages = $client->messages()->whereNull('admin_read_at')->count();
+        // الحجز النشط: مؤكد أو قيد التنفيذ؛ إن لم يوجد فأحدث حجز
+        $activeBooking = $client->bookings()
+            ->whereIn('status', ['confirmed', 'in_progress'])
+            ->latest()->first();
+        if (!$activeBooking) {
+            $activeBooking = $client->bookings()->latest()->first();
+        }
+        $canReview = $client->bookings()->where('status', 'completed')->exists();
+        $view->with(compact('client', 'unreadMessages', 'activeBooking', 'canReview'));
     });
 }
 }

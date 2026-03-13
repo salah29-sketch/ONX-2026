@@ -45,11 +45,12 @@
                             <td>{{ $m->created_at->format('Y-m-d H:i') }}</td>
                             <td>{{ $m->admin_read_at ? 'نعم' : 'جديد' }}</td>
                             <td>
+                                <a href="{{ route('admin.client-messages.show', $m) }}" class="btn btn-sm btn-primary">عرض / رد</a>
                                 @if(!$m->admin_read_at)
                                     <form action="{{ route('admin.client-messages.mark-read', ['message' => $m]) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn btn-sm btn-outline-primary">تحديد كمقروءة</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">تحديد كمقروءة</button>
                                     </form>
                                 @endif
                             </td>

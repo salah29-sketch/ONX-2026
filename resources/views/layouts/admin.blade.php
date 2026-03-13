@@ -54,6 +54,17 @@
                 box-shadow: 0 0 20px rgba(213, 54, 54, 0.9);
             }
         }
+
+        /* View site button — واضح كزر في الشريط */
+        .navbar .view-site-btn {
+            font-weight: 600;
+            border-radius: 6px;
+            padding: 0.35rem 0.75rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .navbar .view-site-btn:hover {
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
     </style>
 
     @yield('styles')
@@ -76,8 +87,14 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- RIGHT MENU (languages) -->
-        <ul class="nav navbar-nav ml-auto">
+        <!-- RIGHT: View site button + languages -->
+        <ul class="nav navbar-nav ml-auto align-items-center">
+            <li class="nav-item mr-3">
+                <a class="btn btn-sm btn-light view-site-btn" href="{{ url('/') }}" target="_blank" title="{{ trans('global.menu.view_site') }}">
+                    <i class="fas fa-external-link-alt mr-1"></i>
+                    {{ trans('global.menu.view_site') }}
+                </a>
+            </li>
             @if(count(config('panel.available_languages', [])) > 1)
                 <li class="nav-item dropdown d-md-down-none">
                     <a class="nav-link" data-toggle="dropdown" href="#" role="button"
@@ -166,23 +183,17 @@
     <!-- Admin main.js -->
     <script src="{{ asset('js/main.js') }}"></script>
 
-    <!-- DataTables Defaults -->
+    <!-- DataTables Defaults (بدون أزرار تصدير/رؤية) -->
     <script>
         $(function () {
-            let copyButtonTrans   = '{{ trans('global.datatables.copy') }}'
-            let csvButtonTrans    = '{{ trans('global.datatables.csv') }}'
-            let excelButtonTrans  = '{{ trans('global.datatables.excel') }}'
-            let pdfButtonTrans    = '{{ trans('global.datatables.pdf') }}'
-            let printButtonTrans  = '{{ trans('global.datatables.print') }}'
-            let colvisButtonTrans = '{{ trans('global.datatables.colvis') }}'
-
             let languages = {
-                'en': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/English.json'
+                'en': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/English.json',
+                'ar': 'https://cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json'
             };
 
-            $.extend(true, $.fn.dataTable.Buttons.defaults.dom.button, { className: 'btn' })
+            $.extend(true, $.fn.dataTable.Buttons.defaults.dom.button, { className: 'btn' });
             $.extend(true, $.fn.dataTable.defaults, {
-                language: { url: languages['{{ app()->getLocale() }}'] },
+                language: { url: languages['{{ app()->getLocale() }}'] || languages['en'] },
                 columnDefs: [
                     { orderable: false, className: 'select-checkbox', targets: 0 },
                     { orderable: false, searchable: false, targets: -1 }
@@ -190,21 +201,19 @@
                 select: { style: 'multi+shift', selector: 'td:first-child' },
                 order: [],
                 scrollX: true,
-                pageLength: 100,
-                dom: 'lBfrtip<"actions">',
-                buttons: [
-                    { extend: 'copy',   className: 'btn-default', text: copyButtonTrans,   exportOptions: { columns: ':visible' } },
-                    { extend: 'csv',    className: 'btn-default', text: csvButtonTrans,    exportOptions: { columns: ':visible' } },
-                    { extend: 'excel',  className: 'btn-default', text: excelButtonTrans,  exportOptions: { columns: ':visible' } },
-                    { extend: 'pdf',    className: 'btn-default', text: pdfButtonTrans,    exportOptions: { columns: ':visible' } },
-                    { extend: 'print',  className: 'btn-default', text: printButtonTrans,  exportOptions: { columns: ':visible' } },
-                    { extend: 'colvis', className: 'btn-default', text: colvisButtonTrans, exportOptions: { columns: ':visible' } }
-                ]
+                pageLength: 25,
+                lengthChange: false,
+                dom: 'Bfrtip',
+                buttons: []
             });
 
             $.fn.dataTable.ext.classes.sPageButton = '';
         });
+    </script>
 
+    @include('partials.datatables_ajax_defaults')
+
+    <script>
         $(window).on('load', function(){
             if ($.fn.dataTable) {
                 $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();

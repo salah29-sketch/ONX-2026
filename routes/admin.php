@@ -17,6 +17,8 @@ use App\Http\Controllers\Admin\BookingsCalendarController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\ClientMessagesController;
+use App\Http\Controllers\Admin\BookingPaymentsController;
+use App\Http\Controllers\Admin\BookingFilesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,11 +31,38 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // Dashboard
     Route::get('/',     [HomeController::class, 'index'])->name('home');
 
+    // ─── المدفوعات ────────────────────────────────────────
+    Route::post('bookings/payments',
+        [\App\Http\Controllers\Admin\BookingPaymentsController::class, 'store'])
+        ->name('bookings.payments.store');
+
+    Route::delete('bookings/payments/{payment}',
+        [\App\Http\Controllers\Admin\BookingPaymentsController::class, 'destroy'])
+        ->name('bookings.payments.destroy');
+
+    Route::patch('bookings/{booking}/total',
+        [\App\Http\Controllers\Admin\BookingPaymentsController::class, 'updateTotal'])
+        ->name('bookings.payments.update-total');
+
+    // ─── الملفات ──────────────────────────────────────────
+    Route::post('bookings/files',
+        [\App\Http\Controllers\Admin\BookingFilesController::class, 'store'])
+        ->name('bookings.files.store');
+
+    Route::patch('bookings/files/{file}/toggle',
+        [\App\Http\Controllers\Admin\BookingFilesController::class, 'toggleVisibility'])
+        ->name('bookings.files.toggle');
+
+    Route::delete('bookings/files/{file}',
+        [\App\Http\Controllers\Admin\BookingFilesController::class, 'destroy'])
+        ->name('bookings.files.destroy');
+
     // ─── الحجوزات ────────────────────────────────────────
-    Route::get('bookings/calendar',                    [BookingsController::class, 'calendar'])->name('bookings.calendar');
+    Route::get('bookings/calendar', [BookingsCalendarController::class, 'index'])->name('bookings.calendar');
     Route::get('bookings/{booking}/pdf',               [BookingsController::class, 'pdf'])->name('bookings.pdf');
     Route::patch('bookings/{booking}/status',          [BookingsController::class, 'updateStatus'])->name('bookings.updateStatus');
     Route::patch('bookings/{booking}/details',         [BookingsController::class, 'updateDetails'])->name('bookings.updateDetails');
+    Route::patch('bookings/{booking}/final-video',   [BookingsController::class, 'updateFinalVideo'])->name('bookings.finalVideo');
     Route::resource('bookings', BookingsController::class)->only(['index', 'show', 'destroy']);
     Route::post('bookings/photos', [\App\Http\Controllers\Admin\BookingPhotosController::class, 'store'])->name('bookings.photos.store');
     Route::delete('bookings/photos/{photo}', [\App\Http\Controllers\Admin\BookingPhotosController::class, 'destroy'])->name('bookings.photos.destroy');
@@ -56,8 +85,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     // ─── العملاء ──────────────────────────────────────────
     Route::post('clients/{client}/toggle-login', [ClientsController::class, 'toggleLogin'])->name('clients.toggle-login');
     Route::post('clients/{client}/reset-password', [ClientsController::class, 'resetPassword'])->name('clients.reset-password');
-    Route::resource('clients', ClientsController::class)->only(['index', 'show', 'destroy']);
+    Route::delete('clients/destroy', [ClientsController::class, 'massDestroy'])->name('clients.massDestroy');
+    Route::resource('clients', ClientsController::class);
     Route::get('client-messages', [ClientMessagesController::class, 'index'])->name('client-messages.index');
+    Route::get('client-messages/{message}', [ClientMessagesController::class, 'show'])->name('client-messages.show');
     Route::patch('client-messages/{message}/read', [ClientMessagesController::class, 'markRead'])->name('client-messages.mark-read');
 
     // ─── الموظفون ─────────────────────────────────────────
@@ -82,8 +113,5 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('company',        [CompanyController::class, 'index'])->name('company');
     Route::get('company/edit',   [CompanyController::class, 'edit'])->name('company.edit');
     Route::patch('company',      [CompanyController::class, 'update'])->name('company.update');
-
-    // ─── التقويم ──────────────────────────────────────────
-    Route::get('bookings/calendar', [BookingsCalendarController::class, 'index'])->name('bookings.calendar');
 
 });

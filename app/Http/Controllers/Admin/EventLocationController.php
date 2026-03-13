@@ -12,12 +12,12 @@ class EventLocationController extends Controller
     {
         $locations = EventLocation::latest()->get();
 
-        return view('admin.eventlocations.index', compact('locations'));
+        return view('admin.event-locations.index', compact('locations'));
     }
 
     public function create()
     {
-        return view('admin.eventlocations.create');
+        return view('admin.event-locations.create');
     }
 
     public function store(Request $request)
@@ -39,7 +39,7 @@ class EventLocationController extends Controller
 
     public function edit(EventLocation $eventlocation)
     {
-        return view('admin.eventlocations.edit', compact('eventlocation'));
+        return view('admin.event-locations.edit', compact('eventlocation'));
     }
 
     public function update(Request $request, EventLocation $eventlocation)

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Services\BookingService;
 use App\Models\Booking;
 use App\Models\EventLocation;
+use App\Models\EventPackage;
+use App\Models\AdPackage;
 use Illuminate\Http\Request;
 
 class BookingsController extends Controller
@@ -16,7 +18,7 @@ class BookingsController extends Controller
 
     public function index(Request $request)
     {
-        $query = Booking::with(['client', 'eventLocation', 'eventPackage', 'adpackage'])
+        $query = Booking::with(['client', 'eventLocation', 'eventPackage', 'adPackage'])
             ->latest();
 
         if ($request->filled('service_type')) {
@@ -43,20 +45,23 @@ class BookingsController extends Controller
 
     public function show(Booking $booking)
     {
-        $booking->load(['client', 'eventLocation', 'eventPackage', 'adPackage', 'photos']);
+        $booking->load(['client', 'eventLocation', 'eventPackage', 'adPackage', 'photos', 'payments', 'files']);
         $eventLocations = EventLocation::pluck('name', 'id');
+        $eventPackages = EventPackage::orderBy('name')->pluck('name', 'id');
+        $adPackages = AdPackage::orderBy('name')->pluck('name', 'id');
         $clientSelectedPhotos = collect();
         if ($booking->client) {
             $selectedIds = $booking->client->selectedPhotos()->whereIn('booking_photo_id', $booking->photos->pluck('id'))->pluck('booking_photo_id');
             $clientSelectedPhotos = $booking->photos->whereIn('id', $selectedIds);
         }
+        $photosPaginated = $booking->photos()->orderBy('id')->paginate(24)->withQueryString();
 
-        return view('admin.bookings.show', compact('booking', 'eventLocations', 'clientSelectedPhotos'));
+        return view('admin.bookings.show', compact('booking', 'eventLocations', 'eventPackages', 'adPackages', 'clientSelectedPhotos', 'photosPaginated'));
     }
 
     public function calendar()
     {
-        $bookings = Booking::with(['eventPackage', 'adpackage'])
+        $bookings = Booking::with(['eventPackage', 'adPackage'])
             ->whereIn('status', ['unconfirmed', 'confirmed', 'in_progress', 'completed'])
             ->whereNotNull('event_date')
             ->get();
@@ -81,7 +86,9 @@ class BookingsController extends Controller
     {
         $rules = [
             'notes' => 'nullable|string',
-            'final_video_path' => 'nullable|string|max:500',
+            'status' => 'nullable|in:unconfirmed,confirmed,in_progress,completed,cancelled',
+            'total_price' => 'nullable|numeric|min:0',
+            'package_id' => 'nullable|integer',
         ];
 
         if ($booking->service_type === 'event') {
@@ -116,6 +123,17 @@ class BookingsController extends Controller
         return redirect()
             ->route('admin.bookings.show', $booking->id)
             ->with('message', 'تم تحديث تفاصيل الحجز بنجاح.');
+    }
+
+    public function updateFinalVideo(Request $request, Booking $booking)
+    {
+        $data = $request->validate([
+            'final_video_path' => 'nullable|string|max:500',
+        ]);
+        $booking->update($data);
+        return redirect()
+            ->route('admin.bookings.show', $booking->id)
+            ->with('message', 'تم تحديث رابط الفيديو النهائي.');
     }
 
     public function destroy(Booking $booking)

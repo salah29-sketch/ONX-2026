@@ -1,17 +1,29 @@
 @extends('layouts.admin')
-@section('content')
 
-<div class="card">
-    <div class="card-header">
+@section('content')
+<div class="db-page-head">
+    <div>
+        <h1 class="db-page-title">{{ trans('global.create') }} {{ trans('cruds.employee.title_singular') }}</h1>
+        <div class="db-page-subtitle">{{ trans('cruds.employee.title_singular') }}</div>
+    </div>
+    <a href="{{ route('admin.employees.index') }}" class="db-btn-secondary">
+        <i class="fas fa-arrow-right"></i>
+        {{ trans('global.back_to_list') }}
+    </a>
+</div>
+
+<div class="card db-card">
+    <div class="db-card-header">
+        <i class="fas fa-plus mr-2"></i>
         {{ trans('global.create') }} {{ trans('cruds.employee.title_singular') }}
     </div>
 
-    <div class="card-body">
+    <div class="card-body db-card-body">
         <form action="{{ route("admin.employees.store") }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
-                <label for="name">{{ trans('cruds.employee.fields.name') }}*</label>
-                <input type="text" id="name" name="name" class="form-control" value="{{ old('name', isset($employee) ? $employee->name : '') }}" required>
+                <label for="name" class="db-label">{{ trans('cruds.employee.fields.name') }}*</label>
+                <input type="text" id="name" name="name" class="form-control db-input" value="{{ old('name', isset($employee) ? $employee->name : '') }}" required>
                 @if($errors->has('name'))
                     <em class="invalid-feedback">
                         {{ $errors->first('name') }}
@@ -22,8 +34,8 @@
                 </p>
             </div>
             <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
-                <label for="email">{{ trans('cruds.employee.fields.email') }}</label>
-                <input type="email" id="email" name="email" class="form-control" value="{{ old('email', isset($employee) ? $employee->email : '') }}">
+                <label for="email" class="db-label">{{ trans('cruds.employee.fields.email') }}</label>
+                <input type="email" id="email" name="email" class="form-control db-input" value="{{ old('email', isset($employee) ? $employee->email : '') }}">
                 @if($errors->has('email'))
                     <em class="invalid-feedback">
                         {{ $errors->first('email') }}
@@ -34,8 +46,8 @@
                 </p>
             </div>
             <div class="form-group {{ $errors->has('phone') ? 'has-error' : '' }}">
-                <label for="phone">{{ trans('cruds.employee.fields.phone') }}</label>
-                <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone', isset($employee) ? $employee->phone : '') }}">
+                <label for="phone" class="db-label">{{ trans('cruds.employee.fields.phone') }}</label>
+                <input type="text" id="phone" name="phone" class="form-control db-input" value="{{ old('phone', isset($employee) ? $employee->phone : '') }}">
                 @if($errors->has('phone'))
                     <em class="invalid-feedback">
                         {{ $errors->first('phone') }}
@@ -46,7 +58,7 @@
                 </p>
             </div>
             <div class="form-group {{ $errors->has('photo') ? 'has-error' : '' }}">
-                <label for="photo">{{ trans('cruds.employee.fields.photo') }}</label>
+                <label for="photo" class="db-label">{{ trans('cruds.employee.fields.photo') }}</label>
                 <div class="needsclick dropzone" id="photo-dropzone">
 
                 </div>
@@ -59,30 +71,17 @@
                     {{ trans('cruds.employee.fields.photo_helper') }}
                 </p>
             </div>
-            <div class="form-group {{ $errors->has('services') ? 'has-error' : '' }}">
-                <label for="services">{{ trans('cruds.employee.fields.services') }}
-                    <span class="btn btn-info btn-xs select-all">{{ trans('global.select_all') }}</span>
-                    <span class="btn btn-info btn-xs deselect-all">{{ trans('global.deselect_all') }}</span></label>
-                <select name="services[]" id="services" class="form-control select2" multiple="multiple">
-                    @foreach($services as $id => $services)
-                        <option value="{{ $id }}" {{ (in_array($id, old('services', [])) || isset($employee) && $employee->services->contains($id)) ? 'selected' : '' }}>{{ $services }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('services'))
-                    <em class="invalid-feedback">
-                        {{ $errors->first('services') }}
-                    </em>
-                @endif
-                <p class="helper-block">
-                    {{ trans('cruds.employee.fields.services_helper') }}
-                </p>
-            </div>
-            <div>
-                <input class="btn btn-danger" type="submit" value="{{ trans('global.save') }}">
+            <div class="db-form-actions db-form-actions-lg">
+                <button type="submit" class="db-btn-success">
+                    <i class="fas fa-save"></i>
+                    {{ trans('global.save') }}
+                </button>
+                <a href="{{ route('admin.employees.index') }}" class="db-btn-secondary">
+                    <i class="fas fa-times"></i>
+                    إلغاء
+                </a>
             </div>
         </form>
-
-
     </div>
 </div>
 @endsection

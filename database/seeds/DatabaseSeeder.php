@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Service;
 use Illuminate\Database\Seeder;
 use Database\Seeders\ServiceSeeder;
 use Database\Seeders\ServiceHseeder;

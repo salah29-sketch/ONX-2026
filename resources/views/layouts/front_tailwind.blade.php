@@ -28,6 +28,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     @vite(['resources/css/app.css'])
     @vite(['resources/js/app.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
@@ -60,15 +61,15 @@
                 </a>
 
                 <nav class="hidden items-center gap-8 text-sm font-bold text-white/70 lg:flex">
-                    <a href="/" class="transition hover:text-white">الرئيسية</a>
-                    <a href="/services" class="transition hover:text-white">الخدمات</a>
-                    <a href="/portfolio" class="transition hover:text-white">الأعمال</a>
-                    <a href="/contact" class="transition hover:text-white">تواصل معنا</a>
-                    <a href="/booking" class="transition hover:text-white">الحجز</a>
+                    <a href="/" class="transition duration-200 hover:text-white">الرئيسية</a>
+                    <a href="/services" class="transition duration-200 hover:text-white">الخدمات</a>
+                    <a href="/portfolio" class="transition duration-200 hover:text-white">الأعمال</a>
+                    <a href="/contact" class="transition duration-200 hover:text-white">تواصل معنا</a>
+                    <a href="/booking" class="transition duration-200 hover:text-white">الحجز</a>
                 </nav>
 
                 <a href="/booking"
-                   class="hidden rounded-full border border-orange-500/40 bg-orange-500/10 px-5 py-2.5 text-sm font-extrabold text-white transition duration-300 hover:-translate-y-0.5 hover:border-orange-400 hover:bg-orange-500/20 hover:shadow-[0_0_24px_rgba(249,115,22,0.25)] lg:inline-flex">
+                   class="hidden rounded-full border border-orange-500/40 bg-orange-500/10 px-5 py-2.5 text-sm font-extrabold text-white transition duration-300 hover:-translate-y-0.5 hover:border-orange-400 hover:bg-orange-500/20 hover:shadow-[0_0_24px_rgba(249,115,22,0.25)] active:scale-[0.98] lg:inline-flex">
                     ابدأ مشروعك
                 </a>
 
@@ -105,7 +106,7 @@
 
                     <div class="mt-3 border-t border-white/10 pt-3">
                         <a href="/booking"
-                           class="inline-flex w-full items-center justify-center rounded-full bg-orange-500 px-5 py-3 text-sm font-black text-black transition hover:bg-orange-400">
+                           class="inline-flex w-full items-center justify-center rounded-full bg-orange-500 px-5 py-3 text-sm font-black text-black transition duration-300 active:scale-[0.98] hover:bg-orange-400">
                             ابدأ مشروعك
                         </a>
                     </div>
@@ -126,7 +127,7 @@
     </main>
 
     {{-- FOOTER --}}
-    <footer class="mt-24 border-t border-orange-500/20 bg-black/50">
+    <footer class="mt-24 border-t border-orange-500/20 bg-black/50 transition duration-300">
         <div class="mx-auto grid max-w-7xl gap-10 px-6 py-14 lg:grid-cols-3 lg:px-8">
             <div>
                 <div class="mb-4 flex items-center gap-2">
@@ -141,13 +142,13 @@
             <div>
                 <h3 class="mb-4 text-lg font-extrabold">روابط مهمة</h3>
                 <ul class="space-y-3 text-white/65">
-                    <li><a href="/" class="transition hover:text-white">الرئيسية</a></li>
-                    <li><a href="/services" class="transition hover:text-white">الخدمات</a></li>
-                    <li><a href="/portfolio" class="transition hover:text-white">الأعمال</a></li>
-                    <li><a href="/contact" class="transition hover:text-white">تواصل معنا</a></li>
-                    <li><a href="/faq" class="transition hover:text-white">الأسئلة الشائعة</a></li>
-                    <li><a href="/booking" class="transition hover:text-white">الحجز</a></li>
-                    <li><a href="{{ route('client.login') }}" class="transition hover:text-white">منطقة العملاء</a></li>
+                    <li><a href="/" class="transition duration-200 hover:text-white">الرئيسية</a></li>
+                    <li><a href="/services" class="transition duration-200 hover:text-white">الخدمات</a></li>
+                    <li><a href="/portfolio" class="transition duration-200 hover:text-white">الأعمال</a></li>
+                    <li><a href="/contact" class="transition duration-200 hover:text-white">تواصل معنا</a></li>
+                    <li><a href="/faq" class="transition duration-200 hover:text-white">الأسئلة الشائعة</a></li>
+                    <li><a href="/booking" class="transition duration-200 hover:text-white">الحجز</a></li>
+                    <li><a href="{{ route('client.login') }}" class="transition duration-200 hover:text-white">منطقة العملاء</a></li>
                 </ul>
             </div>
 
@@ -228,6 +229,26 @@
         </div>
     </footer>
 
+    {{-- Scroll reveal: add .in-view when section enters viewport --}}
+    <script>
+      (function () {
+        if (typeof window.IntersectionObserver === 'undefined') return;
+        var els = document.querySelectorAll('[data-reveal]');
+        if (!els.length) return;
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { rootMargin: '0px 0px -120px 0px', threshold: 0.12 }
+        );
+        els.forEach(function (el) { observer.observe(el); });
+      })();
+    </script>
     @stack('scripts')
 </body>
 </html>
