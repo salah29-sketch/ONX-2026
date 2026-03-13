@@ -316,6 +316,35 @@
 </div>
 @endif
 
+{{-- الاشتراكات الشهرية (باقات الإعلان) ──────────────────────────── --}}
+@php $subscriptions = $subscriptions ?? collect(); @endphp
+@if($subscriptions->isNotEmpty())
+<div class="mb-6">
+    <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-lg font-black text-gray-800">الاشتراكات</h2>
+        <a href="{{ route('client.subscriptions') }}" class="text-sm font-bold text-amber-600 hover:underline">عرض الكل</a>
+    </div>
+    <div class="space-y-3">
+        @foreach($subscriptions as $sub)
+            <div class="booking-card-v2" style="pointer-events:auto;">
+                <div class="booking-type-icon">📢</div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-center gap-2">
+                        <span class="font-black text-gray-800 text-sm">{{ $sub->planName() }}</span>
+                        <span class="booking-status {{ $sub->status }}">{{ $sub->statusLabel() }}</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-0.5">
+                        بدء: {{ $sub->start_date->format('d/m/Y') }}
+                        · تجديد قادم: {{ $sub->next_billing_date->format('d/m/Y') }}
+                        · {{ $sub->renewalTypeLabel() }}
+                    </p>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
 {{-- آخر الحجوزات --}}
 <div class="mb-4 flex items-center justify-between">
     <h2 class="text-lg font-black text-gray-800">آخر حجوزاتك</h2>

@@ -20,34 +20,56 @@ class BookingController extends Controller
     /**
      * صفحة الحجز الرئيسية
      */
-    public function index()
-    {
-        $eventLocations = EventLocation::pluck('name', 'id');
-
-        $eventPackages = EventPackage::where('is_active', true)
-            ->orderByDesc('is_featured')
-            ->orderBy('sort_order')
-            ->get();
-
-        $adMonthlyPackages = AdPackage::where('is_active', true)
-            ->where('type', 'monthly')
-            ->orderByDesc('is_featured')
-            ->orderBy('sort_order')
-            ->get();
-
-        $adCustomPackages = AdPackage::where('is_active', true)
-            ->where('type', 'custom')
-            ->orderByDesc('is_featured')
-            ->orderBy('sort_order')
-            ->get();
-
-        return view('front.booking.index', compact(
-            'eventLocations',
-            'eventPackages',
-            'adMonthlyPackages',
-            'adCustomPackages'
-        ));
+public function index(Request $request)
+{
+    $eventLocations = EventLocation::pluck('name', 'id');
+ 
+    $eventPackages = EventPackage::where('is_active', true)
+        ->orderByDesc('is_featured')
+        ->orderBy('sort_order')
+        ->get();
+ 
+    $adMonthlyPackages = AdPackage::where('is_active', true)
+        ->where('type', 'monthly')
+        ->orderByDesc('is_featured')
+        ->orderBy('sort_order')
+        ->get();
+ 
+    $adCustomPackages = AdPackage::where('is_active', true)
+        ->where('type', 'custom')
+        ->orderByDesc('is_featured')
+        ->orderBy('sort_order')
+        ->get();
+ 
+    // ── قيم افتراضية ──
+    $preselectedPackage     = null;
+    $preselectedPackageType = null;
+ 
+    // ── استقبال الباقة المختارة من صفحة الخدمات ──
+    $packageId   = $request->query('package_id');
+    $packageType = $request->query('type'); // 'event' | 'ads'
+ 
+    if ($packageId && $packageType) {
+        if ($packageType === 'event') {
+            $preselectedPackage = EventPackage::find($packageId);
+        } elseif ($packageType === 'ads') {
+            $preselectedPackage = AdPackage::find($packageId);
+        }
+ 
+        if ($preselectedPackage) {
+            $preselectedPackageType = $packageType;
+        }
     }
+ 
+    return view('front.booking.index', compact(
+        'eventLocations',
+        'eventPackages',
+        'adMonthlyPackages',
+        'adCustomPackages',
+        'preselectedPackage',
+        'preselectedPackageType'
+    ));
+}
 
     /**
      * حفظ الحجز الجديد
@@ -66,6 +88,7 @@ class BookingController extends Controller
             'service_type' => 'required|in:event,ads',
             'package_type' => 'required|string|max:50',
             'package_id'   => 'required|integer',
+            'ads_type'     => 'nullable|in:monthly,custom',
             'name'         => 'required|string|max:255',
             'phone'        => 'required|string|max:50',
             'email'        => 'nullable|email|max:255',
@@ -84,7 +107,7 @@ class BookingController extends Controller
             $rules += [
                 'event_date'    => 'required|date|after_or_equal:today',
                 'business_name' => 'nullable|string|max:255',
-                'budget'        => 'nullable|numeric|min:0',
+                'budget'        => 'nullable|numeric|min:0', // للشهرية يُخفى من النموذج والسعر من الباقة
                 'deadline'      => 'nullable|date|after_or_equal:today',
             ];
         }
@@ -114,8 +137,11 @@ class BookingController extends Controller
             $plainPassword = \Illuminate\Support\Str::random(10);
             $client->password = $plainPassword;
             $client->save();
-            session()->put('booking_' . $booking->id . '_client_login', $clientLogin);
-            session()->put('booking_' . $booking->id . '_client_password', $plainPassword);
+            $bid = $booking->id;
+            session()->put('booking_' . $bid . '_client_login', $clientLogin);
+            session()->put('booking_' . $bid . '_client_password', $plainPassword);
+            session()->flash('client_login', $clientLogin);
+            session()->flash('client_password', $plainPassword);
             return redirect()->route('booking.confirmation', $booking->id)
                 ->with('client_login', $clientLogin)
                 ->with('client_password', $plainPassword);
@@ -154,8 +180,12 @@ class BookingController extends Controller
     public function confirmation(Booking $booking)
     {
         $meta = $this->bookingService->getBookingMeta($booking);
-        $clientLogin   = session('client_login') ?: session('booking_' . $booking->id . '_client_login');
-        $clientPassword = session('client_password') ?: session('booking_' . $booking->id . '_client_password');
+        $bid = $booking->id;
+        $clientLogin   = session('client_login') ?: session('booking_' . $bid . '_client_login');
+        $clientPassword = session('client_password') ?: session('booking_' . $bid . '_client_password');
+        if (!$clientLogin && $booking->client) {
+            $clientLogin = $booking->client->email ?: $booking->client->phone;
+        }
 
         return view('front.booking.confirmation', [
             'booking'        => $booking,

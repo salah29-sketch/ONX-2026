@@ -266,6 +266,14 @@
                             <div class="info-label">الباقة</div>
                             <div class="info-value">{{ $meta['packageName'] ?? '—' }}</div>
                         </div>
+                        @if($booking->isMonthlySubscription() && $booking->subscription)
+                            <div class="info-item" style="grid-column:1/-1;">
+                                <div class="info-label">اشتراك شهري</div>
+                                <div class="info-value">
+                                    <a href="{{ route('client.subscriptions') }}" class="text-amber-600 font-bold hover:underline">عرض الاشتراك وتجديده ←</a>
+                                </div>
+                            </div>
+                        @endif
                         <div class="info-item">
                             <div class="info-label">سعر الباقة</div>
                             <div class="info-value">
@@ -434,7 +442,11 @@
                     </div>
                 </div>
                 <div class="panel-body" style="display:flex;flex-direction:column;gap:10px;">
-                    <a href="{{ route('client.bookings.invoice', $booking->id) }}" class="invoice-btn" target="_blank">
+                    <a href="{{ route('client.bookings.booking-pdf', $booking->id) }}" class="invoice-btn" target="_blank">
+                        <i class="bi bi-file-earmark-pdf"></i> تحميل PDF الحجز
+                    </a>
+                    <a href="{{ route('client.bookings.invoice', $booking->id) }}" class="invoice-btn" target="_blank"
+                       style="background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:#f87171;">
                         <i class="bi bi-download"></i> تحميل الفاتورة PDF
                     </a>
                     <a href="{{ route('client.bookings.summary', $booking->id) }}"

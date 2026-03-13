@@ -7,6 +7,8 @@ use App\Models\Client\Client;
 use App\Models\Event\EventPackage;
 use App\Models\Event\AdPackage;
 use App\Models\Event\EventLocation;
+use App\Models\Subscription\Subscription;
+use Carbon\Carbon;
 
 class BookingService
 {
@@ -77,13 +79,39 @@ class BookingService
 
     /**
      * إنشاء الحجز بعد التحقق
+     * للاشتراكات الشهرية: يُضبط total_price من الباقة ويُنشأ سجل اشتراك
      */
     public function createBooking(array $data, Client $client): Booking
     {
         $data['client_id'] = $client->id;
         $data['status']    = 'unconfirmed';
 
-        return Booking::create($data);
+        // للاشتراك الشهري: السعر من الباقة (لا حقل ميزانية من العميل)
+        if (($data['service_type'] ?? '') === 'ads' && ($data['ads_type'] ?? '') === 'monthly') {
+            $adPackage = AdPackage::find($data['package_id'] ?? 0);
+            if ($adPackage && $adPackage->type === 'monthly' && $adPackage->price !== null) {
+                $data['total_price'] = $adPackage->price;
+            }
+        }
+
+        $booking = Booking::create($data);
+
+        // إنشاء سجل الاشتراك الشهري: يبدأ من تاريخ اختيار العميل
+        if ($booking->isMonthlySubscription() && $booking->event_date) {
+            $startDate = Carbon::parse($booking->event_date);
+            $nextBilling = $startDate->copy()->addMonth();
+            Subscription::create([
+                'client_id'         => $client->id,
+                'booking_id'        => $booking->id,
+                'ad_package_id'     => $booking->package_id,
+                'start_date'        => $startDate,
+                'next_billing_date' => $nextBilling,
+                'renewal_type'     => 'manual',
+                'status'            => 'active',
+            ]);
+        }
+
+        return $booking;
     }
 
     /**

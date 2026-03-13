@@ -45,6 +45,12 @@ class Client extends Authenticatable
         return $this->hasMany(Booking::class);
     }
 
+    /** الاشتراكات الشهرية (باقات الإعلانات) */
+    public function subscriptions()
+    {
+        return $this->hasMany(\App\Models\Subscription\Subscription::class);
+    }
+
     public function messages()
     {
         return $this->hasMany(ClientMessage::class);

@@ -410,6 +410,15 @@
                             <span class="value">{{ $packageName ?: 'À confirmer' }}</span>
                         </div>
 
+                        @if($booking->service_type === 'ads')
+                        <div class="item">
+                            <span class="label">Type de publicité</span>
+                            <span class="value">
+                                {{ $booking->ads_type === 'monthly' ? 'Mensuel' : ($booking->ads_type === 'custom' ? 'Sur mesure' : 'À confirmer') }}
+                            </span>
+                        </div>
+                        @endif
+
                         @if($booking->service_type === 'event')
                         <div class="item">
                             <span class="label">Date</span>

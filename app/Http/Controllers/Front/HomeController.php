@@ -20,7 +20,7 @@ class HomeController extends Controller
             ->get();
 
         $testimonials = Testimonial::where('is_active', true)
-            ->where('status', \App\Models\Testimonial::STATUS_APPROVED)
+            ->where('status', Testimonial::STATUS_APPROVED)
             ->inRandomOrder()
             ->get();
 

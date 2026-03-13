@@ -11,6 +11,9 @@ use App\Models\Client\ClientMessage;
 use App\Models\Client\ClientMessagesSeen;
 use App\Models\Client\ClientSelectedPhoto;
 use App\Models\Content\Testimonial;
+use App\Models\Subscription\Subscription;
+use App\Models\Subscription\SubscriptionRenewal;
+use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -60,9 +63,17 @@ class DashboardController extends Controller
         // رقم الطلب للعميل: 1، 2، 3... (حسب ترتيب الطلبات)، وليس الـ ID الداخلي
         $clientOrderMap = $this->clientOrderMap($client);
 
+        // الاشتراكات الشهرية (نشطة أولاً) لعرضها في قسم "الاشتراكات"
+        $subscriptions = $client->subscriptions()
+            ->with('adPackage')
+            ->orderByRaw("CASE status WHEN 'active' THEN 0 WHEN 'expired' THEN 1 ELSE 2 END")
+            ->orderByDesc('next_billing_date')
+            ->take(5)
+            ->get();
+
         return view('client.dashboard', compact(
             'client', 'bookings', 'unreadMessages', 'activeBooking',
-            'lastMessage', 'hasNewFilesOrVideo', 'clientOrderMap'
+            'lastMessage', 'hasNewFilesOrVideo', 'clientOrderMap', 'subscriptions'
         ));
     }
 
@@ -142,13 +153,68 @@ class DashboardController extends Controller
         $client = $this->client();
         if ($booking->client_id !== $client->id) abort(404);
 
-        $booking->load(['photos', 'payments', 'visibleFiles']);
+        $booking->load(['photos', 'payments', 'visibleFiles', 'subscription']);
         $meta = app(\App\Services\BookingService::class)->getBookingMeta($booking);
         // رقم الطلب للعميل (1، 2، 3...) وليس الـ ID الداخلي
         $idx = $client->bookings()->orderBy('created_at')->orderBy('id')->pluck('id')->search($booking->id);
         $clientOrderNumber = $idx !== false ? $idx + 1 : 1;
 
         return view('client.bookings.detail', compact('booking', 'meta', 'clientOrderNumber'));
+    }
+
+    // ─── Subscriptions (الاشتراكات الشهرية) ───────────────────────
+
+    /**
+     * قائمة اشتراكات العميل (باقات الإعلان الشهرية)
+     */
+    public function subscriptions()
+    {
+        $client        = $this->client();
+        $subscriptions  = $client->subscriptions()->with('adPackage')->latest('start_date')->paginate(10);
+        return view('client.subscriptions.index', compact('subscriptions'));
+    }
+
+    /**
+     * تجديد اشتراك يدوي: تأخير next_billing_date شهر + تسجيل في subscription_renewals
+     */
+    public function renewSubscription(Subscription $subscription)
+    {
+        $client = $this->client();
+        if ($subscription->client_id !== $client->id) {
+            abort(403);
+        }
+        if (!$subscription->isRenewable()) {
+            return back()->withErrors(['subscription' => 'لا يمكن تجديد هذا الاشتراك.']);
+        }
+
+        $oldNext = $subscription->next_billing_date;
+        $newNext = Carbon::parse($oldNext)->addMonth();
+
+        $subscription->update(['next_billing_date' => $newNext]);
+
+        SubscriptionRenewal::create([
+            'subscription_id'     => $subscription->id,
+            'renewed_at'          => now(),
+            'next_billing_date'   => $newNext,
+            'renewal_type'        => 'manual',
+            'amount'              => $subscription->adPackage?->price,
+        ]);
+
+        return back()->with('success', 'تم تجديد الاشتراك حتى ' . $newNext->format('d/m/Y'));
+    }
+
+    /**
+     * تغيير نوع التجديد (يدوي / تلقائي)
+     */
+    public function updateSubscriptionRenewalType(Request $request, Subscription $subscription)
+    {
+        $client = $this->client();
+        if ($subscription->client_id !== $client->id) {
+            abort(403);
+        }
+        $request->validate(['renewal_type' => 'required|in:manual,automatic']);
+        $subscription->update(['renewal_type' => $request->renewal_type]);
+        return back()->with('success', 'تم تحديث نوع التجديد.');
     }
 
     // ─── Payments (صفحة مدفوعاتي) ─────────────────────────────────
@@ -265,10 +331,36 @@ class DashboardController extends Controller
         $client = $this->client();
         if ($booking->client_id !== $client->id) abort(404);
 
-        $booking->load(['photos', 'payments', 'visibleFiles']);
+        $booking->load(['photos', 'payments', 'visibleFiles', 'subscription']);
         $meta = app(\App\Services\BookingService::class)->getBookingMeta($booking);
 
         return view('client.bookings.summary', compact('booking', 'meta', 'client'));
+    }
+
+    /**
+     * تحميل PDF الحجز (نفس الملف المعروض بعد التأكيد)
+     */
+    public function bookingPdf(Booking $booking)
+    {
+        $client = $this->client();
+        if ($booking->client_id !== $client->id) {
+            abort(404);
+        }
+
+        $meta = app(\App\Services\BookingService::class)->getBookingMeta($booking);
+        $clientLogin   = $client->email ?: $client->phone;
+        $clientPassword = '— (لديك حساب في منطقة العملاء)';
+
+        $pdf = Pdf::loadView('front.booking.pdf', [
+            'booking'      => $booking,
+            'packageName'  => $meta['packageName'],
+            'packagePrice' => $meta['packagePrice'],
+            'locationName' => $meta['locationName'],
+            'clientLogin'  => $clientLogin,
+            'clientPassword' => $clientPassword,
+        ]);
+
+        return $pdf->download('booking-' . $booking->id . '.pdf');
     }
 
     // ─── File Download ───────────────────────────────────────────

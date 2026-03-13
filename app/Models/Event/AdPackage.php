@@ -36,4 +36,10 @@ class AdPackage extends Model
         return $this->hasMany(Booking::class, 'package_id')
             ->where('service_type', 'ads');
     }
+
+    /** الاشتراكات النشطة على هذه الباقة (للشهري فقط) */
+    public function subscriptions()
+    {
+        return $this->hasMany(\App\Models\Subscription\Subscription::class, 'ad_package_id');
+    }
 }

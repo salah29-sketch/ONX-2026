@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const monthSelect   = document.getElementById('calendarMonthSelect');
   const yearSelect    = document.getElementById('calendarYearSelect');
 
-
   const bookedDaysUrl = form.dataset.bookedDaysUrl;
   const checkDateUrl  = form.dataset.checkDateUrl;
 
@@ -126,13 +125,23 @@ document.addEventListener('DOMContentLoaded', function () {
   /* ── summary ───────────────────────────────────────────────── */
   function updateSummaryPackage() {
     const sel = getCheckedPackage(currentService);
+    const adsTypeInput = document.getElementById('ads_type');
+    const budgetWrap   = document.getElementById('budgetFieldWrap');
+    const budgetInput  = document.getElementById('budget_input');
     if (!sel) {
       if (summaryPackage) summaryPackage.innerHTML = empty('لم يتم الاختيار');
       packageTypeInput.value = ''; packageIdInput.value = '';
+      if (adsTypeInput) adsTypeInput.value = '';
+      if (budgetWrap) budgetWrap.style.display = '';
     } else {
       if (summaryPackage) summaryPackage.textContent = sel.dataset.name || 'تم الاختيار';
       packageTypeInput.value = sel.dataset.packageType || '';
       packageIdInput.value   = sel.dataset.packageId   || '';
+      if (adsTypeInput) adsTypeInput.value = sel.dataset.adsType || '';
+      // إخفاء حقل الميزانية للباقات الشهرية (السعر من الباقة)
+      const isMonthly = sel.dataset.adsType === 'monthly';
+      if (budgetWrap) budgetWrap.style.display = isMonthly ? 'none' : '';
+      if (budgetInput && isMonthly) budgetInput.value = '';
     }
     updateSubmitState();
   }
@@ -348,6 +357,43 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(() => { confirmedDates = []; pendingDates = []; });
   }
 
+  /* ── auto-select من URL params ─────────────────────────────── */
+  function applyUrlParams() {
+    const params      = new URLSearchParams(window.location.search);
+    const packageId   = params.get('package_id');
+    const serviceType = params.get('type'); // 'event' أو 'ads'
+
+    if (!packageId) return;
+
+    // 1. تبديل نوع الخدمة إذا لزم
+    if (serviceType && serviceType !== currentService) {
+      applyServiceMode(serviceType);
+    }
+
+    // 2. إيجاد الـ radio وتحديده
+    const prefix     = (serviceType === 'ads') ? 'ad' : 'event';
+    const radioValue = `${prefix}:${packageId}`;
+    const radio      = document.querySelector(
+      `input[type="radio"][name="selected_package"][value="${radioValue}"]`
+    );
+
+    if (!radio) return;
+
+    radio.checked = true;
+    radio.dispatchEvent(new Event('change', { bubbles: true }));
+
+    // 3. scroll ناعم إلى الباقة
+    const box = radio.nextElementSibling; // .package-box
+    if (box) {
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // وميض برتقالي لمدة 1.8 ثانية
+      box.style.transition = 'box-shadow 0.3s ease';
+      box.style.boxShadow  = '0 0 0 3px rgba(249,115,22,0.60)';
+      setTimeout(() => { box.style.boxShadow = ''; }, 1800);
+    }
+  }
+
   /* ── init ──────────────────────────────────────────────────── */
   initCustomSelects();
   attachLocationEvents();
@@ -374,5 +420,8 @@ document.addEventListener('DOMContentLoaded', function () {
       setStatus('none', 'اختر يومًا من التقويم');
     }
     updateSubmitState();
+
+    // ── تطبيق URL params بعد اكتمال كل شيء ──
+    applyUrlParams();
   });
 });

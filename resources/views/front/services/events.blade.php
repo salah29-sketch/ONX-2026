@@ -3,6 +3,8 @@
 
 @section('content')
 
+<div x-data="eventsCompare()" x-init="init()">
+
 {{-- HERO --}}
 <section class="relative isolate overflow-hidden border-b border-white/10">
     <div class="absolute inset-0 -z-10">
@@ -40,9 +42,19 @@
                     واتساب
                 </a>
             </div>
+
+            @if($travelNote)
+            <div class="mt-6 opacity-0 animate-fade-in-up animate-delay-400">
+                <p class="inline-flex items-center gap-2 border border-orange-500/30 bg-orange-500/10 text-orange-300 text-sm px-4 py-2 rounded-full">
+                    <span>🚗</span> {{ $travelNote }}
+                </p>
+            </div>
+            @endif
         </div>
     </div>
 </section>
+
+
 
 {{-- Packages --}}
 <section id="Packages" class="mx-auto max-w-7xl px-6 py-20 lg:px-8">
@@ -53,79 +65,120 @@
         </p>
     </div>
 
-    <div class="grid items-start gap-6 md:grid-cols-2 xl:grid-cols-3">
-        @forelse($Packages as $p)
-            <article class="self-start rounded-[30px] border {{ $p->is_featured ? 'border-orange-500/30' : 'border-white/10' }} bg-white/5 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.32)]">
-                @if($p->is_featured)
-                    <div class="mb-4 inline-flex w-fit self-center rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-2 text-[11px] font-extrabold tracking-[0.18em] text-orange-300">
-                        {{ $p->subtitle ?: 'الأكثر طلبًا' }}
-                    </div>
-                @else
-                    <div class="mb-4 inline-flex w-fit self-center rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-extrabold tracking-[0.18em] text-white/70">
-                        {{ $p->subtitle ?: 'PACKAGE' }}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+        @forelse($Packages as $pkg)
+        @php
+            $pkgFeatures = is_array($pkg->features)
+                ? $pkg->features
+                : (json_decode($pkg->features, true) ?? []);
+        @endphp
+
+        <article class="rounded-[30px] border bg-white/5 backdrop-blur p-6 flex flex-col shadow-[0_20px_50px_rgba(0,0,0,0.32)] transition duration-300 hover:-translate-y-1
+                        {{ $pkg->is_featured ? 'border-orange-500/50 shadow-[0_0_30px_rgba(249,115,22,0.15)]' : 'border-white/10' }}"
+                 :class="{ 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]': isIn({{ $pkg->id }}) }">
+
+            {{-- Badge --}}
+            @if($pkg->is_featured)
+                <div class="mb-4 inline-flex w-fit self-center">
+                    <span class="px-4 py-2 rounded-full text-[11px] font-black tracking-[0.18em]"
+                          style="background:linear-gradient(135deg,#D4AF37,#F5D060);color:#1a1a1a">
+                        ⭐ {{ $pkg->subtitle ?: 'الأكثر طلبًا' }}
+                    </span>
+                </div>
+            @else
+                <div class="mb-4 inline-flex w-fit self-center rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-extrabold tracking-[0.18em] text-white/70">
+                    {{ $pkg->subtitle ?: 'PACKAGE' }}
+                </div>
+            @endif
+
+            {{-- الاسم والوصف --}}
+            <div class="text-center mb-6">
+                <h3 class="text-2xl font-black text-white">{{ $pkg->name }}</h3>
+                @if($pkg->description)
+                <p class="mt-3 text-sm leading-7 text-white/70">{{ $pkg->description }}</p>
+                @endif
+            </div>
+
+            {{-- السعر --}}
+            <div class="mb-6 text-center">
+                @if(!is_null($pkg->old_price) && (float)$pkg->old_price > (float)$pkg->price)
+                    <div class="mb-1 text-lg font-bold text-white/35 line-through">
+                        {{ number_format((float)$pkg->old_price) }}
+                        <span class="text-sm">DA</span>
                     </div>
                 @endif
-
-                <div class="text-center">
-                    <h3 class="text-2xl font-black">{{ $p->name }}</h3>
-
-                    <p class="mt-3 text-sm leading-7 text-white/70">
-                        {{ $p->description ?: 'باقة مناسبة لتوثيق حفلتكم بجودة سينمائية.' }}
-                    </p>
+                <div class="flex items-baseline justify-center gap-2">
+                    <span class="text-3xl font-black text-white">
+                        {{ $pkg->price !== null ? number_format((float)$pkg->price) : '—' }}
+                    </span>
+                    <span class="text-white/50 text-sm">DA</span>
                 </div>
+            </div>
 
-                <div class="mt-6 flex-1">
-                    <div class="features-wrap">
-                        <ul class="features-list collapsed space-y-2 text-sm text-white/65" dir="ltr">
-                            @foreach(($p->features ?? []) as $f)
-                                <li class="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                                    <span class="mt-1 h-2 w-2 rounded-full bg-orange-500"></span>
-                                    <span class="text-left leading-6">{{ $f }}</span>
-                                </li>
-                            @endforeach
-                        </ul>
-
-                        @if(count($p->features ?? []) > 5)
-                            <button
-                                type="button"
-                                class="onx-more-btn mt-3 text-sm font-extrabold text-orange-400 transition hover:text-orange-300"
-                                onclick="toggleFeatures(this)">
-                                عرض المزيد
-                            </button>
+            {{-- المميزات مع ✓ / ✕ --}}
+            <div class="features-wrap mb-6 flex-1">
+                <ul class="features-list collapsed space-y-2.5">
+                    @foreach($allFeatures as $feature)
+                    @php $has = in_array($feature, $pkgFeatures); @endphp
+                    <li class="flex items-center justify-between text-sm gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3
+                               {{ $has ? 'text-white/80' : 'text-white/30' }}">
+                        <span>{{ $feature }}</span>
+                        @if($has)
+                            <span class="text-orange-400 shrink-0 font-black">✓</span>
+                        @else
+                            <span class="text-white/20 shrink-0">✕</span>
                         @endif
-                    </div>
-                </div>
+                    </li>
+                    @endforeach
+                </ul>
+                @if(count($allFeatures) > 5)
+                    <button type="button"
+                            class="onx-more-btn mt-3 text-sm font-extrabold text-orange-400 transition hover:text-orange-300"
+                            onclick="toggleFeatures(this)">
+                        عرض المزيد
+                    </button>
+                @endif
+            </div>
 
-                <div class="mt-6 border-t border-white/10 pt-6 text-center">
-                    @if(!is_null($p->old_price) && (float) $p->old_price > (float) $p->price)
-                        <div class="mb-2 text-lg font-bold text-white/35 line-through">
-                            {{ number_format((float) $p->old_price) }}
-                            <span class="text-sm font-bold text-white/35">DA</span>
-                        </div>
-                    @endif
-
-                    <div class="mb-4 text-3xl font-black text-white">
-                        {{ $p->price !== null ? number_format((float) $p->price) : '—' }}
-                        <span class="text-base font-bold text-white/50">DA</span>
-                    </div>
-
-                    <a href="{{ route('booking') }}"
-                       class="inline-flex w-full items-center justify-center rounded-full {{ $p->is_featured ? 'bg-orange-500 text-black hover:bg-orange-400' : 'border border-white/15 bg-white/5 text-white hover:border-orange-500/50 hover:bg-orange-500/10' }} px-6 py-3.5 text-sm font-black transition duration-300">
-                        احجز الآن
-                    </a>
-                </div>
-            </article>
+            {{-- الأزرار --}}
+            <div class="mt-auto space-y-2 border-t border-white/10 pt-6">
+                <a href="{{ route('booking') }}?package_id={{ $pkg->id }}&type=event"
+                   class="block w-full text-center py-3.5 rounded-full font-black text-sm transition duration-300
+                          {{ $pkg->is_featured
+                              ? 'bg-orange-500 hover:bg-orange-400 text-black hover:shadow-[0_0_30px_rgba(249,115,22,0.3)]'
+                              : 'border border-white/15 bg-white/5 text-white hover:border-orange-500/50 hover:bg-orange-500/10' }}">
+                    احجز الآن
+                </a>
+                <button type="button"
+                        @click="toggle({{ $pkg->id }}, '{{ addslashes($pkg->name) }}', {{ $pkg->price ?? 'null' }}, {{ $pkg->is_featured ? 'true' : 'false' }}, {{ json_encode($pkgFeatures) }})"
+                        class="block w-full text-center py-2.5 rounded-full font-bold text-sm border transition duration-300"
+                        :class="isIn({{ $pkg->id }})
+                            ? 'border-blue-400/50 bg-blue-500/10 text-blue-300'
+                            : 'border-white/10 bg-white/5 text-white/50 hover:border-white/20 hover:text-white/70'">
+                    <span x-text="isIn({{ $pkg->id }}) ? '✓ تمت الإضافة للمقارنة' : '+ قارن هذه الباقة'"></span>
+                </button>
+            </div>
+        </article>
         @empty
-            <div class="rounded-[28px] border border-white/10 bg-white/5 p-8 text-center md:col-span-2 xl:col-span-3">
+            <div class="rounded-[28px] border border-white/10 bg-white/5 p-8 text-center sm:col-span-2 lg:col-span-3">
                 <h4 class="text-2xl font-black">لا توجد باقات بعد</h4>
                 <p class="mt-3 text-sm leading-7 text-white/65">أضف الباقات من لوحة التحكم (Admin).</p>
             </div>
         @endforelse
     </div>
 
-    @if(!empty($travelNote))
-        <div class="mt-6 text-center text-sm text-white/55">{{ $travelNote }}</div>
-    @endif
+    {{-- زر عرض المقارنة المركزي --}}
+    <div x-show="compareList.length >= 2"
+         x-cloak
+         x-transition
+         class="mt-8 flex justify-center">
+        <button @click="showModal = true"
+                class="inline-flex items-center gap-2 rounded-full bg-orange-500 px-6 py-3 text-sm font-black text-black shadow-[0_0_20px_rgba(249,115,22,0.3)] transition duration-300 hover:bg-orange-400 hover:-translate-y-0.5">
+            <span>⚖️</span>
+            عرض مقارنة الباقات
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-black/20 text-xs font-black" x-text="compareList.length"></span>
+        </button>
+    </div>
 </section>
 
 {{-- HOW WE WORK --}}
@@ -202,7 +255,7 @@
             <div class="mt-6 space-y-4">
                 <div class="rounded-[20px] border border-white/10 bg-black/20 p-4">
                     <div class="font-black text-white">🎬 جودة سينمائية</div>
-                    <div class="mt-2 text-sm leading-7 text-white/65">إضاءة وصوت ومعدات تعطي لقطة “فيلم”.</div>
+                    <div class="mt-2 text-sm leading-7 text-white/65">إضاءة وصوت ومعدات تعطي لقطة "فيلم".</div>
                 </div>
 
                 <div class="rounded-[20px] border border-white/10 bg-black/20 p-4">
@@ -259,39 +312,124 @@
     </div>
 </section>
 
-<div id="videoModal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-    <div class="relative w-full max-w-5xl">
-        <button
-            type="button"
-            onclick="closeVideoModal()"
-            class="absolute -top-12 left-0 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
-            aria-label="إغلاق"
-        >
-            ✕
-        </button>
+{{-- Modal المقارنة --}}
+<div x-show="showModal"
+     x-cloak
+     @keydown.escape.window="showModal = false"
+     class="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/80 backdrop-blur-sm">
 
-        <div class="relative overflow-hidden rounded-[24px] border border-white/10 bg-black shadow-[0_20px_60px_rgba(0,0,0,0.45)]" style="padding-top:56.25%;">
-            <iframe
-                id="videoFrame"
-                class="absolute inset-0 h-full w-full"
-                src=""
-                title="YouTube video player"
-                frameborder="0"
-                allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen
-            ></iframe>
+    <div @click.outside="showModal = false"
+         class="bg-[#0f0f0f] border border-white/10 rounded-[20px] shadow-2xl w-full max-w-3xl">
+
+        {{-- Header --}}
+        <div class="flex items-center justify-between px-4 py-3 border-b border-white/10">
+            <h3 class="text-base font-black text-white">مقارنة الباقات</h3>
+            <button @click="showModal = false" class="text-white/40 hover:text-white text-xl leading-none">×</button>
+        </div>
+
+        {{-- Table --}}
+        <div class="overflow-x-auto">
+            <table class="w-full text-xs text-right border-collapse">
+                <thead>
+                    <tr>
+                        <th class="px-3 py-2 text-right text-white/50 font-bold bg-white/5 w-[40%]">الخاصية</th>
+                        <template x-for="p in compareList" :key="p.id">
+                            <th class="px-3 py-2 text-center text-white bg-white/5 font-black" x-text="p.name"></th>
+                        </template>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-white/5">
+                        <td class="px-3 py-2 font-bold text-white/60">💰 السعر</td>
+                        <template x-for="p in compareList" :key="p.id">
+                            <td class="px-3 py-2 text-center font-black text-orange-400"
+                                x-text="p.price ? Number(p.price).toLocaleString('ar-DZ') + ' دج' : 'حسب الطلب'"></td>
+                        </template>
+                    </tr>
+                    <template x-for="feat in allModalFeatures" :key="feat">
+                        <tr class="border-b border-white/5">
+                            <td class="px-3 py-2 text-white/60" x-text="feat"></td>
+                            <template x-for="p in compareList" :key="p.id">
+                                <td class="px-3 py-2 text-center text-sm"
+                                    x-text="p.features.includes(feat) ? '✅' : '❌'"></td>
+                            </template>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Footer --}}
+        <div class="px-4 py-3 border-t border-white/10 flex flex-wrap gap-2 justify-end">
+            <template x-for="p in compareList" :key="p.id">
+                <a :href="`{{ route('booking') }}?package_id=${p.id}&type=event`"
+                   class="bg-orange-500 hover:bg-orange-400 text-black px-5 py-2 rounded-full font-black text-xs transition-all">
+                    احجز <span x-text="p.name"></span>
+                </a>
+            </template>
+            <button @click="clear()"
+                    class="border border-white/15 text-white/50 hover:text-red-400 hover:border-red-400/30 px-5 py-2 rounded-full font-bold text-xs transition-all">
+                مسح الكل
+            </button>
         </div>
     </div>
 </div>
 
+{{-- Video Modal --}}
+<div id="videoModal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+    <div class="relative w-full max-w-5xl">
+        <button type="button" onclick="closeVideoModal()"
+                class="absolute -top-12 left-0 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
+                aria-label="إغلاق">✕</button>
+        <div class="relative overflow-hidden rounded-[24px] border border-white/10 bg-black shadow-[0_20px_60px_rgba(0,0,0,0.45)]" style="padding-top:56.25%;">
+            <iframe id="videoFrame" class="absolute inset-0 h-full w-full" src=""
+                    title="YouTube video player" frameborder="0"
+                    allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+</div>{{-- end x-data --}}
+
 @endsection
+
+@push('styles')
+<style>
+.features-list { overflow: hidden; }
+.features-list.collapsed { max-height: 210px; }
+.features-list.expanded  { max-height: 2000px; }
+.features-list li { transition: opacity 0.2s ease; }
+.features-list.collapsed li:nth-child(n+6) { opacity: 0; pointer-events: none; }
+.features-list.expanded  li { opacity: 1; pointer-events: auto; }
+</style>
+@endpush
 
 @push('scripts')
 <script>
+function eventsCompare() {
+    return {
+        compareList: [],
+        showModal: false,
+        init() {},
+        isIn(id) { return this.compareList.some(p => p.id === id); },
+        toggle(id, name, price, featured, features) {
+            if (this.isIn(id)) { this.compareList = this.compareList.filter(p => p.id !== id); return; }
+            if (this.compareList.length >= 3) { alert('يمكنك مقارنة 3 باقات كحد أقصى'); return; }
+            this.compareList.push({ id, name, price, featured, features: features || [] });
+        },
+        clear() { this.compareList = []; this.showModal = false; },
+        get allModalFeatures() {
+            const s = new Set();
+            this.compareList.forEach(p => (p.features || []).forEach(f => s.add(f)));
+            return [...s];
+        },
+    };
+}
+
 function openVideoModal(videoId) {
     const modal = document.getElementById('videoModal');
     const frame = document.getElementById('videoFrame');
-
     frame.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
     modal.classList.remove('hidden');
     modal.classList.add('flex');
@@ -301,38 +439,27 @@ function openVideoModal(videoId) {
 function closeVideoModal() {
     const modal = document.getElementById('videoModal');
     const frame = document.getElementById('videoFrame');
-
     frame.src = '';
     modal.classList.add('hidden');
     modal.classList.remove('flex');
     document.body.style.overflow = '';
 }
 
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') {
-        closeVideoModal();
-    }
-});
-
-document.addEventListener('click', function (e) {
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVideoModal(); });
+document.addEventListener('click', e => {
     const modal = document.getElementById('videoModal');
-
-    if (e.target === modal) {
-        closeVideoModal();
-    }
+    if (e.target === modal) closeVideoModal();
 });
 
 function toggleFeatures(btn) {
     const wrap = btn.closest('.features-wrap');
     const list = wrap.querySelector('.features-list');
-
+    list.style.transition = 'max-height 0.35s ease';
     if (list.classList.contains('collapsed')) {
-        list.classList.remove('collapsed');
-        list.classList.add('expanded');
+        list.classList.replace('collapsed', 'expanded');
         btn.textContent = 'إخفاء';
     } else {
-        list.classList.remove('expanded');
-        list.classList.add('collapsed');
+        list.classList.replace('expanded', 'collapsed');
         btn.textContent = 'عرض المزيد';
     }
 }

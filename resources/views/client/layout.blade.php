@@ -260,6 +260,9 @@ body.client-portal-dark .client-portal-app .media-lightbox-wrap #media-lightbox-
                     <a href="{{ route('client.payments') }}" class="portal-nav-link flex items-center gap-2.5 px-3 py-2.5 text-sm font-bold {{ request()->routeIs('client.payments*') ? 'active' : 'text-gray-500' }}">
                         <span>💰</span> المدفوعات
                     </a>
+                    <a href="{{ route('client.subscriptions') }}" class="portal-nav-link flex items-center gap-2.5 px-3 py-2.5 text-sm font-bold {{ request()->routeIs('client.subscriptions*') ? 'active' : 'text-gray-500' }}">
+                        <span>📢</span> الاشتراكات
+                    </a>
                     <a href="{{ route('client.media') }}" class="portal-nav-link flex items-center gap-2.5 px-3 py-2.5 text-sm font-bold {{ request()->routeIs('client.media*') || request()->routeIs('client.project-photos*') || request()->routeIs('client.files*') ? 'active' : 'text-gray-500' }}">
                         <span>🎬</span> الميديا
                     </a>
@@ -322,6 +325,9 @@ body.client-portal-dark .client-portal-app .media-lightbox-wrap #media-lightbox-
     </a>
     <a href="{{ route('client.payments') }}" class="portal-bottom-link {{ request()->routeIs('client.payments*') ? 'active' : '' }}">
         <i class="bi bi-cash-coin"></i> المدفوعات
+    </a>
+    <a href="{{ route('client.subscriptions') }}" class="portal-bottom-link {{ request()->routeIs('client.subscriptions*') ? 'active' : '' }}">
+        <i class="bi bi-arrow-repeat"></i> الاشتراكات
     </a>
     <a href="{{ route('client.media') }}" class="portal-bottom-link {{ request()->routeIs('client.media*') || request()->routeIs('client.project-photos*') || request()->routeIs('client.files*') ? 'active' : '' }}">
         <i class="bi bi-camera-video"></i> الميديا

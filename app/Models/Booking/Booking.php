@@ -28,6 +28,7 @@ class Booking extends Model
         'deadline',
         'package_type',
         'package_id',
+        'ads_type',
         'notes',
         'status',
         'final_video_path',
@@ -74,6 +75,12 @@ class Booking extends Model
     public function files()
     {
         return $this->hasMany(BookingFile::class)->orderBy('created_at');
+    }
+
+    /** الاشتراك المرتبط بهذا الحجز (إن كان حجز اشتراك شهري إعلاني) */
+    public function subscription()
+    {
+        return $this->hasOne(\App\Models\Subscription\Subscription::class);
     }
 
     public function visibleFiles()
@@ -144,5 +151,11 @@ class Booking extends Model
             'personal'  => 'مشاريع شخصية',
             default     => $type ?: '—',
         };
+    }
+
+    /** هل هذا الحجز اشتراك شهري إعلاني (يُعامل كاشتراك في منطقة العملاء) */
+    public function isMonthlySubscription(): bool
+    {
+        return $this->service_type === 'ads' && $this->ads_type === 'monthly';
     }
 }

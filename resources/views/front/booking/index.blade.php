@@ -468,6 +468,7 @@
                 <input type="hidden" name="event_date"   id="event_date"   value="{{ old('event_date') }}">
                 <input type="hidden" name="package_type" id="package_type" value="{{ old('package_type') }}">
                 <input type="hidden" name="package_id"   id="package_id"   value="{{ old('package_id') }}">
+                <input type="hidden" name="ads_type"     id="ads_type"     value="{{ old('ads_type') }}">
 
                 {{-- 1. نوع الخدمة --}}
                 <div>
@@ -541,7 +542,7 @@
                         @forelse($adMonthlyPackages as $p)
                             <label class="package-option block">
                                 <input type="radio" name="selected_package" value="ad:{{ $p->id }}"
-                                    data-service="ads" data-package-type="ads"
+                                    data-service="ads" data-package-type="ads" data-ads-type="monthly"
                                     data-package-id="{{ $p->id }}" data-name="{{ $p->name }}"
                                     {{ old('selected_package') === 'ad:'.$p->id ? 'checked' : '' }}>
                                 <span class="package-box block rounded-2xl border border-white/10 bg-white/[0.03] p-3.5 hover:border-orange-500/40 hover:bg-orange-500/5">
@@ -565,7 +566,7 @@
                         @forelse($adCustomPackages as $p)
                             <label class="package-option block">
                                 <input type="radio" name="selected_package" value="ad:{{ $p->id }}"
-                                    data-service="ads" data-package-type="ads"
+                                    data-service="ads" data-package-type="ads" data-ads-type="custom"
                                     data-package-id="{{ $p->id }}" data-name="{{ $p->name }}"
                                     {{ old('selected_package') === 'ad:'.$p->id ? 'checked' : '' }}>
                                 <span class="package-box block rounded-2xl border border-white/10 bg-white/[0.03] p-3.5 hover:border-orange-500/40 hover:bg-orange-500/5">
@@ -676,10 +677,11 @@
                             @enderror
                         </div>
 
-                        <div>
+                        {{-- الميزانية: تُخفى عند اختيار باقة شهرية (السعر من الباقة) --}}
+                        <div id="budgetFieldWrap">
                             <label class="mb-1.5 block text-xs font-bold text-white/70">الميزانية التقريبية</label>
                             <input type="number" min="0" class="onx-input {{ $errors->has('budget') ? 'onx-field-error' : '' }}"
-                                name="budget" value="{{ old('budget') }}" placeholder="مثال: 30000">
+                                name="budget" id="budget_input" value="{{ old('budget') }}" placeholder="مثال: 30000">
                             @error('budget')
                                 <p class="mt-1.5 text-xs font-bold text-red-300">{{ $message }}</p>
                             @enderror

@@ -84,6 +84,8 @@ Route::prefix('booking')->group(function () {
 
 // Auth
 Auth::routes(['register' => false]);
+// صفحة الحزم والخدمات
+Route::get('/packages', [App\Http\Controllers\Front\ServiceController::class, 'packages'])->name('front.packages');
 
 /*
 |--------------------------------------------------------------------------
@@ -112,6 +114,9 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('project-photos/booking/{booking}', [\App\Http\Controllers\Client\DashboardController::class, 'projectPhotosBooking'])->name('project-photos.booking');
         Route::post('project-photos/toggle', [\App\Http\Controllers\Client\DashboardController::class, 'toggleSelectedPhoto'])->name('project-photos.toggle');
         Route::get('payments', [\App\Http\Controllers\Client\DashboardController::class, 'payments'])->name('payments');
+        Route::get('subscriptions', [\App\Http\Controllers\Client\DashboardController::class, 'subscriptions'])->name('subscriptions');
+        Route::post('subscriptions/{subscription}/renew', [\App\Http\Controllers\Client\DashboardController::class, 'renewSubscription'])->name('subscriptions.renew');
+        Route::put('subscriptions/{subscription}/renewal-type', [\App\Http\Controllers\Client\DashboardController::class, 'updateSubscriptionRenewalType'])->name('subscriptions.renewal-type');
         Route::get('media', [\App\Http\Controllers\Client\DashboardController::class, 'media'])->name('media');
         Route::get('files', [\App\Http\Controllers\Client\DashboardController::class, 'files'])->name('files');
    // فاتورة PDF
@@ -121,6 +126,9 @@ Route::prefix('client')->name('client.')->group(function () {
         Route::get('bookings/{booking}/summary',
         [\App\Http\Controllers\Client\DashboardController::class, 'bookingSummary'])
         ->name('bookings.summary');
+        Route::get('bookings/{booking}/booking-pdf',
+        [\App\Http\Controllers\Client\DashboardController::class, 'bookingPdf'])
+        ->name('bookings.booking-pdf');
 
     // تحميل ملف
         Route::get('files/{file}/download',
