@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Booking;
+use App\Models\Booking\Booking;
 use Carbon\Carbon;
 
 class CancelExpiredPendingBookings extends Command

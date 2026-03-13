@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Models\Role;
-use App\Models\User;
+use App\Models\Admin\Role;
+use App\Models\Admin\User;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 

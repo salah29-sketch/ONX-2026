@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Booking;
-use App\Models\BookingPayment;
+use App\Models\Booking\Booking;
+use App\Models\Booking\BookingPayment;
 use Illuminate\Http\Request;
 
 class BookingPaymentsController extends Controller

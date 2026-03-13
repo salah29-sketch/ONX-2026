@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\BookingService;
-use App\Models\Booking;
-use App\Models\EventLocation;
-use App\Models\EventPackage;
-use App\Models\AdPackage;
+use App\Models\Booking\Booking;
+use App\Models\Event\EventLocation;
+use App\Models\Event\EventPackage;
+use App\Models\Event\AdPackage;
 use Illuminate\Http\Request;
 
 class BookingsController extends Controller

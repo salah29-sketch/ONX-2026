@@ -1,7 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Booking;
 
+use App\Models\Client\Client;
+use App\Models\Event\AdPackage;
+use App\Models\Event\EventLocation;
+use App\Models\Event\EventPackage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,7 +31,7 @@ class Booking extends Model
         'notes',
         'status',
         'final_video_path',
-        'total_price',      // السعر الإجمالي المتفق عليه (يُدخله الأدمن)
+        'total_price',
     ];
 
     protected $casts = [
@@ -36,8 +40,6 @@ class Booking extends Model
         'budget'      => 'decimal:2',
         'total_price' => 'decimal:2',
     ];
-
-    // ─── Relations ──────────────────────────────────────────────
 
     public function eventLocation()
     {
@@ -79,43 +81,27 @@ class Booking extends Model
         return $this->hasMany(BookingFile::class)->where('is_visible', true)->orderBy('created_at');
     }
 
-    // ─── Payment Helpers ─────────────────────────────────────────
-
-    /**
-     * إجمالي المبالغ المدفوعة
-     */
     public function paidAmount(): float
     {
         return (float) $this->payments()->sum('amount');
     }
 
-    /**
-     * المبلغ المتبقي
-     */
     public function remainingAmount(): float
     {
         if (!$this->total_price) return 0;
         return max(0, (float) $this->total_price - $this->paidAmount());
     }
 
-    /**
-     * نسبة السداد (0-100)
-     */
     public function paymentPercent(): int
     {
         if (!$this->total_price || $this->total_price <= 0) return 0;
         return min(100, (int) round(($this->paidAmount() / (float) $this->total_price) * 100));
     }
 
-    /**
-     * هل تم السداد بالكامل؟
-     */
     public function isFullyPaid(): bool
     {
         return $this->total_price && $this->paidAmount() >= (float) $this->total_price;
     }
-
-    // ─── Status Helpers ──────────────────────────────────────────
 
     public function statusLabel(): string
     {
@@ -141,9 +127,6 @@ class Booking extends Model
         };
     }
 
-    /**
-     * نص معلومة التسليم: فعاليات = شهر كحد أقصى، إعلانات = العميل يختار
-     */
     public function deliveryInfoText(): string
     {
         return $this->service_type === 'event'
@@ -151,9 +134,6 @@ class Booking extends Model
             : 'موعد التسليم يحدده العميل مع الفريق';
     }
 
-    /**
-     * تصنيف المشروع للعرض: حفلات / إعلانات / تسويق / مشاريع شخصية
-     */
     public function projectTypeLabel(): string
     {
         $type = $this->project_type ?? $this->service_type;

@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyRoleRequest;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
-use App\Models\Permission;
-use App\Models\Role;;
+use App\Models\Admin\Permission;
+use App\Models\Admin\Role;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 

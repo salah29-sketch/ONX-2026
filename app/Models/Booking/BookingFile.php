@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Booking;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,9 +26,6 @@ class BookingFile extends Model
         return $this->belongsTo(Booking::class);
     }
 
-    /**
-     * حجم الملف بصيغة مقروءة
-     */
     public function humanSize(): string
     {
         if (!$this->size) return '';
@@ -62,7 +59,6 @@ class BookingFile extends Model
         };
     }
 
-    /** صورة مصغرة للعرض (للصور أو الفيديو) */
     public function thumbnailUrl(): ?string
     {
         if ($this->thumbnail_path) {
@@ -71,7 +67,6 @@ class BookingFile extends Model
         return null;
     }
 
-    /** صورة تمثيلية قبل تشغيل الفيديو */
     public function posterUrl(): ?string
     {
         if ($this->poster_path) {
@@ -80,7 +75,6 @@ class BookingFile extends Model
         return null;
     }
 
-    /** رابط الملف للعرض/التشغيل */
     public function fileUrl(): string
     {
         return str_starts_with($this->path, 'http') ? $this->path : asset($this->path);

@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\Company;
+use App\Models\Client\ClientMessagesSeen;
+use App\Models\Content\Company;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -30,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
 
     view()->composer('*', function ($view) {
         // غيّر هذا حسب اسم موديل/جدول إعدادات الشركة عندك
-        $companySettings = \App\Models\Company::first();
+        $companySettings = Company::first();
         $view->with('companySettings', $companySettings);
     });
 
@@ -40,7 +41,12 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
         $client = Auth::guard('client')->user();
-        $unreadMessages = $client->messages()->whereNull('admin_read_at')->count();
+        $unreadQuery = $client->messages()->whereNull('admin_read_at');
+        $lastSeen = ClientMessagesSeen::where('client_id', $client->id)->value('last_seen_at');
+        if ($lastSeen) {
+            $unreadQuery->where('created_at', '>', $lastSeen);
+        }
+        $unreadMessages = $unreadQuery->count();
         // الحجز النشط: مؤكد أو قيد التنفيذ؛ إن لم يوجد فأحدث حجز
         $activeBooking = $client->bookings()
             ->whereIn('status', ['confirmed', 'in_progress'])

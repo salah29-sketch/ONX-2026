@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Booking;
-use App\Models\BookingFile;
+use App\Models\Booking\Booking;
+use App\Models\Booking\BookingFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 

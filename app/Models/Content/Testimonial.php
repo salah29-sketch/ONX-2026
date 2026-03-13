@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Content;
 
+use App\Models\Booking\Booking;
+use App\Models\Client\Client;
 use Illuminate\Database\Eloquent\Model;
 
 class Testimonial extends Model

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\PortfolioItem;
+use App\Models\Content\PortfolioItem;
 use Illuminate\Http\Request;
 
 class PortfolioItemsController extends Controller

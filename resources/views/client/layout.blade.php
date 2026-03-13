@@ -8,8 +8,8 @@
 .client-portal-app { display: flex; flex-direction: column; min-height: 100vh; }
 .client-portal-top { flex-shrink: 0; border-bottom: 1px solid #e5e7eb; background: rgba(255,255,255,.95); backdrop-blur: 12px; }
 .client-portal-body { display: flex; flex: 1; min-height: 0; }
-.client-portal-sidebar { width: 280px; flex-shrink: 0; border-left: 1px solid #e5e7eb; background: rgba(255,255,255,.9); overflow-y: auto; }
-.client-portal-main { flex: 1; min-width: 0; overflow-y: auto; padding: 24px; background: transparent; }
+.client-portal-sidebar { width: 260px; flex-shrink: 0; border-left: 1px solid #e5e7eb; background: rgba(255,255,255,.9); overflow-y: auto; }
+.client-portal-main { flex: 1; min-width: 0; overflow-y: auto; padding: 16px 20px; background: transparent; }
 .portal-nav-link { border-radius: 14px; transition: all .2s ease; color: #4b5563; }
 .portal-nav-link:hover { background: #f3f4f6; color: #1f2937; }
 .portal-nav-link.active { background: rgba(245,158,11,.12); color: #b45309; }
@@ -64,141 +64,141 @@
 body.client-portal-dark { background: #0a0a0b !important; color: rgba(255,255,255,.88); }
 body.client-portal-dark .portal-bg > div:first-child { background: linear-gradient(to bottom, #0c0f14, #08090b) !important; }
 body.client-portal-dark .portal-bg .rounded-full { background: rgba(245,166,35,.06) !important; }
-.client-portal-app.client-portal-dark .client-portal-top { border-color: rgba(255,255,255,.08); background: rgba(10,10,11,.95); }
-.client-portal-app.client-portal-dark .client-portal-top span { color: #fff !important; }
-.client-portal-app.client-portal-dark .client-portal-top a { color: rgba(255,255,255,.6) !important; }
-.client-portal-app.client-portal-dark .client-portal-top a:hover { color: #fff !important; }
-.client-portal-app.client-portal-dark .client-portal-sidebar { border-color: rgba(255,255,255,.06); background: rgba(12,15,20,.9); }
-.client-portal-app.client-portal-dark .client-portal-sidebar .border-gray-200 { border-color: rgba(255,255,255,.1) !important; }
-.client-portal-app.client-portal-dark .client-portal-sidebar .text-gray-800 { color: #fff !important; }
-.client-portal-app.client-portal-dark .client-portal-sidebar .text-gray-500 { color: rgba(255,255,255,.5) !important; }
-.client-portal-app.client-portal-dark .portal-nav-link { color: rgba(255,255,255,.7) !important; }
-.client-portal-app.client-portal-dark .portal-nav-link:hover { background: rgba(255,255,255,.06) !important; color: #fff !important; }
-.client-portal-app.client-portal-dark .portal-nav-link.active { background: rgba(245,166,35,.15) !important; color: #fbbf24 !important; }
-.client-portal-app.client-portal-dark .portal-avatar { background: linear-gradient(135deg, rgba(245,166,35,.25), rgba(249,115,22,.2)) !important; border-color: rgba(245,166,35,.35) !important; color: #fbbf24 !important; }
-.client-portal-app.client-portal-dark .portal-theme-toggle { background: linear-gradient(to left, rgba(245,158,11,.4), rgba(55,65,81,.8)) !important; }
-.client-portal-app.client-portal-dark .portal-theme-label { color: rgba(255,255,255,.8) !important; }
-.client-portal-app.client-portal-dark .border-red-200 { border-color: rgba(239,68,68,.3) !important; }
-.client-portal-app.client-portal-dark .bg-red-50 { background: rgba(239,68,68,.1) !important; }
-.client-portal-app.client-portal-dark .text-red-600 { color: #f87171 !important; }
-.client-portal-app.client-portal-dark .portal-bottom-nav { background: rgba(10,10,11,.98) !important; border-color: rgba(255,255,255,.08) !important; }
-.client-portal-app.client-portal-dark .portal-bottom-link { color: rgba(255,255,255,.5) !important; }
-.client-portal-app.client-portal-dark .portal-bottom-link:hover,
-.client-portal-app.client-portal-dark .portal-bottom-link.active { color: #fbbf24 !important; }
-.client-portal-app.client-portal-dark .client-portal-main .rounded-2xl.border-amber-200 { border-color: rgba(245,166,35,.3) !important; background: rgba(245,166,35,.1) !important; color: #fcd34d !important; }
-.client-portal-app.client-portal-dark .client-portal-main .rounded-2xl.border-blue-200 { border-color: rgba(59,130,246,.3) !important; background: rgba(59,130,246,.1) !important; color: #93c5fd !important; }
-.client-portal-app.client-portal-dark .client-portal-main .rounded-2xl.border-red-200 { border-color: rgba(239,68,68,.3) !important; background: rgba(239,68,68,.1) !important; color: #fca5a5 !important; }
-.client-portal-app.client-portal-dark .client-portal-main .text-gray-800 { color: #fff !important; }
-.client-portal-app.client-portal-dark .client-portal-main .text-gray-700 { color: rgba(255,255,255,.9) !important; }
-.client-portal-app.client-portal-dark .client-portal-main .text-gray-600 { color: rgba(255,255,255,.7) !important; }
-.client-portal-app.client-portal-dark .client-portal-main .text-gray-500 { color: rgba(255,255,255,.5) !important; }
-.client-portal-app.client-portal-dark .client-portal-main .text-amber-600 { color: #fbbf24 !important; }
-.client-portal-app.client-portal-dark .client-portal-main .text-green-600 { color: #4ade80 !important; }
-.client-portal-app.client-portal-dark .client-portal-main .text-red-600 { color: #f87171 !important; }
-.client-portal-app.client-portal-dark .hero-card { background: linear-gradient(145deg, #151b25 0%, #0c0f14 100%) !important; border-color: rgba(245,166,35,.2) !important; }
-.client-portal-app.client-portal-dark .hero-greeting { color: rgba(255,255,255,.42) !important; }
-.client-portal-app.client-portal-dark .hero-title { color: #fff !important; }
-.client-portal-app.client-portal-dark .hero-countdown { background: rgba(245,166,35,.15) !important; color: #fbbf24 !important; border-color: rgba(245,166,35,.25) !important; }
-.client-portal-app.client-portal-dark .hero-countdown-muted { background: rgba(255,255,255,.08) !important; color: rgba(255,255,255,.7) !important; border-color: rgba(255,255,255,.1) !important; }
-.client-portal-app.client-portal-dark .dash-steps .dash-step-line { background-color: rgba(255,255,255,.07); background: rgba(255,255,255,.07); }
-.client-portal-app.client-portal-dark .dash-steps .dash-step-line.done { background: #f59e0b !important; background-color: #f59e0b !important; }
-.client-portal-app.client-portal-dark .dash-steps .dash-step-line.active { background: #f59e0b !important; background-color: #f59e0b !important; }
-.client-portal-app.client-portal-dark .dash-step-circle { border-color: rgba(255,255,255,.1) !important; background: #1e2736 !important; color: rgba(255,255,255,.42) !important; }
-.client-portal-app.client-portal-dark .dash-step.done .dash-step-circle { background: #f59e0b !important; border-color: #f59e0b !important; color: #000 !important; }
-.client-portal-app.client-portal-dark .dash-step.active .dash-step-circle { border-color: #f59e0b !important; color: #fff !important; background: #f59e0b !important; }
-.client-portal-app.client-portal-dark .dash-step-label { color: rgba(255,255,255,.42) !important; }
-.client-portal-app.client-portal-dark .dash-step.done .dash-step-label,
-.client-portal-app.client-portal-dark .dash-step.active .dash-step-label { color: #fff !important; }
-.client-portal-app.client-portal-dark .stat-card { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .stat-label { color: rgba(255,255,255,.42) !important; }
-.client-portal-app.client-portal-dark .alert-new { background: rgba(34,197,94,.1) !important; border-color: rgba(34,197,94,.2) !important; color: #4ade80 !important; }
-.client-portal-app.client-portal-dark .msg-preview { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .empty-state { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; color: rgba(255,255,255,.42) !important; }
-.client-portal-app.client-portal-dark .empty-state .font-bold { color: rgba(255,255,255,.8) !important; }
-.client-portal-app.client-portal-dark a.block.rounded-2xl.border-gray-200 { border-color: rgba(255,255,255,.1) !important; background: rgba(255,255,255,.05) !important; }
-.client-portal-app.client-portal-dark a.block.rounded-2xl.border-gray-200:hover { border-color: rgba(245,166,35,.3) !important; }
-.client-portal-app.client-portal-dark .booking-card { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .booking-card:hover { border-color: rgba(245,166,35,.25) !important; }
-.client-portal-app.client-portal-dark .booking-card-id { color: #fff !important; }
-.client-portal-app.client-portal-dark .booking-card-meta { color: rgba(255,255,255,.42) !important; }
-.client-portal-app.client-portal-dark .empty-bookings { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; color: rgba(255,255,255,.42) !important; }
-.client-portal-app.client-portal-dark .panel-pay { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .panel-pay-head a { color: #fbbf24 !important; }
-.client-portal-app.client-portal-dark .pay-bar-wrap { background: #1e2736 !important; }
-.client-portal-app.client-portal-dark .pay-row { background: #1e2736 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .pay-row-title { color: #fff !important; }
-.client-portal-app.client-portal-dark .pay-row-meta { color: rgba(255,255,255,.42) !important; }
-.client-portal-app.client-portal-dark .empty-state-portal { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; color: rgba(255,255,255,.42) !important; }
-.client-portal-app.client-portal-dark .file-card { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .file-card:hover { border-color: rgba(245,166,35,.3) !important; }
-.client-portal-app.client-portal-dark .file-card-name { color: #fff !important; }
-.client-portal-app.client-portal-dark .file-card-meta { color: rgba(255,255,255,.42) !important; }
-.client-portal-app.client-portal-dark .border-gray-200.bg-white { border-color: rgba(255,255,255,.1) !important; background: rgba(21,27,37,.8) !important; }
-.client-portal-app.client-portal-dark .border-gray-200.bg-white .text-gray-800 { color: #fff !important; }
-.client-portal-app.client-portal-dark .border-gray-200.bg-white .text-gray-700 { color: rgba(255,255,255,.9) !important; }
-.client-portal-app.client-portal-dark .border-gray-200.bg-white label { color: rgba(255,255,255,.8) !important; }
-.client-portal-app.client-portal-dark .border-gray-200.bg-white input,
-.client-portal-app.client-portal-dark .border-gray-200.bg-white textarea,
-.client-portal-app.client-portal-dark .border-gray-200.bg-white select { background: rgba(255,255,255,.05) !important; border-color: rgba(255,255,255,.1) !important; color: #fff !important; }
-.client-portal-app.client-portal-dark .portal-wrap { background: transparent !important; color: rgba(255,255,255,.88) !important; }
-.client-portal-app.client-portal-dark .panel { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .panel-title { color: #fff !important; }
-.client-portal-app.client-portal-dark .progress-track { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .info-item { background: #1e2736 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .info-value { color: #fff !important; }
-.client-portal-app.client-portal-dark .payment-row { background: #1e2736 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .payment-row-title { color: #fff !important; }
-.client-portal-app.client-portal-dark .pay-amount-box { background: #1e2736 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .pay-bar-wrap { background: #1e2736 !important; }
-.client-portal-app.client-portal-dark .file-row { background: #1e2736 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .file-row .file-name { color: #fff !important; }
-.client-portal-app.client-portal-dark .file-row .file-meta { color: rgba(255,255,255,.42) !important; }
-.client-portal-app.client-portal-dark .invoice-btn { background: rgba(245,166,35,.1) !important; border-color: rgba(245,166,35,.25) !important; color: #fbbf24 !important; }
-.client-portal-app.client-portal-dark .portal-alert-success { background: rgba(34,197,94,.1) !important; border-color: rgba(34,197,94,.2) !important; color: #4ade80 !important; }
-.client-portal-app.client-portal-dark .portal-alert-danger { background: rgba(239,68,68,.1) !important; border-color: rgba(239,68,68,.2) !important; color: #f87171 !important; }
-.client-portal-app.client-portal-dark .portal-header { border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .portal-title { color: #fff !important; }
-.client-portal-app.client-portal-dark .portal-subtitle { color: rgba(255,255,255,.42) !important; }
-.client-portal-app.client-portal-dark .portal-back { color: rgba(255,255,255,.42) !important; }
-.client-portal-app.client-portal-dark .portal-back:hover { color: #fbbf24 !important; }
+body.client-portal-dark .client-portal-app .client-portal-top { border-color: rgba(255,255,255,.08); background: rgba(10,10,11,.95); }
+body.client-portal-dark .client-portal-app .client-portal-top span { color: #fff !important; }
+body.client-portal-dark .client-portal-app .client-portal-top a { color: rgba(255,255,255,.6) !important; }
+body.client-portal-dark .client-portal-app .client-portal-top a:hover { color: #fff !important; }
+body.client-portal-dark .client-portal-app .client-portal-sidebar { border-color: rgba(255,255,255,.06); background: rgba(12,15,20,.9); }
+body.client-portal-dark .client-portal-app .client-portal-sidebar .border-gray-200 { border-color: rgba(255,255,255,.1) !important; }
+body.client-portal-dark .client-portal-app .client-portal-sidebar .text-gray-800 { color: #fff !important; }
+body.client-portal-dark .client-portal-app .client-portal-sidebar .text-gray-500 { color: rgba(255,255,255,.5) !important; }
+body.client-portal-dark .client-portal-app .portal-nav-link { color: rgba(255,255,255,.7) !important; }
+body.client-portal-dark .client-portal-app .portal-nav-link:hover { background: rgba(255,255,255,.06) !important; color: #fff !important; }
+body.client-portal-dark .client-portal-app .portal-nav-link.active { background: rgba(245,166,35,.15) !important; color: #fbbf24 !important; }
+body.client-portal-dark .client-portal-app .portal-avatar { background: linear-gradient(135deg, rgba(245,166,35,.25), rgba(249,115,22,.2)) !important; border-color: rgba(245,166,35,.35) !important; color: #fbbf24 !important; }
+body.client-portal-dark .client-portal-app .portal-theme-toggle { background: linear-gradient(to left, rgba(245,158,11,.4), rgba(55,65,81,.8)) !important; }
+body.client-portal-dark .client-portal-app .portal-theme-label { color: rgba(255,255,255,.8) !important; }
+body.client-portal-dark .client-portal-app .border-red-200 { border-color: rgba(239,68,68,.3) !important; }
+body.client-portal-dark .client-portal-app .bg-red-50 { background: rgba(239,68,68,.1) !important; }
+body.client-portal-dark .client-portal-app .text-red-600 { color: #f87171 !important; }
+body.client-portal-dark .client-portal-app .portal-bottom-nav { background: rgba(10,10,11,.98) !important; border-color: rgba(255,255,255,.08) !important; }
+body.client-portal-dark .client-portal-app .portal-bottom-link { color: rgba(255,255,255,.5) !important; }
+body.client-portal-dark .client-portal-app .portal-bottom-link:hover,
+body.client-portal-dark .client-portal-app .portal-bottom-link.active { color: #fbbf24 !important; }
+body.client-portal-dark .client-portal-app .client-portal-main .rounded-2xl.border-amber-200 { border-color: rgba(245,166,35,.3) !important; background: rgba(245,166,35,.1) !important; color: #fcd34d !important; }
+body.client-portal-dark .client-portal-app .client-portal-main .rounded-2xl.border-blue-200 { border-color: rgba(59,130,246,.3) !important; background: rgba(59,130,246,.1) !important; color: #93c5fd !important; }
+body.client-portal-dark .client-portal-app .client-portal-main .rounded-2xl.border-red-200 { border-color: rgba(239,68,68,.3) !important; background: rgba(239,68,68,.1) !important; color: #fca5a5 !important; }
+body.client-portal-dark .client-portal-app .client-portal-main .text-gray-800 { color: #fff !important; }
+body.client-portal-dark .client-portal-app .client-portal-main .text-gray-700 { color: rgba(255,255,255,.9) !important; }
+body.client-portal-dark .client-portal-app .client-portal-main .text-gray-600 { color: rgba(255,255,255,.7) !important; }
+body.client-portal-dark .client-portal-app .client-portal-main .text-gray-500 { color: rgba(255,255,255,.5) !important; }
+body.client-portal-dark .client-portal-app .client-portal-main .text-amber-600 { color: #fbbf24 !important; }
+body.client-portal-dark .client-portal-app .client-portal-main .text-green-600 { color: #4ade80 !important; }
+body.client-portal-dark .client-portal-app .client-portal-main .text-red-600 { color: #f87171 !important; }
+body.client-portal-dark .client-portal-app .hero-card { background: linear-gradient(145deg, #151b25 0%, #0c0f14 100%) !important; border-color: rgba(245,166,35,.2) !important; }
+body.client-portal-dark .client-portal-app .hero-greeting { color: rgba(255,255,255,.42) !important; }
+body.client-portal-dark .client-portal-app .hero-title { color: #fff !important; }
+body.client-portal-dark .client-portal-app .hero-countdown { background: rgba(245,166,35,.15) !important; color: #fbbf24 !important; border-color: rgba(245,166,35,.25) !important; }
+body.client-portal-dark .client-portal-app .hero-countdown-muted { background: rgba(255,255,255,.08) !important; color: rgba(255,255,255,.7) !important; border-color: rgba(255,255,255,.1) !important; }
+body.client-portal-dark .client-portal-app .dash-steps .dash-step-line { background-color: rgba(255,255,255,.07); background: rgba(255,255,255,.07); }
+body.client-portal-dark .client-portal-app .dash-steps .dash-step-line.done { background: #f59e0b !important; background-color: #f59e0b !important; }
+body.client-portal-dark .client-portal-app .dash-steps .dash-step-line.active { background: #f59e0b !important; background-color: #f59e0b !important; }
+body.client-portal-dark .client-portal-app .dash-step-circle { border-color: rgba(255,255,255,.1) !important; background: #1e2736 !important; color: rgba(255,255,255,.42) !important; }
+body.client-portal-dark .client-portal-app .dash-step.done .dash-step-circle { background: #f59e0b !important; border-color: #f59e0b !important; color: #000 !important; }
+body.client-portal-dark .client-portal-app .dash-step.active .dash-step-circle { border-color: #f59e0b !important; color: #fff !important; background: #f59e0b !important; }
+body.client-portal-dark .client-portal-app .dash-step-label { color: rgba(255,255,255,.42) !important; }
+body.client-portal-dark .client-portal-app .dash-step.done .dash-step-label,
+body.client-portal-dark .client-portal-app .dash-step.active .dash-step-label { color: #fff !important; }
+body.client-portal-dark .client-portal-app .stat-card { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .stat-label { color: rgba(255,255,255,.42) !important; }
+body.client-portal-dark .client-portal-app .alert-new { background: rgba(34,197,94,.1) !important; border-color: rgba(34,197,94,.2) !important; color: #4ade80 !important; }
+body.client-portal-dark .client-portal-app .msg-preview { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .empty-state { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; color: rgba(255,255,255,.42) !important; }
+body.client-portal-dark .client-portal-app .empty-state .font-bold { color: rgba(255,255,255,.8) !important; }
+body.client-portal-dark .client-portal-app a.block.rounded-2xl.border-gray-200 { border-color: rgba(255,255,255,.1) !important; background: rgba(255,255,255,.05) !important; }
+body.client-portal-dark .client-portal-app a.block.rounded-2xl.border-gray-200:hover { border-color: rgba(245,166,35,.3) !important; }
+body.client-portal-dark .client-portal-app .booking-card { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .booking-card:hover { border-color: rgba(245,166,35,.25) !important; }
+body.client-portal-dark .client-portal-app .booking-card-id { color: #fff !important; }
+body.client-portal-dark .client-portal-app .booking-card-meta { color: rgba(255,255,255,.42) !important; }
+body.client-portal-dark .client-portal-app .empty-bookings { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; color: rgba(255,255,255,.42) !important; }
+body.client-portal-dark .client-portal-app .panel-pay { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .panel-pay-head a { color: #fbbf24 !important; }
+body.client-portal-dark .client-portal-app .pay-bar-wrap { background: #1e2736 !important; }
+body.client-portal-dark .client-portal-app .pay-row { background: #1e2736 !important; border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .pay-row-title { color: #fff !important; }
+body.client-portal-dark .client-portal-app .pay-row-meta { color: rgba(255,255,255,.42) !important; }
+body.client-portal-dark .client-portal-app .empty-state-portal { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; color: rgba(255,255,255,.42) !important; }
+body.client-portal-dark .client-portal-app .file-card { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .file-card:hover { border-color: rgba(245,166,35,.3) !important; }
+body.client-portal-dark .client-portal-app .file-card-name { color: #fff !important; }
+body.client-portal-dark .client-portal-app .file-card-meta { color: rgba(255,255,255,.42) !important; }
+body.client-portal-dark .client-portal-app .border-gray-200.bg-white { border-color: rgba(255,255,255,.1) !important; background: rgba(21,27,37,.8) !important; }
+body.client-portal-dark .client-portal-app .border-gray-200.bg-white .text-gray-800 { color: #fff !important; }
+body.client-portal-dark .client-portal-app .border-gray-200.bg-white .text-gray-700 { color: rgba(255,255,255,.9) !important; }
+body.client-portal-dark .client-portal-app .border-gray-200.bg-white label { color: rgba(255,255,255,.8) !important; }
+body.client-portal-dark .client-portal-app .border-gray-200.bg-white input,
+body.client-portal-dark .client-portal-app .border-gray-200.bg-white textarea,
+body.client-portal-dark .client-portal-app .border-gray-200.bg-white select { background: rgba(255,255,255,.05) !important; border-color: rgba(255,255,255,.1) !important; color: #fff !important; }
+body.client-portal-dark .client-portal-app .portal-wrap { background: transparent !important; color: rgba(255,255,255,.88) !important; }
+body.client-portal-dark .client-portal-app .panel { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .panel-title { color: #fff !important; }
+body.client-portal-dark .client-portal-app .progress-track { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .info-item { background: #1e2736 !important; border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .info-value { color: #fff !important; }
+body.client-portal-dark .client-portal-app .payment-row { background: #1e2736 !important; border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .payment-row-title { color: #fff !important; }
+body.client-portal-dark .client-portal-app .pay-amount-box { background: #1e2736 !important; border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .pay-bar-wrap { background: #1e2736 !important; }
+body.client-portal-dark .client-portal-app .file-row { background: #1e2736 !important; border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .file-row .file-name { color: #fff !important; }
+body.client-portal-dark .client-portal-app .file-row .file-meta { color: rgba(255,255,255,.42) !important; }
+body.client-portal-dark .client-portal-app .invoice-btn { background: rgba(245,166,35,.1) !important; border-color: rgba(245,166,35,.25) !important; color: #fbbf24 !important; }
+body.client-portal-dark .client-portal-app .portal-alert-success { background: rgba(34,197,94,.1) !important; border-color: rgba(34,197,94,.2) !important; color: #4ade80 !important; }
+body.client-portal-dark .client-portal-app .portal-alert-danger { background: rgba(239,68,68,.1) !important; border-color: rgba(239,68,68,.2) !important; color: #f87171 !important; }
+body.client-portal-dark .client-portal-app .portal-header { border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .portal-title { color: #fff !important; }
+body.client-portal-dark .client-portal-app .portal-subtitle { color: rgba(255,255,255,.42) !important; }
+body.client-portal-dark .client-portal-app .portal-back { color: rgba(255,255,255,.42) !important; }
+body.client-portal-dark .client-portal-app .portal-back:hover { color: #fbbf24 !important; }
 /* صور مشروعي — الوضع الليلي */
-.client-portal-app.client-portal-dark .portal-selected-count { border-color: rgba(245,166,35,.25) !important; background: rgba(245,166,35,.12) !important; color: #fcd34d !important; }
-.client-portal-app.client-portal-dark a.flex.rounded-2xl.border-gray-200.bg-white { border-color: rgba(255,255,255,.1) !important; background: rgba(255,255,255,.05) !important; }
-.client-portal-app.client-portal-dark a.flex.rounded-2xl.border-gray-200.bg-white:hover { border-color: rgba(245,166,35,.3) !important; }
-.client-portal-app.client-portal-dark a.flex.rounded-2xl.border-gray-200.bg-white .text-gray-800 { color: #fff !important; }
-.client-portal-app.client-portal-dark a.flex.rounded-2xl.border-gray-200.bg-white .text-gray-500 { color: rgba(255,255,255,.5) !important; }
-.client-portal-app.client-portal-dark a.flex.rounded-2xl.border-gray-200.bg-white .text-gray-600 { color: rgba(255,255,255,.7) !important; }
-.client-portal-app.client-portal-dark .grid .rounded-2xl.border-gray-200.bg-white { border-color: rgba(255,255,255,.1) !important; background: rgba(21,27,37,.6) !important; }
+body.client-portal-dark .client-portal-app .portal-selected-count { border-color: rgba(245,166,35,.25) !important; background: rgba(245,166,35,.12) !important; color: #fcd34d !important; }
+body.client-portal-dark .client-portal-app a.flex.rounded-2xl.border-gray-200.bg-white { border-color: rgba(255,255,255,.1) !important; background: rgba(255,255,255,.05) !important; }
+body.client-portal-dark .client-portal-app a.flex.rounded-2xl.border-gray-200.bg-white:hover { border-color: rgba(245,166,35,.3) !important; }
+body.client-portal-dark .client-portal-app a.flex.rounded-2xl.border-gray-200.bg-white .text-gray-800 { color: #fff !important; }
+body.client-portal-dark .client-portal-app a.flex.rounded-2xl.border-gray-200.bg-white .text-gray-500 { color: rgba(255,255,255,.5) !important; }
+body.client-portal-dark .client-portal-app a.flex.rounded-2xl.border-gray-200.bg-white .text-gray-600 { color: rgba(255,255,255,.7) !important; }
+body.client-portal-dark .client-portal-app .grid .rounded-2xl.border-gray-200.bg-white { border-color: rgba(255,255,255,.1) !important; background: rgba(21,27,37,.6) !important; }
 /* صور الحجز — القلب وزر التحْميل أوضح في الوضع الليلي */
-.client-portal-app.client-portal-dark .photo-fav { background: rgba(0,0,0,.5) !important; }
-.client-portal-app.client-portal-dark .photo-fav span.text-white\/60 { color: rgba(255,255,255,.85) !important; }
-.client-portal-app.client-portal-dark .photo-fav:hover span.text-white\/60 { color: #fcd34d !important; }
-.client-portal-app.client-portal-dark .photo-fav .text-red-400 { color: #f87171 !important; filter: drop-shadow(0 0 6px rgba(248,113,113,.4)); }
-.client-portal-app.client-portal-dark a[download].rounded-full.bg-black\/60 { background: rgba(0,0,0,.55) !important; color: #fcd34d !important; }
-.client-portal-app.client-portal-dark a[download].rounded-full.bg-black\/60:hover { background: rgba(245,158,11,.5) !important; color: #fff !important; }
+body.client-portal-dark .client-portal-app .photo-fav { background: rgba(0,0,0,.5) !important; }
+body.client-portal-dark .client-portal-app .photo-fav span.text-white\/60 { color: rgba(255,255,255,.85) !important; }
+body.client-portal-dark .client-portal-app .photo-fav:hover span.text-white\/60 { color: #fcd34d !important; }
+body.client-portal-dark .client-portal-app .photo-fav .text-red-400 { color: #f87171 !important; filter: drop-shadow(0 0 6px rgba(248,113,113,.4)); }
+body.client-portal-dark .client-portal-app a[download].rounded-full.bg-black\/60 { background: rgba(0,0,0,.55) !important; color: #fcd34d !important; }
+body.client-portal-dark .client-portal-app a[download].rounded-full.bg-black\/60:hover { background: rgba(245,158,11,.5) !important; color: #fff !important; }
 /* عناوين صفحة صور الحجز في الوضع الليلي */
-.client-portal-app.client-portal-dark .project-photos-page h2 { color: #fff !important; }
-.client-portal-app.client-portal-dark .project-photos-page .text-gray-600 { color: rgba(255,255,255,.75) !important; }
-.client-portal-app.client-portal-dark .project-photos-page a.text-amber-600 { color: #fbbf24 !important; }
+body.client-portal-dark .client-portal-app .project-photos-page h2 { color: #fff !important; }
+body.client-portal-dark .client-portal-app .project-photos-page .text-gray-600 { color: rgba(255,255,255,.75) !important; }
+body.client-portal-dark .client-portal-app .project-photos-page a.text-amber-600 { color: #fbbf24 !important; }
 /* الميديا — الوضع الليلي */
-.client-portal-app.client-portal-dark .media-filter a { background: #1e2736 !important; border-color: rgba(255,255,255,.1) !important; color: rgba(255,255,255,.7) !important; }
-.client-portal-app.client-portal-dark .media-filter a:hover { border-color: rgba(245,166,35,.4) !important; color: #fbbf24 !important; }
-.client-portal-app.client-portal-dark .media-filter a.active { background: rgba(245,166,35,.15) !important; border-color: #f59e0b !important; color: #fbbf24 !important; }
-.client-portal-app.client-portal-dark .media-section-title { color: #fff !important; }
-.client-portal-app.client-portal-dark .media-gallery .thumb { border-color: rgba(255,255,255,.1) !important; background: #1e2736 !important; }
-.client-portal-app.client-portal-dark .video-card { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .video-card .info .label { color: #fff !important; }
-.client-portal-app.client-portal-dark .video-card .info .meta { color: rgba(255,255,255,.5) !important; }
-.client-portal-app.client-portal-dark .file-dl-row { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-app.client-portal-dark .file-dl-row .name { color: #fff !important; }
-.client-portal-app.client-portal-dark .file-dl-row .meta { color: rgba(255,255,255,.5) !important; }
-.client-portal-app.client-portal-dark .empty-media { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; color: rgba(255,255,255,.5) !important; }
-.client-portal-app.client-portal-dark .media-files-by-order .order-head { color: #fff !important; border-color: rgba(245,166,35,.3) !important; }
-.client-portal-app.client-portal-dark .media-files-by-order .order-num { background: rgba(245,166,35,.15) !important; color: #fbbf24 !important; }
-.client-portal-app.client-portal-dark .media-lightbox-wrap #media-lightbox-close,
-.client-portal-app.client-portal-dark .media-lightbox-wrap #media-lightbox-prev,
-.client-portal-app.client-portal-dark .media-lightbox-wrap #media-lightbox-next { background: rgba(255,255,255,.2) !important; color: #fff !important; }
-.client-portal-app.client-portal-dark .media-lightbox-wrap #media-lightbox-download { color: #000 !important; }
+body.client-portal-dark .client-portal-app .media-filter a { background: #1e2736 !important; border-color: rgba(255,255,255,.1) !important; color: rgba(255,255,255,.7) !important; }
+body.client-portal-dark .client-portal-app .media-filter a:hover { border-color: rgba(245,166,35,.4) !important; color: #fbbf24 !important; }
+body.client-portal-dark .client-portal-app .media-filter a.active { background: rgba(245,166,35,.15) !important; border-color: #f59e0b !important; color: #fbbf24 !important; }
+body.client-portal-dark .client-portal-app .media-section-title { color: #fff !important; }
+body.client-portal-dark .client-portal-app .media-gallery .thumb { border-color: rgba(255,255,255,.1) !important; background: #1e2736 !important; }
+body.client-portal-dark .client-portal-app .video-card { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .video-card .info .label { color: #fff !important; }
+body.client-portal-dark .client-portal-app .video-card .info .meta { color: rgba(255,255,255,.5) !important; }
+body.client-portal-dark .client-portal-app .file-dl-row { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
+body.client-portal-dark .client-portal-app .file-dl-row .name { color: #fff !important; }
+body.client-portal-dark .client-portal-app .file-dl-row .meta { color: rgba(255,255,255,.5) !important; }
+body.client-portal-dark .client-portal-app .empty-media { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; color: rgba(255,255,255,.5) !important; }
+body.client-portal-dark .client-portal-app .media-files-by-order .order-head { color: #fff !important; border-color: rgba(245,166,35,.3) !important; }
+body.client-portal-dark .client-portal-app .media-files-by-order .order-num { background: rgba(245,166,35,.15) !important; color: #fbbf24 !important; }
+body.client-portal-dark .client-portal-app .media-lightbox-wrap #media-lightbox-close,
+body.client-portal-dark .client-portal-app .media-lightbox-wrap #media-lightbox-prev,
+body.client-portal-dark .client-portal-app .media-lightbox-wrap #media-lightbox-next { background: rgba(255,255,255,.2) !important; color: #fff !important; }
+body.client-portal-dark .client-portal-app .media-lightbox-wrap #media-lightbox-download { color: #000 !important; }
 </style>
 @endpush
 

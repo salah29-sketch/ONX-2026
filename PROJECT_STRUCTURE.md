@@ -2,6 +2,8 @@
 
 مشروع Laravel 9 (PHP 8.1+) مع Vite و Tailwind و Alpine.js.
 
+> **المخطط المرئي للبنية والتدفقات:** انظر [PROJECT_DIAGRAM.md](PROJECT_DIAGRAM.md).
+
 ---
 
 ## الجذر
@@ -38,14 +40,16 @@ app/
 ├── Exceptions/
 │   └── Handler.php
 ├── Helpers/
-│   └── EditableHelper.php
+│   └── helpers.php
 ├── Http/
 │   ├── Controllers/
 │   │   ├── Admin/              # لوحة التحكم
 │   │   │   ├── AdPackagesController.php
+│   │   │   ├── BookingFilesController.php
+│   │   │   ├── BookingPaymentsController.php
+│   │   │   ├── BookingPhotosController.php
 │   │   │   ├── BookingsCalendarController.php
 │   │   │   ├── BookingsController.php
-│   │   │   ├── BookingPhotosController.php
 │   │   │   ├── ClientsController.php
 │   │   │   ├── ClientMessagesController.php
 │   │   │   ├── CompanyController.php
@@ -58,8 +62,7 @@ app/
 │   │   │   ├── PortfolioItemsController.php
 │   │   │   ├── RolesController.php
 │   │   │   ├── TestimonialController.php
-│   │   │   ├── UsersController.php
-│   │   │   └── ...
+│   │   │   └── UsersController.php
 │   │   ├── Client/             # منطقة العملاء
 │   │   │   ├── AuthController.php
 │   │   │   └── DashboardController.php
@@ -99,37 +102,23 @@ app/
 │   │   ├── StoreEmployeeRequest.php, UpdateEmployeeRequest.php
 │   │   ├── MassDestroyUserRequest.php, MassDestroyClientRequest.php
 │   │   └── ...
-│   ├── Resources/Admin/        # API Resources
+│   ├── Resources/Admin/        # API Resources (إن وُجدت)
 │   │   ├── ClientResource.php
 │   │   ├── UserResource.php
 │   │   ├── RoleResource.php
 │   │   ├── PermissionResource.php
-│   │   ├── EmployeeResource.php
-│   │   └── ServiceResource.php
+│   │   └── EmployeeResource.php
 │   └── Kernel.php
 ├── Mail/
 │   ├── BookingConfirmationMail.php
 │   └── ContactFormMail.php
-├── Models/
-│   ├── Booking.php
-│   ├── Client.php
-│   ├── ClientMessage.php
-│   ├── ClientPhoto.php
-│   ├── ClientSelectedPhoto.php
-│   ├── BookingPhoto.php
-│   ├── Testimonial.php
-│   ├── Faq.php
-│   ├── Adpackage.php
-│   ├── EventPackage.php
-│   ├── EventLocation.php
-│   ├── PortfolioItem.php
-│   ├── EditableContent.php
-│   ├── Company.php
-│   ├── Employee.php
-│   ├── User.php
-│   ├── Role.php
-│   ├── Permission.php
-│   └── ...
+├── Models/                    # منظم حسب المجال (انظر app/Models/README.md)
+│   ├── Admin/                 # User, Role, Permission, Employee
+│   ├── Booking/               # Booking, BookingFile, BookingPayment, BookingPhoto
+│   ├── Client/                # Client, ClientMessage, Client*Seen, ClientPhoto, ClientFile, ClientSelectedPhoto
+│   ├── Content/               # Company, EditableContent, Faq, PortfolioItem, Testimonial
+│   ├── Event/                 # EventPackage, EventLocation, AdPackage
+│   └── README.md
 ├── Providers/
 │   ├── AppServiceProvider.php
 │   ├── AuthServiceProvider.php
@@ -232,6 +221,7 @@ resources/
     ├── layouts/
     │   ├── front_tailwind.blade.php   # تخطيط الواجهة العامة
     │   ├── admin.blade.php            # تخطيط لوحة التحكم
+    │   ├── client_portal.blade.php   # تخطيط منطقة العملاء
     │   ├── app.blade.php
     │   └── mail.blade.php
     ├── front/                         # الصفحات العامة
@@ -247,32 +237,32 @@ resources/
     │       ├── index.blade.php        # نموذج الحجز
     │       ├── confirmation.blade.php # تأكيد الحجز + بيانات الدخول
     │       └── pdf.blade.php          # PDF الحجز
-    ├── client/                        # منطقة العملاء
+    ├── client/                        # منطقة العملاء (انظر resources/views/client/README.md)
     │   ├── layout.blade.php
     │   ├── dashboard.blade.php
     │   ├── profile.blade.php
-    │   ├── bookings.blade.php
-    │   ├── booking-detail.blade.php
+    │   ├── payments.blade.php
     │   ├── messages.blade.php
     │   ├── review-create.blade.php
-    │   ├── photos.blade.php
-    │   ├── project-photos.blade.php
-    │   ├── project-photos-booking.blade.php
-    │   └── auth/
-    │       ├── login.blade.php
-    │       └── set-password.blade.php
+    │   ├── auth/ (login, set-password)
+    │   ├── bookings/ (index, detail, summary, invoice-pdf)
+    │   ├── media/ (index, files, project-photos, project-photos-booking)
+    │   └── README.md
     ├── admin/                         # لوحة التحكم
-    │   ├── bookings/ (index, show, calendar)
+    │   ├── ad-packages/ (index, create, edit, show)
+    │   ├── bookings/ (index, show, calendar, pdf, _payments-files)
+    │   ├── client-messages/ (index, show)
     │   ├── clients/ (index, show, create, edit)
-    │   ├── testimonials/ (index, create, edit)
-    │   ├── client-messages/ (index)
+    │   ├── company/ (info-company)
+    │   ├── employees/ (index, show, create, edit)
+    │   ├── event-locations/ (index, create, edit)
+    │   ├── event-packages/ (index, create, edit, show)
     │   ├── faqs/ (index, create, edit)
+    │   ├── permissions/ (index, create, edit, show)
     │   ├── portfolio-items/ (index, create, edit, show, partials/form)
-    │   ├── eventPackages/, adpackages/
-    │   ├── eventlocations/
-    │   ├── company/, employees/
-    │   ├── users/, services/
-    │   └── ...
+    │   ├── roles/ (index, create, edit, show)
+    │   ├── testimonials/ (index, create, edit)
+    │   └── users/ (index, show, create, edit)
     ├── auth/                          # تسجيل دخول الأدمن
     │   ├── login.blade.php
     │   └── passwords/ (email, reset)
@@ -320,4 +310,4 @@ public/
 - **عرض الباقة في الحجز:** يعتمد على `service_type` و `getBookingMeta()` (EventPackage أو AdPackage).
 - **حراس الدخول:** `config/auth.php` (guards: web, client).
 
-تم إنشاء هذا الملف تلقائياً لوصف هيكل المشروع.
+تم إنشاء هذا الملف لوصف هيكل المشروع. للمخطط المرئي والتدفقات انظر **[PROJECT_DIAGRAM.md](PROJECT_DIAGRAM.md)**.

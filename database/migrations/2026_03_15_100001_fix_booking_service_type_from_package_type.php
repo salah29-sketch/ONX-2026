@@ -21,9 +21,9 @@ return new class extends Migration
         foreach ($rows as $b) {
             $pt = $b->package_type ?? '';
             $newType = null;
-            if (in_array($pt, ['event', 'App\\Models\\EventPackage'], true) || stripos($pt, 'Event') !== false) {
+            if (in_array($pt, ['event', 'App\\Models\\Event\\EventPackage'], true) || stripos($pt, 'Event') !== false) {
                 $newType = 'event';
-            } elseif (in_array($pt, ['ads', 'App\\Models\\AdPackage'], true) || stripos($pt, 'Ad') !== false) {
+            } elseif (in_array($pt, ['ads', 'App\\Models\\Event\\AdPackage'], true) || stripos($pt, 'Ad') !== false) {
                 $newType = 'ads';
             }
             if ($newType) {

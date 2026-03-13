@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Faq;
+use App\Models\Content\Faq;
 use Illuminate\Http\Request;
 
 class FaqController extends Controller

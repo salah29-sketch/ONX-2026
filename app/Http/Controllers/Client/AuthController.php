@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Models\Client;
+use App\Models\Client\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -71,7 +71,7 @@ class AuthController extends Controller
             'password'   => 'required|string|min:6|confirmed',
         ]);
 
-        $booking = \App\Models\Booking::findOrFail($request->booking_id);
+        $booking = \App\Models\Booking\Booking::findOrFail($request->booking_id);
         $client = $booking->client;
         if (!$client) {
             return back()->withErrors(['msg' => 'لا يوجد عميل مرتبط.']);

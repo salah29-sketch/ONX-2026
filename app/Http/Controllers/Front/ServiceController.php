@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
-use App\Models\EventPackage;
-use App\Models\AdPackage;
-use App\Models\PortfolioItem;
+use App\Models\Event\EventPackage;
+use App\Models\Event\AdPackage;
+use App\Models\Content\PortfolioItem;
 use Illuminate\View\View;
 
 class ServiceController extends Controller

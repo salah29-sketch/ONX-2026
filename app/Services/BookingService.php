@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Booking;
-use App\Models\Client;
-use App\Models\EventPackage;
-use App\Models\AdPackage;
-use App\Models\EventLocation;
+use App\Models\Booking\Booking;
+use App\Models\Client\Client;
+use App\Models\Event\EventPackage;
+use App\Models\Event\AdPackage;
+use App\Models\Event\EventLocation;
 
 class BookingService
 {

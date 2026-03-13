@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Content;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -39,11 +39,9 @@ class PortfolioItem extends Model
             if (empty($item->slug) && !empty($item->title)) {
                 $item->slug = Str::slug($item->title);
             }
-
             if ($item->media_type === 'youtube' && !empty($item->youtube_url)) {
                 $item->youtube_video_id = self::extractYoutubeVideoId($item->youtube_url);
             }
-
             if ($item->media_type !== 'youtube') {
                 $item->youtube_url = null;
                 $item->youtube_video_id = null;
@@ -51,16 +49,11 @@ class PortfolioItem extends Model
         });
     }
 
-   
-
-  
-
     public function getYoutubeThumbnailAttribute(): ?string
     {
         if (!$this->youtube_video_id) {
             return null;
         }
-
         return 'https://img.youtube.com/vi/' . $this->youtube_video_id . '/hqdefault.jpg';
     }
 
@@ -69,20 +62,17 @@ class PortfolioItem extends Model
         if (empty($url)) {
             return null;
         }
-
         $patterns = [
             '/youtube\.com\/watch\?v=([^\&\?\/]+)/',
             '/youtube\.com\/embed\/([^\&\?\/]+)/',
             '/youtu\.be\/([^\&\?\/]+)/',
             '/youtube\.com\/shorts\/([^\&\?\/]+)/',
         ];
-
         foreach ($patterns as $pattern) {
             if (preg_match($pattern, $url, $matches)) {
                 return $matches[1] ?? null;
             }
         }
-
         return null;
     }
 }

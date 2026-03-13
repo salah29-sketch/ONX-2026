@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Testimonial;
+use App\Models\Content\Testimonial;
 use Illuminate\Http\Request;
 
 class TestimonialController extends Controller

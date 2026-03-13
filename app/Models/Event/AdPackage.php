@@ -1,19 +1,22 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Event;
 
+use App\Models\Booking\Booking;
 use Illuminate\Database\Eloquent\Model;
 
-class EventPackage extends Model
+class AdPackage extends Model
 {
-    protected $table = 'event_packages';
+    protected $table = 'ad_packages';
 
     protected $fillable = [
+        'type',
         'name',
         'subtitle',
         'description',
         'price',
         'old_price',
+        'price_note',
         'features',
         'is_featured',
         'sort_order',
@@ -22,15 +25,15 @@ class EventPackage extends Model
 
     protected $casts = [
         'features'    => 'array',
-        'is_featured' => 'boolean',
         'is_active'   => 'boolean',
+        'is_featured' => 'boolean',
         'price'       => 'decimal:2',
         'old_price'   => 'decimal:2',
     ];
 
     public function bookings()
-{
-    return $this->hasMany(\App\Models\Booking::class, 'package_id')
-        ->where('service_type', 'event');
-}
+    {
+        return $this->hasMany(Booking::class, 'package_id')
+            ->where('service_type', 'ads');
+    }
 }

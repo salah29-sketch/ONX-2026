@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Models\Booking;
-use App\Models\BookingFile;
-use App\Models\ClientMessage;
-use App\Models\BookingPhoto;
-use App\Models\ClientSelectedPhoto;
-use App\Models\Testimonial;
+use App\Models\Booking\Booking;
+use App\Models\Booking\BookingFile;
+use App\Models\Booking\BookingPhoto;
+use App\Models\Client\ClientMediaSeen;
+use App\Models\Client\ClientMessage;
+use App\Models\Client\ClientMessagesSeen;
+use App\Models\Client\ClientSelectedPhoto;
+use App\Models\Content\Testimonial;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,9 +28,9 @@ class DashboardController extends Controller
     /**
      * Helper: يرجع العميل الحالي مع type hint صحيح لـ Intelephense
      */
-    private function client(): \App\Models\Client
+    private function client(): \App\Models\Client\Client
     {
-        /** @var \App\Models\Client $client */
+        /** @var \App\Models\Client\Client $client */
         $client = Auth::guard('client')->user();
         return $client;
     }
@@ -39,7 +41,7 @@ class DashboardController extends Controller
     {
         $client         = $this->client();
         $bookings       = $client->bookings()->with('photos')->latest()->take(5)->get();
-        $unreadMessages = $client->messages()->whereNull('admin_read_at')->count();
+        $unreadMessages = $this->clientUnreadMessagesCount($client);
         // الحجز النشط: مؤكد أو قيد التنفيذ؛ إن لم يوجد فأحدث حجز (ليظهر دائماً)
         $activeBooking  = $client->bookings()
             ->whereIn('status', ['confirmed', 'in_progress'])
@@ -52,8 +54,8 @@ class DashboardController extends Controller
         }
         $lastMessage    = $client->messages()->latest()->first();
         $hasNewFilesOrVideo = $activeBooking && (
-            filled($activeBooking->final_video_path) ||
-            $activeBooking->visibleFiles->isNotEmpty()
+            (filled($activeBooking->final_video_path) || $activeBooking->visibleFiles->isNotEmpty())
+            && !$client->mediaSeen()->where('booking_id', $activeBooking->id)->exists()
         );
         // رقم الطلب للعميل: 1، 2، 3... (حسب ترتيب الطلبات)، وليس الـ ID الداخلي
         $clientOrderMap = $this->clientOrderMap($client);
@@ -65,9 +67,22 @@ class DashboardController extends Controller
     }
 
     /**
+     * عدد رسائل العميل غير المقروءة من الإدارة — تُحسب فقط ما جاء بعد آخر زيارة لصفحة الرسائل.
+     */
+    private function clientUnreadMessagesCount(\App\Models\Client\Client $client): int
+    {
+        $query = $client->messages()->whereNull('admin_read_at');
+        $lastSeen = ClientMessagesSeen::where('client_id', $client->id)->value('last_seen_at');
+        if ($lastSeen) {
+            $query->where('created_at', '>', $lastSeen);
+        }
+        return $query->count();
+    }
+
+    /**
      * خريطة: booking_id => رقم الطلب للعميل (1 = أول طلب، 2 = ثاني طلب، ...)
      */
-    private function clientOrderMap(\App\Models\Client $client): array
+    private function clientOrderMap(\App\Models\Client\Client $client): array
     {
         $ids = $client->bookings()->orderBy('created_at')->orderBy('id')->pluck('id');
         $map = [];
@@ -119,7 +134,7 @@ class DashboardController extends Controller
         $client         = $this->client();
         $bookings       = $client->bookings()->latest()->paginate(10);
         $clientOrderMap = $this->clientOrderMap($client);
-        return view('client.bookings', compact('bookings', 'clientOrderMap'));
+        return view('client.bookings.index', compact('bookings', 'clientOrderMap'));
     }
 
     public function bookingDetail(Booking $booking)
@@ -133,7 +148,7 @@ class DashboardController extends Controller
         $idx = $client->bookings()->orderBy('created_at')->orderBy('id')->pluck('id')->search($booking->id);
         $clientOrderNumber = $idx !== false ? $idx + 1 : 1;
 
-        return view('client.booking-detail', compact('booking', 'meta', 'clientOrderNumber'));
+        return view('client.bookings.detail', compact('booking', 'meta', 'clientOrderNumber'));
     }
 
     // ─── Payments (صفحة مدفوعاتي) ─────────────────────────────────
@@ -193,9 +208,24 @@ class DashboardController extends Controller
             ->with(['visibleFiles' => fn ($q) => $q->orderByDesc('created_at')])
             ->latest()
             ->get();
+
+        // تسجيل أن العميل شاهد صفحة الميديا — لإخفاء تنبيه "ملفات جديدة" في لوحة التحكم
+        $bookingIdsWithMedia = $client->bookings()
+            ->where(function ($q) {
+                $q->whereNotNull('final_video_path')->where('final_video_path', '!=', '')
+                    ->orWhereHas('visibleFiles');
+            })
+            ->pluck('id');
+        foreach ($bookingIdsWithMedia as $bookingId) {
+            ClientMediaSeen::updateOrCreate(
+                ['client_id' => $client->id, 'booking_id' => $bookingId],
+                ['seen_at' => now()]
+            );
+        }
+
         $clientOrderMap = $this->clientOrderMap($client);
 
-        return view('client.media', compact(
+        return view('client.media.index', compact(
             'bookingsWithPhotos',
             'videoFiles',
             'otherFiles',
@@ -223,7 +253,7 @@ class DashboardController extends Controller
         $booking->load(['payments', 'eventPackage', 'adPackage', 'eventLocation']);
         $meta = app(\App\Services\BookingService::class)->getBookingMeta($booking);
 
-        $pdf = Pdf::loadView('client.invoice-pdf', compact('booking', 'meta', 'client'));
+        $pdf = Pdf::loadView('client.bookings.invoice-pdf', compact('booking', 'meta', 'client'));
         return $pdf->download('invoice-' . $booking->id . '.pdf');
     }
 
@@ -238,7 +268,7 @@ class DashboardController extends Controller
         $booking->load(['photos', 'payments', 'visibleFiles']);
         $meta = app(\App\Services\BookingService::class)->getBookingMeta($booking);
 
-        return view('client.booking-summary', compact('booking', 'meta', 'client'));
+        return view('client.bookings.summary', compact('booking', 'meta', 'client'));
     }
 
     // ─── File Download ───────────────────────────────────────────
@@ -320,6 +350,13 @@ class DashboardController extends Controller
     {
         $client   = $this->client();
         $messages = $client->messages()->latest()->paginate(15);
+
+        // تسجيل أن العميل شاهد صفحة الرسائل — لإخفاء تنبيه الرسائل في الشريط الجانبي
+        ClientMessagesSeen::updateOrCreate(
+            ['client_id' => $client->id],
+            ['last_seen_at' => now()]
+        );
+
         return view('client.messages', compact('messages'));
     }
 
@@ -377,7 +414,7 @@ class DashboardController extends Controller
         $client        = $this->client();
         $bookings      = $client->bookings()->whereHas('photos')->latest()->get();
         $selectedCount = $client->selectedPhotos()->count();
-        return view('client.project-photos', compact('bookings', 'selectedCount'));
+        return view('client.media.project-photos', compact('bookings', 'selectedCount'));
     }
 
     public function projectPhotosBooking(Booking $booking)
@@ -389,7 +426,7 @@ class DashboardController extends Controller
         $selectedIds   = $client->selectedPhotos()->pluck('booking_photo_id')->toArray();
         $selectedCount = $client->selectedPhotos()->count();
 
-        return view('client.project-photos-booking',
+        return view('client.media.project-photos-booking',
             compact('booking', 'photos', 'selectedIds', 'selectedCount'));
     }
 

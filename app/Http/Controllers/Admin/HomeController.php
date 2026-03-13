@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Booking;
-use App\Models\Client;
-use App\Models\ClientMessage;
-use App\Models\PortfolioItem;
+use App\Models\Booking\Booking;
+use App\Models\Client\Client;
+use App\Models\Client\ClientMessage;
+use App\Models\Content\PortfolioItem;
 
 class HomeController
 {

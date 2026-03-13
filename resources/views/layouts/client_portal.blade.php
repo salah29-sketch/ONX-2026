@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="client-portal-page">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,12 +14,24 @@
     @vite(['resources/js/app.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
     <style>
+        /* تصغير المحتوى في بوابة العملاء (حجم أساسي 14px بدل 16px) */
+        html.client-portal-page { font-size: 14px; }
         body { font-family: 'Cairo', sans-serif; }
         [x-cloak] { display: none !important; }
     </style>
     @stack('styles')
 </head>
 <body class="min-h-screen bg-[#f5f6f8] text-gray-800 antialiased selection:bg-amber-200 selection:text-gray-900">
+    {{-- تطبيق الوضع الليلي قبل أول رسم لتجنّب الوميض عند تغيير الصفحات --}}
+    <script>
+    (function(){
+        try {
+            if (localStorage.getItem('clientPortalTheme') === 'dark') {
+                document.body.classList.add('client-portal-dark');
+            }
+        } catch (e) {}
+    })();
+    </script>
 
     {{-- خلفية (الوضع الفاتح؛ الوضع الليلي يُطبّق عبر class على body) --}}
     <div class="fixed inset-0 -z-10 overflow-hidden portal-bg">

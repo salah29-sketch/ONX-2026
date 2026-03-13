@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\AdPackage;
+use App\Models\Event\AdPackage;
 use Illuminate\Http\Request;
 
 class AdPackagesController extends Controller

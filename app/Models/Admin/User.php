@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Admin;
 
 use Carbon\Carbon;
 use Illuminate\Auth\Notifications\ResetPassword;

@@ -32,28 +32,48 @@
     </div>
 </div>
 
+@if($message->admin_reply)
+<div class="card db-card mb-4">
+    <div class="db-card-header">
+        <i class="fas fa-check-circle mr-2 text-success"></i>
+        تم الرد — {{ $message->admin_replied_at?->format('Y-m-d H:i') }}
+    </div>
+    <div class="card-body db-card-body">
+        <div class="border rounded p-3 bg-light mb-0">{{ nl2br(e($message->admin_reply)) }}</div>
+    </div>
+</div>
+@endif
+
 <div class="card db-card">
     <div class="db-card-header">
         <i class="fas fa-reply mr-2"></i>
-        كتابة رد (قوالب سريعة)
+        {{ $message->admin_reply ? 'تعديل الرد أو كتابة رد جديد' : 'كتابة رد (قوالب سريعة)' }}
     </div>
     <div class="card-body db-card-body">
-        <div class="mb-3">
-            <label class="form-label">إدراج قالب</label>
-            <select id="replyTemplate" class="form-select">
-                <option value="">— اختر قالباً —</option>
-                <option value="تم استلام رسالتك، سنرد عليك بالتفاصيل قريباً. شكراً لتواصلك معنا.">تم استلام الرسالة / سنرد قريباً</option>
-                <option value="نحتاج لمزيد من التفاصيل حول طلبك. يرجى توضيح [الموضوع] وسنكمل المعالجة.">نحتاج لمزيد من التفاصيل</option>
-                <option value="تمت معالجة طلبك. في حال وجود أي استفسار نحن هنا لمساعدتك.">تمت المعالجة</option>
-                <option value="نشكرك على تواصلك. نؤكد استلام رسالتك وسيتم الرد خلال 24 ساعة عمل.">تأكيد الاستلام + 24 ساعة</option>
-                <option value="نعتذر عن التأخير. نعمل على طلبك وسنخبرك فور الانتهاء.">اعتذار عن التأخير</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">نص الرد</label>
-            <textarea id="replyBody" class="form-control" rows="6" placeholder="اكتب ردك هنا أو اختر قالباً أعلاه..."></textarea>
-        </div>
-        <p class="text-muted small mb-0">يمكنك نسخ الرد وإرساله للعميل عبر البريد أو الواتساب. (إرسال تلقائي من النظام يمكن إضافته لاحقاً)</p>
+        <form method="POST" action="{{ route('admin.client-messages.reply', $message) }}">
+            @csrf
+            <div class="mb-3">
+                <label class="form-label">إدراج قالب</label>
+                <select id="replyTemplate" class="form-select" type="button">
+                    <option value="">— اختر قالباً —</option>
+                    <option value="تم استلام رسالتك، سنرد عليك بالتفاصيل قريباً. شكراً لتواصلك معنا.">تم استلام الرسالة / سنرد قريباً</option>
+                    <option value="نحتاج لمزيد من التفاصيل حول طلبك. يرجى توضيح [الموضوع] وسنكمل المعالجة.">نحتاج لمزيد من التفاصيل</option>
+                    <option value="تمت معالجة طلبك. في حال وجود أي استفسار نحن هنا لمساعدتك.">تمت المعالجة</option>
+                    <option value="نشكرك على تواصلك. نؤكد استلام رسالتك وسيتم الرد خلال 24 ساعة عمل.">تأكيد الاستلام + 24 ساعة</option>
+                    <option value="نعتذر عن التأخير. نعمل على طلبك وسنخبرك فور الانتهاء.">اعتذار عن التأخير</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">نص الرد <span class="text-danger">*</span></label>
+                <textarea name="reply" id="replyBody" class="form-control @error('reply') is-invalid @enderror" rows="6" placeholder="اكتب ردك هنا أو اختر قالباً أعلاه..." required>{{ old('reply', $message->admin_reply) }}</textarea>
+                @error('reply')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane mr-1"></i> حفظ الرد وإظهاره للعميل
+            </button>
+        </form>
     </div>
 </div>
 

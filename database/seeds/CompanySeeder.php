@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Company;
+use App\Models\Content\Company;
 use Illuminate\Database\Seeder;
 
 class CompanySeeder extends Seeder

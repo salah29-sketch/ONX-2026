@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\EventLocation;
+use App\Models\Event\EventLocation;
 use Illuminate\Http\Request;
 
 class EventLocationController extends Controller

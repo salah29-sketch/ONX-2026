@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Faq;
-use App\Models\Testimonial;
+use App\Models\Content\Faq;
+use App\Models\Content\Testimonial;
 use Illuminate\Database\Seeder;
 
 class FaqTestimonialSeeder extends Seeder

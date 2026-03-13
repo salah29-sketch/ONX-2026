@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
-use App\Models\Faq;
+use App\Models\Content\Faq;
 
 class FaqController extends Controller
 {

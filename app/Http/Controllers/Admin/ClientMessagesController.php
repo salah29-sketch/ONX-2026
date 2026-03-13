@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ClientMessage;
+use App\Models\Client\ClientMessage;
 use Illuminate\Http\Request;
 
 class ClientMessagesController extends Controller
@@ -21,6 +21,18 @@ class ClientMessagesController extends Controller
             $message->update(['admin_read_at' => now()]);
         }
         return view('admin.client-messages.show', compact('message'));
+    }
+
+    public function reply(Request $request, ClientMessage $message)
+    {
+        $request->validate([
+            'reply' => 'required|string|max:5000',
+        ]);
+        $message->update([
+            'admin_reply'      => $request->reply,
+            'admin_replied_at' => now(),
+        ]);
+        return back()->with('message', 'تم حفظ الرد بنجاح.');
     }
 
     public function markRead(ClientMessage $message)

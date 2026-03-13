@@ -89,6 +89,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::resource('clients', ClientsController::class);
     Route::get('client-messages', [ClientMessagesController::class, 'index'])->name('client-messages.index');
     Route::get('client-messages/{message}', [ClientMessagesController::class, 'show'])->name('client-messages.show');
+    Route::post('client-messages/{message}/reply', [ClientMessagesController::class, 'reply'])->name('client-messages.reply');
     Route::patch('client-messages/{message}/read', [ClientMessagesController::class, 'markRead'])->name('client-messages.mark-read');
 
     // ─── الموظفون ─────────────────────────────────────────

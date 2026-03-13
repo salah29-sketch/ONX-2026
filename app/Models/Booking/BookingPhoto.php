@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Booking;
 
+use App\Models\Client\ClientSelectedPhoto;
 use Illuminate\Database\Eloquent\Model;
 
 class BookingPhoto extends Model

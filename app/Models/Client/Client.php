@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Client;
 
+use App\Models\Booking\Booking;
+use App\Models\Content\Testimonial;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -63,9 +65,18 @@ class Client extends Authenticatable
         return !empty($this->password);
     }
 
-    /** الصور المميزة التي اختارها العميل (حد 200) */
     public function selectedPhotos()
     {
         return $this->hasMany(ClientSelectedPhoto::class);
+    }
+
+    public function mediaSeen()
+    {
+        return $this->hasMany(ClientMediaSeen::class);
+    }
+
+    public function messagesSeen()
+    {
+        return $this->hasOne(ClientMessagesSeen::class);
     }
 }

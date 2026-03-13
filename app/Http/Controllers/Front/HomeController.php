@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
-use App\Models\PortfolioItem;
-use App\Models\Testimonial;
+use App\Models\Content\PortfolioItem;
+use App\Models\Content\Testimonial;
 
 class HomeController extends Controller
 {

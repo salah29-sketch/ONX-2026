@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -23,7 +23,6 @@ class Employee extends Model implements HasMedia
         'linkedin',
     ];
 
-    // ─── Media ───────────────────────────────────────────────
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
@@ -40,5 +39,4 @@ class Employee extends Model implements HasMedia
     {
         return $this->getFirstMedia('photo');
     }
-
 }
