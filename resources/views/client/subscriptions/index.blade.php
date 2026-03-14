@@ -7,7 +7,8 @@
 .sub-card {
     border-radius: 20px;
     border: 1px solid #e5e7eb;
-    background: #fff;
+    border-inline-start: 4px solid var(--ads-primary, #3b82f6);
+    background: #eff6ff;
     padding: 20px;
     margin-bottom: 16px;
     box-shadow: 0 1px 3px rgba(0,0,0,.04);
@@ -31,7 +32,7 @@
 .empty-subs { text-align: center; padding: 48px 24px; border-radius: 20px; border: 1px solid #e5e7eb; background: #fff; color: #6b7280; }
 .empty-subs .icon { font-size: 48px; margin-bottom: 16px; opacity: .6; }
 /* Dark */
-.client-portal-dark .sub-card { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
+.client-portal-dark .sub-card { background: rgba(59,130,246,.08) !important; border-color: rgba(255,255,255,.1) !important; border-inline-start-color: var(--ads-primary, #3b82f6) !important; }
 .client-portal-dark .sub-plan-name { color: #fff !important; }
 .client-portal-dark .sub-meta-value { color: #fff !important; }
 .client-portal-dark .sub-meta-label { color: rgba(255,255,255,.5) !important; }

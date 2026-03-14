@@ -134,8 +134,25 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 20px; flex-shrink: 0;
 }
+.booking-type-icon.event { background: var(--event-soft); }
+.booking-type-icon.ads   { background: var(--ads-soft); }
+.booking-card-v2.event { border-inline-start: 3px solid var(--event-primary) !important; }
+.booking-card-v2.ads   { border-inline-start: 3px solid var(--ads-primary)   !important; }
 .booking-progress-bar { height: 3px; background: #f3f4f6; border-radius: 2px; margin-top: 6px; overflow: hidden; }
-.booking-progress-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg,#f59e0b,#fbbf24); }
+.booking-progress-fill        { height: 100%; border-radius: 2px; background: linear-gradient(90deg,#f59e0b,#fbbf24); }
+.booking-progress-fill.event  { background: linear-gradient(90deg,#f59e0b,#fbbf24); }
+.booking-progress-fill.ads    { background: linear-gradient(90deg,#3b82f6,#60a5fa); }
+
+/* ─── Company Panel ─── */
+.company-panel {
+    background: linear-gradient(135deg,#f0fdf4,#ecfdf5);
+    border: 1px solid #bbf7d0; border-radius: 20px;
+    padding: 20px; margin-bottom: 24px;
+}
+.company-panel-title { font-size: 14px; font-weight: 900; color: #166534; margin-bottom: 14px; display:flex; align-items:center; gap:8px; }
+.company-stat { text-align: center; }
+.company-stat .val { font-size: 1.4rem; font-weight: 900; color: #166534; }
+.company-stat .lbl { font-size: 11px; color: #4b5563; font-weight: 700; margin-top: 2px; }
 .booking-status { padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 800; flex-shrink: 0; }
 .booking-status.completed  { background: #dcfce7; color: #166534; }
 .booking-status.confirmed,
@@ -167,8 +184,13 @@
 .client-portal-dark .msg-preview{ background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
 .client-portal-dark .msg-avatar { background: rgba(245,166,35,.15) !important; border-color: rgba(245,166,35,.25) !important; }
 .client-portal-dark .booking-card-v2 { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
-.client-portal-dark .booking-card-v2:hover { border-color: rgba(245,166,35,.3) !important; }
+.client-portal-dark .booking-card-v2:hover { box-shadow: 0 4px 12px rgba(0,0,0,.3) !important; }
 .client-portal-dark .booking-type-icon { background: rgba(245,166,35,.12) !important; }
+.client-portal-dark .booking-type-icon.ads { background: rgba(59,130,246,.12) !important; }
+.client-portal-dark .company-panel { background: rgba(22,101,52,.12) !important; border-color: rgba(34,197,94,.2) !important; }
+.client-portal-dark .company-panel-title { color: #4ade80 !important; }
+.client-portal-dark .company-stat .val { color: #4ade80 !important; }
+.client-portal-dark .company-stat .lbl { color: rgba(255,255,255,.5) !important; }
 .client-portal-dark .booking-progress-bar { background: #1e2736 !important; }
 .client-portal-dark .empty-state { background: #151b25 !important; border-color: rgba(255,255,255,.07) !important; }
 .client-portal-dark .dash-step-circle { border-color: rgba(255,255,255,.1) !important; background: #1e2736 !important; color: rgba(255,255,255,.42) !important; }
@@ -198,7 +220,12 @@
     <div class="hero-top">
         <div class="hero-name-block">
             <p class="hero-greeting">مرحباً،</p>
-            <h1 class="hero-title">{{ $client->name }}</h1>
+            @if(!empty($client->is_company) && !empty($client->business_name))
+                <h1 class="hero-title">{{ $client->business_name }}</h1>
+                <p class="text-sm text-gray-500 -mt-3 mb-2 flex items-center gap-1"><i class="bi bi-building"></i> {{ $client->name }}</p>
+            @else
+                <h1 class="hero-title">{{ $client->name }}</h1>
+            @endif
         </div>
 
         @if($activeBooking)
@@ -345,6 +372,32 @@
 </div>
 @endif
 
+{{-- لوحة الشركات (يظهر فقط للشركات) --}}
+@if(!empty($client->is_company))
+@php
+    $totalSpent = $bookings->sum(fn($b) => $b->paidAmount());
+    $activeSubs = $subscriptions->where('status','active')->count();
+    $totalBookings = $bookings->count();
+@endphp
+<div class="company-panel mb-6">
+    <p class="company-panel-title"><i class="bi bi-building"></i> ملخص حساب الشركة</p>
+    <div class="grid grid-cols-3 gap-4">
+        <div class="company-stat">
+            <div class="val">{{ number_format($totalSpent, 0) }}</div>
+            <div class="lbl">إجمالي المدفوعات (DA)</div>
+        </div>
+        <div class="company-stat">
+            <div class="val">{{ $totalBookings }}</div>
+            <div class="lbl">مجموع الحجوزات</div>
+        </div>
+        <div class="company-stat">
+            <div class="val">{{ $activeSubs }}</div>
+            <div class="lbl">اشتراكات نشطة</div>
+        </div>
+    </div>
+</div>
+@endif
+
 {{-- آخر الحجوزات --}}
 <div class="mb-4 flex items-center justify-between">
     <h2 class="text-lg font-black text-gray-800">آخر حجوزاتك</h2>
@@ -364,18 +417,25 @@
                 $sDate  = $b->event_date ?? $b->deadline ?? $b->created_at;
                 $prog   = ($bStep / 4) * 100;
             @endphp
-            <a href="{{ route('client.bookings.show', $b) }}" class="booking-card-v2">
-                <div class="booking-type-icon">{{ $isEvent ? '🎬' : '📢' }}</div>
+            <a href="{{ route('client.bookings.show', $b) }}" class="booking-card-v2 {{ $isEvent ? 'event' : 'ads' }}">
+                <div class="booking-type-icon {{ $isEvent ? 'event' : 'ads' }}">{{ $isEvent ? '🎪' : '📢' }}</div>
                 <div class="flex-1 min-w-0">
                     <div class="flex justify-between items-center gap-2">
-                        <span class="font-black text-gray-800 text-sm">الطلب {{ $clientOrderMap[$b->id] ?? $b->id }}</span>
+                        <span class="flex items-center gap-1.5 font-black text-gray-800 text-sm">
+                            الطلب {{ $clientOrderMap[$b->id] ?? $b->id }}
+                            @if($isEvent)
+                                <span class="badge-event text-[10px] px-2 py-0.5">حفلة</span>
+                            @else
+                                <span class="badge-ads text-[10px] px-2 py-0.5">إعلان</span>
+                            @endif
+                        </span>
                         <span class="booking-status {{ $b->status }}">{{ $b->statusLabel() }}</span>
                     </div>
                     <p class="text-xs text-gray-500 mt-0.5">
                         {{ $isEvent ? 'تصوير فعاليات' : 'إعلانات' }} · {{ $sDate->format('d/m/Y') }}
                     </p>
                     <div class="booking-progress-bar">
-                        <div class="booking-progress-fill" style="width: {{ $prog }}%"></div>
+                        <div class="booking-progress-fill {{ $isEvent ? 'event' : 'ads' }}" style="width: {{ $prog }}%"></div>
                     </div>
                 </div>
             </a>
