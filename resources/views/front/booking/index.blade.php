@@ -699,12 +699,32 @@
                 </div>
 
                 {{-- 4. معلومات التواصل --}}
-                <div class="space-y-3">
+                <div class="space-y-3" x-data="{ isCompany: {{ old('is_company') ? 'true' : 'false' }} }">
                     <div class="text-sm font-extrabold text-white">معلومات التواصل</div>
+
+                    {{-- نوع الحساب: فرد / شركة --}}
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-bold text-white/60">نوع الحساب:</span>
+                        <button type="button"
+                            @click="isCompany = false"
+                            :class="!isCompany ? 'bg-orange-500 text-black' : 'bg-white/10 text-white/70'"
+                            class="rounded-full px-4 py-1.5 text-xs font-black transition">
+                            👤 فرد
+                        </button>
+                        <button type="button"
+                            @click="isCompany = true"
+                            :class="isCompany ? 'bg-orange-500 text-black' : 'bg-white/10 text-white/70'"
+                            class="rounded-full px-4 py-1.5 text-xs font-black transition">
+                            🏢 شركة
+                        </button>
+                        <input type="hidden" name="is_company" :value="isCompany ? '1' : '0'">
+                    </div>
 
                     <div class="grid gap-3 md:grid-cols-2">
                         <div>
-                            <label class="mb-1.5 block text-xs font-bold text-white/70">الاسم الكامل</label>
+                            <label class="mb-1.5 block text-xs font-bold text-white/70">
+                                <span x-text="isCompany ? 'اسم المسؤول' : 'الاسم الكامل'"></span>
+                            </label>
                             <input class="onx-input {{ $errors->has('name') ? 'onx-field-error' : '' }}"
                                 name="name" value="{{ old('name') }}" required>
                             @error('name')
@@ -717,6 +737,17 @@
                             <input class="onx-input {{ $errors->has('phone') ? 'onx-field-error' : '' }}"
                                 name="phone" value="{{ old('phone') }}" required>
                             @error('phone')
+                                <p class="mt-1.5 text-xs font-bold text-red-300">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- اسم الشركة (يظهر فقط عند اختيار شركة) --}}
+                        <div class="md:col-span-2" x-show="isCompany" x-transition>
+                            <label class="mb-1.5 block text-xs font-bold text-white/70">اسم الشركة / المؤسسة</label>
+                            <input class="onx-input {{ $errors->has('business_name') ? 'onx-field-error' : '' }}"
+                                name="business_name" value="{{ old('business_name') }}"
+                                placeholder="مثال: شركة ONX للإعلام">
+                            @error('business_name')
                                 <p class="mt-1.5 text-xs font-bold text-red-300">{{ $message }}</p>
                             @enderror
                         </div>

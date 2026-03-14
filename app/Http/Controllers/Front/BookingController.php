@@ -85,15 +85,17 @@ public function index(Request $request)
         }
 
         $rules = [
-            'service_type' => 'required|in:event,ads',
-            'package_type' => 'required|string|max:50',
-            'package_id'   => 'required|integer',
-            'ads_type'     => 'nullable|in:monthly,custom',
-            'name'         => 'required|string|max:255',
-            'phone'        => 'required|string|max:50',
-            'email'        => 'nullable|email|max:255',
-            'notes'        => 'nullable|string',
-            ];
+            'service_type'  => 'required|in:event,ads',
+            'package_type'  => 'required|string|max:50',
+            'package_id'    => 'required|integer',
+            'ads_type'      => 'nullable|in:monthly,custom',
+            'name'          => 'required|string|max:255',
+            'phone'         => 'required|string|max:50',
+            'email'         => 'nullable|email|max:255',
+            'notes'         => 'nullable|string',
+            'is_company'    => 'nullable|boolean',
+            'business_name' => 'nullable|string|max:255',
+        ];
 
         if ($serviceType === 'event') {
             $rules += [
@@ -105,10 +107,9 @@ public function index(Request $request)
 
         if ($serviceType === 'ads') {
             $rules += [
-                'event_date'    => 'required|date|after_or_equal:today',
-                'business_name' => 'nullable|string|max:255',
-                'budget'        => 'nullable|numeric|min:0', // للشهرية يُخفى من النموذج والسعر من الباقة
-                'deadline'      => 'nullable|date|after_or_equal:today',
+                'event_date' => 'required|date|after_or_equal:today',
+                'budget'     => 'nullable|numeric|min:0',
+                'deadline'   => 'nullable|date|after_or_equal:today',
             ];
         }
 

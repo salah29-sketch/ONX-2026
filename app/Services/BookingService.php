@@ -60,18 +60,28 @@ class BookingService
             $client = Client::where('email', $email)->first();
         }
 
+        $isCompany    = !empty($data['is_company']);
+        $businessName = trim((string) ($data['business_name'] ?? '')) ?: null;
+
         if (!$client) {
             $client = Client::create([
-                'name'  => $name,
-                'phone' => $phone ?: null,
-                'email' => $email ?: null,
+                'name'          => $name,
+                'phone'         => $phone ?: null,
+                'email'         => $email ?: null,
+                'is_company'    => $isCompany,
+                'business_name' => $businessName,
             ]);
         } else {
-            $client->update([
+            $update = [
                 'name'  => $name,
                 'phone' => $phone ?: $client->phone,
                 'email' => $email ?? $client->email,
-            ]);
+            ];
+            if ($isCompany) {
+                $update['is_company']    = true;
+                $update['business_name'] = $businessName ?? $client->business_name;
+            }
+            $client->update($update);
         }
 
         return $client;
