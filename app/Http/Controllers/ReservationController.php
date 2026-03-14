@@ -1,87 +1,76 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Client;
-use App\Service;
-use App\Employee;
+
+use App\Models\Service;
 use Carbon\Carbon;
-use App\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\BookingConfirmationMail;
+use App\Services\ClientService;
+use App\Services\AppointmentService;
 
 
 class ReservationController extends Controller
 {
-  public function store(Request $request)
-{
-    $validated = $request->validate([
-    'name'     => 'required|string|max:255',
-    'email'    => 'required|email',
-    'phone'    => 'required|string|max:20',
-    'date'     => 'required|date',
-    'services' => 'array|required',
-    'services.*' => 'exists:services,id',
-]);
-        if ($request->event_location_id === 'other' && empty($request->custom_event_location)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'يرجى إدخال مكان الحفل عند اختيار "مكان آخر".'
+    public function __construct(
+        private ClientService $clientService,
+        private AppointmentService $appointmentService,
+    ) {}
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            ‘name’                  => ‘required|string|max:255’,
+            ‘email’                 => ‘required|email|max:255’,
+            ‘phone’                 => ‘required|string|max:20’,
+            ‘date’                  => ‘required|date’,
+            ‘services’              => ‘required|array’,
+            ‘services.*’            => ‘exists:services,id’,
+            ‘event_location_id’     => ‘nullable|string’,
+            ‘custom_event_location’ => ‘required_if:event_location_id,other|nullable|string|max:255’,
+        ]);
+
+        try {
+            $services   = Service::whereIn(‘id’, $validated[‘services’])->select(‘id’, ‘name’, ‘price’)->get();
+            $totalPrice = $services->sum(‘price’);
+
+            $client = $this->clientService->findOrCreate([
+                ‘email’ => $validated[‘email’],
+                ‘name’  => $validated[‘name’],
+                ‘phone’ => $validated[‘phone’],
             ]);
+
+            $appointmentData = array_merge($validated, [
+                ‘total_price’ => $totalPrice,
+            ]);
+
+            $appointment = $this->appointmentService->createFromBooking($appointmentData, $client->id);
+
+            $mailData = [
+                ‘client_name’ => $validated[‘name’],
+                ‘booking_id’  => $appointment->id,
+                ‘email’       => $validated[‘email’],
+                ‘date’        => Carbon::parse($validated[‘date’])->format(‘Y-m-d’),
+                ‘time’        => Carbon::parse($validated[‘date’])->format(‘H:i’),
+                ‘services’    => $services->pluck(‘name’)->toArray(),
+                ‘total_price’ => $totalPrice,
+            ];
+
+            $this->appointmentService->sendConfirmationEmail($mailData);
+
+            return response()->json([
+                ‘success’ => true,
+                ‘id’      => $appointment->id,
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error(‘خطأ في إنشاء الحجز: ‘ . $e->getMessage());
+
+            return response()->json([
+                ‘success’ => false,
+                ‘message’ => ‘حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى.’,
+            ], 500);
         }
-
-// جرّب الإيميل أولاً
-try {
-    $serviceNames = Service::whereIn('id', $validated['services'])->pluck('name')->toArray();
-    $totalPrice = Service::whereIn('id', $validated['services'])->sum('price');
-
-    $data = [
-        'client_name' => $validated['name'],
-        'booking_id'  => null,
-        'email'       => $validated['email'],
-        'date'        => Carbon::parse($validated['date'])->format('Y-m-d'),
-        'time'        => Carbon::parse($validated['date'])->format('H:i'),
-        'services'    => $serviceNames,
-        'total_price' => $totalPrice,
-    ];
-
-    Mail::to($validated['email'])->send(new BookingConfirmationMail($data));
-
-    $client = Client::firstOrCreate(
-        ['email' => $validated['email']],
-        ['name' => $validated['name'], 'phone' => $validated['phone']]
-    );
-
-    $randomEmployee = Employee::inRandomOrder()->first();
-
-    $appointment = Appointment::create([
-        'client_id'   => $client->id,
-        'employee_id' => optional($randomEmployee)->id,
-        'start_time'  => $validated['date'],
-        'finish_time' => Carbon::parse($validated['date'])->addHours(4),
-        'status'      => 0,
-        'event_location_id' => is_numeric($request['event_location_id']) ? $request['event_location_id'] : null,
-        'custom_event_location' => $request['event_location_id'] === 'other' ? $request['custom_event_location'] : null,
-        'price'=>$data['total_price']
-    ]);
-
-    $appointment->services()->sync($validated['services']);
-
-    return response()->json([
-        'success' => true,
-        'id' => $appointment->id
-    ]);
-} catch (\Exception $e) {
-    Log::error("Échec d’envoi d’email: " . $e->getMessage());
-
-    return response()->json([
-        'success' => false,
-        'message' => '❌ ف '.$e->getMessage()
-    ]);
-}
-
-}
-
+    }
 }
 

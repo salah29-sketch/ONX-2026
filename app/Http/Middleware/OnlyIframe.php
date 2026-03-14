@@ -16,9 +16,14 @@ class OnlyIframe
      */
     public function handle($request, \Closure $next)
 {
+    // Require authenticated session — Referer header alone is forgeable
+    if (!auth()->check()) {
+        abort(403, 'غير مصرح بالدخول المباشر إلى هذه الصفحة.');
+    }
+
     $referer = $request->headers->get('referer');
 
-    if (!$referer || !str_contains($referer, route('admin.home'))) {
+    if (!$referer || !str_contains($referer, url('/'))) {
         abort(403, 'غير مصرح بالدخول المباشر إلى هذه الصفحة.');
     }
 

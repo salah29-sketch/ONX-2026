@@ -38,7 +38,6 @@ class EditableContentController extends Controller
         return response()->json([
             'success' => false,
             'message' => 'حدث خطأ أثناء عملية الحفظ',
-            'error' => $e->getMessage() // فقط للديباغ. احذفه في الإنتاج
         ], 500);
     }
 }
@@ -82,7 +81,6 @@ class EditableContentController extends Controller
         return response()->json([
             'success' => false,
             'message' => 'حدث خطأ أثناء عملية الحفظ',
-            'error' => $e->getMessage() // فقط للديباغ. احذفه في الإنتاج
         ], 500);
     }
 }

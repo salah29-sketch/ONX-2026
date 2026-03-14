@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-
-use App\Client;
-use App\Service;
-use App\Employee;
-use App\Appointment;
-use App\EventLocation;
+use App\Models\Client;
+use App\Models\Service;
+use App\Models\Employee;
+use App\Models\Appointment;
+use App\Models\EventLocation;
+use App\Services\AppointmentService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Gate;
 
 class AppointmentsController extends Controller
 {
+    public function __construct(private AppointmentService $appointmentService) {}
+
     public function index(Request $request)
     {
 
@@ -114,15 +116,15 @@ class AppointmentsController extends Controller
     {
         abort_if(Gate::denies('appointment_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $clients = Client::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $clients = Client::select('id', 'name')->get()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $employees = Employee::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $employees = Employee::select('id', 'name')->get()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $services = Service::all()->pluck('name', 'id');
+        $services = Service::select('id', 'name')->get()->pluck('name', 'id');
 
-        $event_locations = EventLocation::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $event_locations = EventLocation::select('id', 'name')->get()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.appointments.create', compact('clients', 'employees', 'services','event_locations'));
+        return view('admin.appointments.create', compact('clients', 'employees', 'services', 'event_locations'));
     }
 
     public function store(StoreAppointmentRequest $request)
@@ -142,11 +144,11 @@ class AppointmentsController extends Controller
     {
         abort_if(Gate::denies('appointment_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $clients = Client::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $clients = Client::select('id', 'name')->get()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $employees = Employee::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $employees = Employee::select('id', 'name')->get()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $services = Service::all()->pluck('name', 'id');
+        $services = Service::select('id', 'name')->get()->pluck('name', 'id');
 
         $appointment->load('client', 'employee', 'services');
 
@@ -191,17 +193,12 @@ class AppointmentsController extends Controller
 
 
     public function confirm($id, Request $request)
-{
-    $appointment = Appointment::findOrFail($id);
+    {
+        $appointment = Appointment::findOrFail($id);
+        $deposit = $request->filled('deposit') ? (float) $request->input('deposit') : null;
 
-    // إن وجد العربون يتم حفظه
-    if ($request->filled('deposit')) {
-        $appointment->deposit = $request->input('deposit');
+        $this->appointmentService->confirm($appointment, $deposit);
+
+        return response()->json(['success' => true]);
     }
-
-    $appointment->status = 1; // أو حسب نظامك
-    $appointment->save();
-
-    return response()->json(['success' => true]);
-}
 }

@@ -13,8 +13,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Service extends Model implements HasMedia
 {
-    use SoftDeletes, HasFactory;
-  use SoftDeletes, InteractsWithMedia, HasFactory;
+    use SoftDeletes, InteractsWithMedia, HasFactory;
     public $table = 'services';
 
      protected $appends = [
