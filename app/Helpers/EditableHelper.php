@@ -4,7 +4,7 @@
 if (!function_exists('editable')) {
     function editable($key, $default = '') {
         $locale = app()->getLocale();
-        $record = \App\EditableContent::where('key', $key)->where('locale', $locale)->first();
+        $record = \App\Models\EditableContent::where('key', $key)->where('locale', $locale)->first();
         $text = $record ? $record->content : $default;
 
         return $text === null || trim($text) === ''

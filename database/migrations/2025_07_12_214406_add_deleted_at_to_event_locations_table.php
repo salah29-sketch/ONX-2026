@@ -6,27 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 class AddDeletedAtToEventLocationsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
-        Schema::table('event_locations', function (Blueprint $table) {
-             $table->softDeletes(); // هذا يضيف العمود deleted_at
-        });
+        if (!Schema::hasColumn('event_locations', 'deleted_at')) {
+            Schema::table('event_locations', function (Blueprint $table) {
+                $table->softDeletes();
+            });
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::table('event_locations', function (Blueprint $table) {
-            //
+            if (Schema::hasColumn('event_locations', 'deleted_at')) {
+                $table->dropSoftDeletes();
+            }
         });
     }
 }

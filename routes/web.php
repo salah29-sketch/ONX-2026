@@ -1,101 +1,144 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\BookingConfirmationMail;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ReservationController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Front\HomeController;
+use App\Http\Controllers\Front\ServiceController;
+use App\Http\Controllers\Front\PortfolioController;
+use App\Http\Controllers\Front\BookingController;
+use App\Http\Controllers\Front\ContactController;
+use App\Http\Controllers\Front\FaqController;
 
-Route::get('/', [HomeController::class ,'index'])->name('home');
-Route::get('/portfolio', [HomeController::class ,'portfolio'])->name('portfolio');
-Route::get('/booking', [HomeController::class ,'booking'])->name('booking');
-Route::post('/check-appointment', [HomeController::class, 'checkAvailability']);
-// Route::post('/reservation-api', [ReservationController::class, 'store']);
+/*
+|--------------------------------------------------------------------------
+| Front Routes — الواجهة الأمامية
+|--------------------------------------------------------------------------
+*/
 
+// robots.txt ديناميكي (يستخدم APP_URL من .env)
+Route::get('/robots.txt', function () {
+    $base = rtrim(config('app.url'), '/');
+    return response(
+        "User-agent: *\nDisallow: /admin\nDisallow: /login\nAllow: /\n\nSitemap: {$base}/sitemap.xml\n",
+        200,
+        ['Content-Type' => 'text/plain; charset=UTF-8']
+    );
+})->name('robots');
 
-Route::post('/reservation-api', [ReservationController::class, 'store']);
-
-Route::get('/saleh' , [HomeController::class , 'saleh']);
-
-Route::redirect('/home', '/admin');
-Auth::routes(['register' => false]);
-
-Route::get('/lang.js', function () {
-    $translations = [
-        'booking' => __('booking'),
-        'home' => __('home'),
-        // أضف ملفات لغة أخرى هنا حسب الحاجة
+// Sitemap للأرشفة ومحركات البحث
+Route::get('/sitemap.xml', function () {
+    $base = rtrim(config('app.url'), '/');
+    $urls = [
+        ['loc' => $base . '/', 'changefreq' => 'weekly', 'priority' => '1.0'],
+        ['loc' => $base . '/portfolio', 'changefreq' => 'weekly', 'priority' => '0.9'],
+        ['loc' => $base . '/services', 'changefreq' => 'weekly', 'priority' => '0.9'],
+        ['loc' => $base . '/services/events', 'changefreq' => 'weekly', 'priority' => '0.8'],
+        ['loc' => $base . '/services/marketing', 'changefreq' => 'weekly', 'priority' => '0.8'],
+        ['loc' => $base . '/booking', 'changefreq' => 'weekly', 'priority' => '0.9'],
+        ['loc' => $base . '/contact', 'changefreq' => 'monthly', 'priority' => '0.8'],
+        ['loc' => $base . '/faq', 'changefreq' => 'monthly', 'priority' => '0.7'],
     ];
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+    foreach ($urls as $u) {
+        $xml .= '  <url><loc>' . htmlspecialchars($u['loc']) . '</loc><changefreq>' . $u['changefreq'] . '</changefreq><priority>' . $u['priority'] . '</priority></url>' . "\n";
+    }
+    $xml .= '</urlset>';
+    return response($xml, 200, ['Content-Type' => 'application/xml', 'Charset' => 'UTF-8']);
+})->name('sitemap');
 
-    $js = 'window.translations = ' . json_encode($translations, JSON_UNESCAPED_UNICODE) . ';';
-    return response($js)->header('Content-Type', 'application/javascript');
+// الصفحة الرئيسية
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// FAQ
+Route::get('/faq', [FaqController::class, 'index'])->name('faq');
+
+// صفحة حالة الخدمة (عامة)
+Route::get('/status', function () {
+    return view('front.status');
+})->name('status');
+
+// تواصل معنا (حد الإرسال: 5 رسائل في الدقيقة)
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
+
+// الأعمال
+Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio');
+
+// الخدمات
+Route::prefix('services')->name('services.')->group(function () {
+    Route::get('/',          [ServiceController::class, 'index'])->name('index');
+    Route::get('/events',    [ServiceController::class, 'events'])->name('events');
+    Route::get('/marketing', [ServiceController::class, 'marketing'])->name('marketing');
 });
 
+// الحجز (حد معدل الطلبات: 10 طلبات في الدقيقة لتقليل السبام)
+Route::prefix('booking')->group(function () {
+    Route::get('/',                       [BookingController::class, 'index'])->name('booking');
+    Route::post('/',                      [BookingController::class, 'store'])->middleware('throttle:10,1')->name('booking.store');
+    Route::get('/booked-days',            [BookingController::class, 'bookedDays'])->name('booking.bookedDays');
+    Route::get('/check-date',             [BookingController::class, 'checkDate'])->name('booking.check');
+    Route::get('/confirmation/{booking}', [BookingController::class, 'confirmation'])->name('booking.confirmation');
+    Route::get('/pdf/{booking}',          [BookingController::class, 'pdf'])->name('booking.pdf');
+});
 
+// Auth
+Auth::routes(['register' => false]);
+// صفحة الحزم والخدمات
+Route::get('/packages', [App\Http\Controllers\Front\ServiceController::class, 'packages'])->name('front.packages');
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
-    Route::get('/', 'HomeController@index')->name('home');
-    // Permissions
-    Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
-    Route::resource('permissions', 'PermissionsController');
+/*
+|--------------------------------------------------------------------------
+| منطقة العملاء — Client Area
+|--------------------------------------------------------------------------
+*/
+Route::prefix('client')->name('client.')->group(function () {
+    Route::get('login', [\App\Http\Controllers\Client\AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [\App\Http\Controllers\Client\AuthController::class, 'login'])->middleware('throttle:5,1')->name('login.post');
+    Route::get('set-password/{booking}', [\App\Http\Controllers\Client\AuthController::class, 'showSetPassword'])->name('set-password')->whereNumber('booking');
+    Route::post('set-password', [\App\Http\Controllers\Client\AuthController::class, 'setPassword'])->name('set-password.post');
 
-    // Roles
-    Route::delete('roles/destroy', 'RolesController@massDestroy')->name('roles.massDestroy');
-    Route::resource('roles', 'RolesController');
+    Route::middleware('client.auth')->group(function () {
+        Route::post('logout', [\App\Http\Controllers\Client\AuthController::class, 'logout'])->name('logout');
+        Route::get('/', [\App\Http\Controllers\Client\DashboardController::class, 'dashboard'])->name('dashboard');
+        Route::get('profile', [\App\Http\Controllers\Client\DashboardController::class, 'profile'])->name('profile');
+        Route::put('profile', [\App\Http\Controllers\Client\DashboardController::class, 'updateProfile'])->name('profile.update');
+        Route::put('password', [\App\Http\Controllers\Client\DashboardController::class, 'changePassword'])->name('password.update');
+        Route::get('bookings', [\App\Http\Controllers\Client\DashboardController::class, 'bookings'])->name('bookings');
+        Route::get('bookings/{booking}', [\App\Http\Controllers\Client\DashboardController::class, 'bookingDetail'])->name('bookings.show');
+        Route::get('messages', [\App\Http\Controllers\Client\DashboardController::class, 'messages'])->name('messages');
+        Route::post('messages', [\App\Http\Controllers\Client\DashboardController::class, 'storeMessage'])->name('messages.store');
+        Route::get('review', [\App\Http\Controllers\Client\DashboardController::class, 'createReview'])->name('review.create');
+        Route::post('review', [\App\Http\Controllers\Client\DashboardController::class, 'storeReview'])->name('review.store');
+        Route::get('project-photos', [\App\Http\Controllers\Client\DashboardController::class, 'projectPhotos'])->name('project-photos');
+        Route::get('project-photos/booking/{booking}', [\App\Http\Controllers\Client\DashboardController::class, 'projectPhotosBooking'])->name('project-photos.booking');
+        Route::post('project-photos/toggle', [\App\Http\Controllers\Client\DashboardController::class, 'toggleSelectedPhoto'])->name('project-photos.toggle');
+        Route::get('payments', [\App\Http\Controllers\Client\DashboardController::class, 'payments'])->name('payments');
+        Route::get('subscriptions', [\App\Http\Controllers\Client\DashboardController::class, 'subscriptions'])->name('subscriptions');
+        Route::post('subscriptions/{subscription}/renew', [\App\Http\Controllers\Client\DashboardController::class, 'renewSubscription'])->name('subscriptions.renew');
+        Route::put('subscriptions/{subscription}/renewal-type', [\App\Http\Controllers\Client\DashboardController::class, 'updateSubscriptionRenewalType'])->name('subscriptions.renewal-type');
+        Route::get('media', [\App\Http\Controllers\Client\DashboardController::class, 'media'])->name('media');
+        Route::get('files', [\App\Http\Controllers\Client\DashboardController::class, 'files'])->name('files');
+   // فاتورة PDF
+        Route::get('bookings/{booking}/invoice',
+        [\App\Http\Controllers\Client\DashboardController::class, 'invoicePdf'])
+        ->name('bookings.invoice');
+        Route::get('bookings/{booking}/summary',
+        [\App\Http\Controllers\Client\DashboardController::class, 'bookingSummary'])
+        ->name('bookings.summary');
+        Route::get('bookings/{booking}/booking-pdf',
+        [\App\Http\Controllers\Client\DashboardController::class, 'bookingPdf'])
+        ->name('bookings.booking-pdf');
 
-    // Users
-    Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
-    Route::resource('users', 'UsersController');
+    // تحميل ملف
+        Route::get('files/{file}/download',
+        [\App\Http\Controllers\Client\DashboardController::class, 'downloadFile'])
+        ->name('files.download');
 
-    // Services
-    Route::delete('services/destroy', 'ServicesController@massDestroy')->name('services.massDestroy');
-    Route::post('services/media', 'ServicesController@storeMedia')->name('services.storeMedia');
-    Route::resource('services', 'ServicesController');
-
-    // Employees
-    Route::delete('employees/destroy', 'EmployeesController@massDestroy')->name('employees.massDestroy');
-    Route::post('employees/media', 'EmployeesController@storeMedia')->name('employees.storeMedia');
-    Route::resource('employees', 'EmployeesController');
-
-    // Clients
-    Route::delete('clients/destroy', 'ClientsController@massDestroy')->name('clients.massDestroy');
-    Route::resource('clients', 'ClientsController');
-
-    // Appointments
-    Route::delete('appointments/destroy', 'AppointmentsController@massDestroy')->name('appointments.massDestroy');
-    Route::resource('appointments', 'AppointmentsController');
-    Route::POST('appointments/{appointment}/confirm', 'AppointmentsController@confirm')->name('appointments.confirm');
-
-
-    Route::get('system-calendar', 'SystemCalendarController@index')->name('systemCalendar');
-
-
-    Route::get('settings/home' ,  'AdminController@edit')->name('settings.page');
-    Route::post('settings/inlineUpdate' ,'AdminController@updateInline' )->name('update.inline');
-    Route::post('settings/servUpdate' ,'AdminController@update' )->name('update.serivesList');
-    Route::post('editable-content/update', 'EditableContentController@update')->name('editable.update');
-    Route::post('editable-content/upload-image', 'EditableContentController@uploadImage')->name('editable.uploadImage');
-
-
-    Route::get('/gallery', 'GalleryController@index')->name('gallery.index');
-    Route::post('/gallery', 'GalleryController@store')->name('gallery.store');
-    Route::delete('/gallery/{id}', 'GalleryController@destroy')->name('gallery.destroy');
-    Route::post('/admin/gallery/toggle-home/{id}', 'GalleryController@toggleHome')->name('gallery.toggleHome');
-
-
-    Route::get('/company' , 'CompanyController@index')->name('company');
-    Route::post('/company-settings','CompanyController@update')->name('company.update');
-
-    Route::get('/booking-notes', 'AdminBookingNoteController@edit')->name('booking_notes.edit');
-    Route::post('/booking-notes', 'AdminBookingNoteController@update')->name('booking_notes.update');
-
-
-
-     Route::delete('event-locations/destroy', 'EventLocationController@massDestroy')->name('event-locations.massDestroy');
-     Route::post('event-locations/media', 'EventLocationController@storeMedia')->name('event-locations.storeMedia');
-     Route::resource('event-locations', 'EventLocationController');
-
-
-
+    // تحميل الصور المميزة ZIP
+        Route::post('project-photos/booking/{booking}/zip',
+        [\App\Http\Controllers\Client\DashboardController::class, 'downloadSelectedPhotosZip'])
+        ->name('project-photos.zip');
+   
+        });
 });

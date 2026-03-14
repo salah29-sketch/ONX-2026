@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Role;
+use App\Models\Admin\Role;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -15,6 +15,14 @@ class AuthGates
         $user = Auth::user();
 
         if (!app()->runningInConsole() && $user) {
+            // صاحب الموقع: كامل الصلاحيات دائماً (بالبريد من .env أو المستخدم الأول)
+            Gate::before(function ($user, $ability) {
+                if ($this->isSiteOwner($user)) {
+                    return true;
+                }
+                return null;
+            });
+
             $permissionsArray = Cache::remember('auth_gates_permissions', 3600, function () {
                 $roles = Role::with('permissions:id,title')->get();
                 $map   = [];
@@ -36,5 +44,18 @@ class AuthGates
         }
 
         return $next($request);
+    }
+
+    /**
+     * هل هذا المستخدم صاحب الموقع (له كامل الصلاحيات)؟
+     * يُحدد عبر: APP_OWNER_EMAIL في .env أو المستخدم رقم 1
+     */
+    protected function isSiteOwner($user): bool
+    {
+        $ownerEmail = config('app.owner_email');
+        if ($ownerEmail && $user->email && strcasecmp($user->email, $ownerEmail) === 0) {
+            return true;
+        }
+        return $user->id === 1;
     }
 }

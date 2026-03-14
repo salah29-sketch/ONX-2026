@@ -1,55 +1,45 @@
 @extends('layouts.admin')
+
 @section('content')
-@can('employee_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route("admin.employees.create") }}">
-                {{ trans('global.add') }} {{ trans('cruds.employee.title_singular') }}
-            </a>
-        </div>
+<div class="db-page-head">
+    <div>
+        <h1 class="db-page-title">{{ trans('cruds.employee.title_singular') }}</h1>
+        <div class="db-page-subtitle">{{ trans('cruds.employee.title_singular') }} {{ trans('global.list') }}</div>
     </div>
-@endcan
-<div class="card">
-    <div class="card-header">
+    @can('employee_create')
+        <a class="db-btn-primary" href="{{ route('admin.employees.create') }}">
+            <i class="fas fa-plus"></i>
+            {{ trans('global.add') }} {{ trans('cruds.employee.title_singular') }}
+        </a>
+    @endcan
+</div>
+
+<div class="card db-card">
+    <div class="db-card-header">
+        <i class="fas fa-users mr-2"></i>
         {{ trans('cruds.employee.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body">
-        <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Employee">
-            <thead>
-                <tr>
-                    <th width="10">
-
-                    </th>
-                    <th>
-                        {{ trans('cruds.employee.fields.id') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.employee.fields.name') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.employee.fields.email') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.employee.fields.phone') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.employee.fields.photo') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.employee.fields.services') }}
-                    </th>
-                    <th>
-                        &nbsp;
-                    </th>
-                </tr>
-            </thead>
-        </table>
-
-
+    <div class="card-body db-card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover ajaxTable datatable datatable-Employee db-table text-center">
+                <thead>
+                    <tr>
+                        <th width="10"></th>
+                        <th>{{ trans('cruds.employee.fields.id') }}</th>
+                        <th>{{ trans('cruds.employee.fields.name') }}</th>
+                        <th>{{ trans('cruds.employee.fields.email') }}</th>
+                        <th>{{ trans('cruds.employee.fields.phone') }}</th>
+                        <th>{{ trans('cruds.employee.fields.photo') }}</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 </div>
 @endsection
+
 @section('scripts')
 @parent
 <script>
@@ -93,17 +83,15 @@
     aaSorting: [],
     ajax: "{{ route('admin.employees.index') }}",
     columns: [
-      { data: 'placeholder', name: 'placeholder' },
-{ data: 'id', name: 'id' },
-{ data: 'name', name: 'name' },
-{ data: 'email', name: 'email' },
-{ data: 'phone', name: 'phone' },
-{ data: 'photo', name: 'photo', sortable: false, searchable: false },
-{ data: 'services', name: 'services.name' },
-{ data: 'actions', name: '{{ trans('global.actions') }}' }
+      { data: 'id', name: 'id' },
+      { data: 'name', name: 'name' },
+      { data: 'email', name: 'email' },
+      { data: 'phone', name: 'phone' },
+      { data: 'photo', name: 'photo', sortable: false, searchable: false },
+      { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     order: [[ 1, 'desc' ]],
-    pageLength: 100,
+    pageLength: 25,
   };
   $('.datatable-Employee').DataTable(dtOverrideGlobals);
     $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
@@ -111,6 +99,5 @@
             .columns.adjust();
     });
 });
-
 </script>
 @endsection

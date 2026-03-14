@@ -9,7 +9,7 @@ return [
     |
     | This value is the name of your application. This value is used when the
     | framework needs to place the application's name in a notification or
-    | any other location as required by the application or its packages.
+    | any other location as required by the application or its Packages.
     |
     */
 
@@ -55,6 +55,15 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL', null),
+
+    /*
+    |--------------------------------------------------------------------------
+    | صاحب الموقع (كامل الصلاحيات)
+    |--------------------------------------------------------------------------
+    | البريد الإلكتروني لصاحب الموقع — يحصل تلقائياً على كل الصلاحيات.
+    | إن لم يُحدد: المستخدم رقم 1 يُعتبر صاحب الموقع.
+    */
+    'owner_email' => env('APP_OWNER_EMAIL', null),
 
     /*
     |--------------------------------------------------------------------------

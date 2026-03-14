@@ -6,28 +6,38 @@ use Illuminate\Support\Facades\Schema;
 
 class AddLocaleToEditableContentsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
-        Schema::table('editable_contents', function (Blueprint $table) {
-                  $table->string('locale')->default('fr');
-                  $table->unique(['key', 'locale']); // لمنع تكرار نفس المفتاح لنفس اللغة
-        });
+        if (!Schema::hasColumn('editable_contents', 'locale')) {
+
+            Schema::table('editable_contents', function (Blueprint $table) {
+                $table->string('locale')->default('fr');
+            });
+
+            // إضافة unique index
+            try {
+                Schema::table('editable_contents', function (Blueprint $table) {
+                    $table->unique(['key', 'locale']);
+                });
+            } catch (\Throwable $e) {
+                // إذا كان موجود مسبقًا لا يحدث خطأ
+            }
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
-        Schema::table('editable_contents', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasColumn('editable_contents', 'locale')) {
+
+            try {
+                Schema::table('editable_contents', function (Blueprint $table) {
+                    $table->dropUnique(['key', 'locale']);
+                });
+            } catch (\Throwable $e) {}
+
+            Schema::table('editable_contents', function (Blueprint $table) {
+                $table->dropColumn('locale');
+            });
+        }
     }
 }

@@ -6,28 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 class AddCustomEventLocationToAppointmentsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
-        Schema::table('appointments', function (Blueprint $table) {
-                    $table->string('custom_event_location')->nullable()->after('event_location_id');
-
-        });
+        if (!Schema::hasColumn('appointments', 'custom_event_location')) {
+            Schema::table('appointments', function (Blueprint $table) {
+                $table->string('custom_event_location')->nullable()->after('event_location_id');
+            });
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
-        Schema::table('appointments', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasColumn('appointments', 'custom_event_location')) {
+            Schema::table('appointments', function (Blueprint $table) {
+                $table->dropColumn('custom_event_location');
+            });
+        }
     }
 }
