@@ -29,50 +29,55 @@ Route::get('/robots.txt', function () {
 Route::get('/sitemap.xml', function () {
     $base = rtrim(config('app.url'), '/');
     $urls = [
-        ['loc' => $base . '/', 'changefreq' => 'weekly', 'priority' => '1.0'],
-        ['loc' => $base . '/portfolio', 'changefreq' => 'weekly', 'priority' => '0.9'],
-        ['loc' => $base . '/services', 'changefreq' => 'weekly', 'priority' => '0.9'],
-        ['loc' => $base . '/services/events', 'changefreq' => 'weekly', 'priority' => '0.8'],
-        ['loc' => $base . '/services/marketing', 'changefreq' => 'weekly', 'priority' => '0.8'],
-        ['loc' => $base . '/booking', 'changefreq' => 'weekly', 'priority' => '0.9'],
-        ['loc' => $base . '/contact', 'changefreq' => 'monthly', 'priority' => '0.8'],
-        ['loc' => $base . '/faq', 'changefreq' => 'monthly', 'priority' => '0.7'],
+        ['loc' => $base . '/',                    'changefreq' => 'weekly',  'priority' => '1.0'],
+        ['loc' => $base . '/portfolio',           'changefreq' => 'weekly',  'priority' => '0.9'],
+        ['loc' => $base . '/services',            'changefreq' => 'weekly',  'priority' => '0.9'],
+        ['loc' => $base . '/services/events',     'changefreq' => 'weekly',  'priority' => '0.8'],
+        ['loc' => $base . '/services/marketing',  'changefreq' => 'weekly',  'priority' => '0.8'],
+        ['loc' => $base . '/booking',             'changefreq' => 'weekly',  'priority' => '0.9'],
+        ['loc' => $base . '/contact',             'changefreq' => 'monthly', 'priority' => '0.8'],
+        ['loc' => $base . '/faq',                 'changefreq' => 'monthly', 'priority' => '0.7'],
     ];
-    $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    $xml  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
     $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
     foreach ($urls as $u) {
-        $xml .= '  <url><loc>' . htmlspecialchars($u['loc']) . '</loc><changefreq>' . $u['changefreq'] . '</changefreq><priority>' . $u['priority'] . '</priority></url>' . "\n";
+        $xml .= '  <url><loc>' . htmlspecialchars($u['loc']) . '</loc>'
+              . '<changefreq>' . $u['changefreq'] . '</changefreq>'
+              . '<priority>' . $u['priority'] . '</priority></url>' . "\n";
     }
     $xml .= '</urlset>';
     return response($xml, 200, ['Content-Type' => 'application/xml', 'Charset' => 'UTF-8']);
 })->name('sitemap');
 
-// الصفحة الرئيسية
+// ── الصفحة الرئيسية ──────────────────────────────────────────────────────
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// FAQ
+// ── FAQ ──────────────────────────────────────────────────────────────────
 Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 
-// صفحة حالة الخدمة (عامة)
+// ── صفحة حالة الخدمة ────────────────────────────────────────────────────
 Route::get('/status', function () {
     return view('front.status');
 })->name('status');
 
-// تواصل معنا (حد الإرسال: 5 رسائل في الدقيقة)
+// ── تواصل معنا ───────────────────────────────────────────────────────────
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
 
-// الأعمال
+// ── الأعمال ──────────────────────────────────────────────────────────────
 Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio');
 
-// الخدمات
+// ── الخدمات ──────────────────────────────────────────────────────────────
 Route::prefix('services')->name('services.')->group(function () {
     Route::get('/',          [ServiceController::class, 'index'])->name('index');
     Route::get('/events',    [ServiceController::class, 'events'])->name('events');
     Route::get('/marketing', [ServiceController::class, 'marketing'])->name('marketing');
 });
 
-// الحجز (حد معدل الطلبات: 10 طلبات في الدقيقة لتقليل السبام)
+// ── صفحة الحزم ──────────────────────────────────────────────────────────
+Route::get('/packages', [ServiceController::class, 'packages'])->name('front.packages');
+
+// ── الحجز ────────────────────────────────────────────────────────────────
 Route::prefix('booking')->group(function () {
     Route::get('/',                       [BookingController::class, 'index'])->name('booking');
     Route::post('/',                      [BookingController::class, 'store'])->middleware('throttle:10,1')->name('booking.store');
@@ -82,10 +87,12 @@ Route::prefix('booking')->group(function () {
     Route::get('/pdf/{booking}',          [BookingController::class, 'pdf'])->name('booking.pdf');
 });
 
-// Auth
-Auth::routes(['register' => false]);
-// صفحة الحزم والخدمات
-Route::get('/packages', [App\Http\Controllers\Front\ServiceController::class, 'packages'])->name('front.packages');
+// ── Auth للإدارة فقط (بدون register / reset / verify) ───────────────────
+Auth::routes([
+    'register' => false, // لا تسجيل عام
+    'reset'    => false, // نستخدم نظام OTP الخاص بنا
+    'verify'   => false, // لا تحقق من البريد
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -93,52 +100,93 @@ Route::get('/packages', [App\Http\Controllers\Front\ServiceController::class, 'p
 |--------------------------------------------------------------------------
 */
 Route::prefix('client')->name('client.')->group(function () {
-    Route::get('login', [\App\Http\Controllers\Client\AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('login', [\App\Http\Controllers\Client\AuthController::class, 'login'])->middleware('throttle:5,1')->name('login.post');
-    Route::get('set-password/{booking}', [\App\Http\Controllers\Client\AuthController::class, 'showSetPassword'])->name('set-password')->whereNumber('booking');
-    Route::post('set-password', [\App\Http\Controllers\Client\AuthController::class, 'setPassword'])->name('set-password.post');
 
+    // ── تسجيل الدخول ─────────────────────────────────────────────────────
+    Route::get('login',  [\App\Http\Controllers\Client\AuthController::class, 'showLoginForm'])
+        ->name('login')
+        ->middleware('guest:client');
+    Route::post('login', [\App\Http\Controllers\Client\AuthController::class, 'login'])
+        ->name('login.post')
+        ->middleware('throttle:5,1');
+
+    // ── استرجاع كلمة المرور (OTP — AJAX) ─────────────────────────────────
+    Route::post('forgot-password/send', [\App\Http\Controllers\Client\ForgotPasswordController::class, 'sendOtp'])
+        ->name('forgot-password.send')
+        ->middleware('guest:client');
+
+    Route::post('forgot-password/verify', [\App\Http\Controllers\Client\ForgotPasswordController::class, 'verifyOtp'])
+        ->name('forgot-password.verify')
+        ->middleware('guest:client');
+
+    Route::post('forgot-password/reset', [\App\Http\Controllers\Client\ForgotPasswordController::class, 'resetPassword'])
+        ->name('forgot-password.reset')
+        ->middleware('guest:client');
+
+    Route::post('forgot-password/resend', [\App\Http\Controllers\Client\ForgotPasswordController::class, 'resendOtp'])
+        ->name('forgot-password.resend')
+        ->middleware('guest:client');
+
+    // GET — يحوّل لصفحة Login ويفتح الـ accordion تلقائياً
+    Route::get('forgot-password', function () {
+        return redirect()->route('client.login', ['forgot' => 1]);
+    })->name('forgot-password')->middleware('guest:client');
+
+    // ── ضبط كلمة المرور بعد الحجز ────────────────────────────────────────
+    Route::get('set-password/{booking}', [\App\Http\Controllers\Client\AuthController::class, 'showSetPassword'])
+        ->name('set-password')
+        ->whereNumber('booking');
+    Route::post('set-password', [\App\Http\Controllers\Client\AuthController::class, 'setPassword'])
+        ->name('set-password.post');
+
+    // ── منطقة العميل المحمية ──────────────────────────────────────────────
     Route::middleware('client.auth')->group(function () {
+
         Route::post('logout', [\App\Http\Controllers\Client\AuthController::class, 'logout'])->name('logout');
+
+        // Dashboard
         Route::get('/', [\App\Http\Controllers\Client\DashboardController::class, 'dashboard'])->name('dashboard');
+
+        // Profile
         Route::get('profile', [\App\Http\Controllers\Client\DashboardController::class, 'profile'])->name('profile');
         Route::put('profile', [\App\Http\Controllers\Client\DashboardController::class, 'updateProfile'])->name('profile.update');
         Route::put('password', [\App\Http\Controllers\Client\DashboardController::class, 'changePassword'])->name('password.update');
-        Route::get('bookings', [\App\Http\Controllers\Client\DashboardController::class, 'bookings'])->name('bookings');
+
+        // Bookings
+        Route::get('bookings',          [\App\Http\Controllers\Client\DashboardController::class, 'bookings'])->name('bookings');
         Route::get('bookings/{booking}', [\App\Http\Controllers\Client\DashboardController::class, 'bookingDetail'])->name('bookings.show');
-        Route::get('messages', [\App\Http\Controllers\Client\DashboardController::class, 'messages'])->name('messages');
+
+        // Booking documents
+        Route::get('bookings/{booking}/invoice',     [\App\Http\Controllers\Client\DashboardController::class, 'invoicePdf'])->name('bookings.invoice');
+        Route::get('bookings/{booking}/summary',     [\App\Http\Controllers\Client\DashboardController::class, 'bookingSummary'])->name('bookings.summary');
+        Route::get('bookings/{booking}/booking-pdf', [\App\Http\Controllers\Client\DashboardController::class, 'bookingPdf'])->name('bookings.booking-pdf');
+
+        // Messages
+        Route::get('messages',  [\App\Http\Controllers\Client\DashboardController::class, 'messages'])->name('messages');
         Route::post('messages', [\App\Http\Controllers\Client\DashboardController::class, 'storeMessage'])->name('messages.store');
-        Route::get('review', [\App\Http\Controllers\Client\DashboardController::class, 'createReview'])->name('review.create');
+
+        // Reviews
+        Route::get('review',  [\App\Http\Controllers\Client\DashboardController::class, 'createReview'])->name('review.create');
         Route::post('review', [\App\Http\Controllers\Client\DashboardController::class, 'storeReview'])->name('review.store');
-        Route::get('project-photos', [\App\Http\Controllers\Client\DashboardController::class, 'projectPhotos'])->name('project-photos');
-        Route::get('project-photos/booking/{booking}', [\App\Http\Controllers\Client\DashboardController::class, 'projectPhotosBooking'])->name('project-photos.booking');
-        Route::post('project-photos/toggle', [\App\Http\Controllers\Client\DashboardController::class, 'toggleSelectedPhoto'])->name('project-photos.toggle');
+
+        // Project photos
+        Route::get('project-photos',                        [\App\Http\Controllers\Client\DashboardController::class, 'projectPhotos'])->name('project-photos');
+        Route::get('project-photos/booking/{booking}',      [\App\Http\Controllers\Client\DashboardController::class, 'projectPhotosBooking'])->name('project-photos.booking');
+        Route::post('project-photos/toggle',                [\App\Http\Controllers\Client\DashboardController::class, 'toggleSelectedPhoto'])->name('project-photos.toggle');
+        Route::post('project-photos/booking/{booking}/zip', [\App\Http\Controllers\Client\DashboardController::class, 'downloadSelectedPhotosZip'])->name('project-photos.zip');
+
+        // Payments
         Route::get('payments', [\App\Http\Controllers\Client\DashboardController::class, 'payments'])->name('payments');
-        Route::get('subscriptions', [\App\Http\Controllers\Client\DashboardController::class, 'subscriptions'])->name('subscriptions');
-        Route::post('subscriptions/{subscription}/renew', [\App\Http\Controllers\Client\DashboardController::class, 'renewSubscription'])->name('subscriptions.renew');
-        Route::put('subscriptions/{subscription}/renewal-type', [\App\Http\Controllers\Client\DashboardController::class, 'updateSubscriptionRenewalType'])->name('subscriptions.renewal-type');
+
+        // Subscriptions
+        Route::get('subscriptions',                                   [\App\Http\Controllers\Client\DashboardController::class, 'subscriptions'])->name('subscriptions');
+        Route::post('subscriptions/{subscription}/renew',             [\App\Http\Controllers\Client\DashboardController::class, 'renewSubscription'])->name('subscriptions.renew');
+        Route::put('subscriptions/{subscription}/renewal-type',       [\App\Http\Controllers\Client\DashboardController::class, 'updateSubscriptionRenewalType'])->name('subscriptions.renewal-type');
+
+        // Media & Files
         Route::get('media', [\App\Http\Controllers\Client\DashboardController::class, 'media'])->name('media');
         Route::get('files', [\App\Http\Controllers\Client\DashboardController::class, 'files'])->name('files');
-   // فاتورة PDF
-        Route::get('bookings/{booking}/invoice',
-        [\App\Http\Controllers\Client\DashboardController::class, 'invoicePdf'])
-        ->name('bookings.invoice');
-        Route::get('bookings/{booking}/summary',
-        [\App\Http\Controllers\Client\DashboardController::class, 'bookingSummary'])
-        ->name('bookings.summary');
-        Route::get('bookings/{booking}/booking-pdf',
-        [\App\Http\Controllers\Client\DashboardController::class, 'bookingPdf'])
-        ->name('bookings.booking-pdf');
 
-    // تحميل ملف
-        Route::get('files/{file}/download',
-        [\App\Http\Controllers\Client\DashboardController::class, 'downloadFile'])
-        ->name('files.download');
-
-    // تحميل الصور المميزة ZIP
-        Route::post('project-photos/booking/{booking}/zip',
-        [\App\Http\Controllers\Client\DashboardController::class, 'downloadSelectedPhotosZip'])
-        ->name('project-photos.zip');
-   
-        });
+        // File download
+        Route::get('files/{file}/download', [\App\Http\Controllers\Client\DashboardController::class, 'downloadFile'])->name('files.download');
+    });
 });

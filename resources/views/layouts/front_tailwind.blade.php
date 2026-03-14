@@ -68,10 +68,17 @@
                     <a href="/booking" class="transition duration-200 hover:text-white">الحجز</a>
                 </nav>
 
-                <a href="/booking"
-                   class="hidden rounded-full border border-orange-500/40 bg-orange-500/10 px-5 py-2.5 text-sm font-extrabold text-white transition duration-300 hover:-translate-y-0.5 hover:border-orange-400 hover:bg-orange-500/20 hover:shadow-[0_0_24px_rgba(249,115,22,0.25)] active:scale-[0.98] lg:inline-flex">
-                    ابدأ مشروعك
-                </a>
+                <div class="hidden items-center gap-3 lg:flex">
+                    <a href="{{ Auth::guard('client')->check() ? route('client.dashboard') : route('client.login') }}"
+                       class="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-extrabold text-white transition duration-300 hover:-translate-y-0.5 hover:border-orange-500/50 hover:bg-orange-500/10 hover:text-white active:scale-[0.98]"
+                       aria-label="{{ Auth::guard('client')->check() ? 'لوحة العملاء' : 'دخول منطقة العملاء' }}">
+                        {{ Auth::guard('client')->check() ? 'حسابي' : 'منطقة العملاء' }}
+                    </a>
+                    <a href="/booking"
+                       class="rounded-full border border-orange-500/40 bg-orange-500/10 px-5 py-2.5 text-sm font-extrabold text-white transition duration-300 hover:-translate-y-0.5 hover:border-orange-400 hover:bg-orange-500/20 hover:shadow-[0_0_24px_rgba(249,115,22,0.25)] active:scale-[0.98]">
+                        ابدأ مشروعك
+                    </a>
+                </div>
 
                 <button
                     @click="open = !open"
@@ -104,7 +111,11 @@
                         <a href="/booking" class="rounded-2xl px-4 py-3 text-sm font-bold text-white/80 transition hover:bg-white/5 hover:text-white">الحجز</a>
                     </nav>
 
-                    <div class="mt-3 border-t border-white/10 pt-3">
+                    <div class="mt-3 flex flex-col gap-3 border-t border-white/10 pt-3">
+                        <a href="{{ Auth::guard('client')->check() ? route('client.dashboard') : route('client.login') }}"
+                           class="inline-flex w-full items-center justify-center rounded-full border border-white/20 bg-white/5 px-5 py-3 text-sm font-black text-white transition duration-300 active:scale-[0.98] hover:border-orange-500/50 hover:bg-orange-500/10 hover:text-white">
+                            {{ Auth::guard('client')->check() ? 'حسابي' : 'منطقة العملاء' }}
+                        </a>
                         <a href="/booking"
                            class="inline-flex w-full items-center justify-center rounded-full bg-orange-500 px-5 py-3 text-sm font-black text-black transition duration-300 active:scale-[0.98] hover:bg-orange-400">
                             ابدأ مشروعك

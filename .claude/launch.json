@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Laravel Dev Server",
+      "runtimeExecutable": "php",
+      "runtimeArgs": ["D:\\siteweb\\new\\onx-edge\\artisan", "serve"],
+      "port": 8000
+    },
+    {
+      "name": "Vite (Assets)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "D:\\siteweb\\new\\onx-edge", "run", "dev"],
+      "port": 5173
+    },
+    {
+      "name": "MailHog (Mail Catcher)",
+      "runtimeExecutable": "C:\\Users\\slhhm\\Downloads\\Programs\\MailHog_windows_amd64.exe",
+      "runtimeArgs": [],
+      "port": 8025
+    }
+  ]
+}
