@@ -12,7 +12,7 @@
 .client-portal-main { flex: 1; min-width: 0; overflow-y: auto; padding: 16px 20px; background: transparent; }
 .portal-nav-link { border-radius: 14px; transition: all .2s ease; color: #4b5563; }
 .portal-nav-link:hover { background: #f3f4f6; color: #1f2937; }
-.portal-nav-link.active { background: rgba(245,158,11,.12); color: #b45309; }
+.portal-nav-link.active { background: rgba(245,158,11,.18); color: #92400e; border-inline-start: 3px solid #f59e0b; padding-inline-start: calc(0.75rem - 3px); }
 .portal-avatar {
     width: 48px; height: 48px; border-radius: 50%;
     background: linear-gradient(135deg, #fef3c7, #fed7aa);
@@ -24,7 +24,7 @@
     position: fixed; bottom: 0; left: 0; right: 0;
     background: rgba(255,255,255,.98);
     border-top: 1px solid #e5e7eb;
-    padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+    padding: 6px 6px max(10px, env(safe-area-inset-bottom));
     z-index: 40;
     display: none;
 }
@@ -37,12 +37,15 @@
     .portal-bottom-nav { display: none; }
 }
 .portal-bottom-link {
-    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
     padding: 6px 4px; color: #6b7280;
-    text-decoration: none; font-size: 10px; font-weight: 700; transition: color .2s;
+    text-decoration: none; font-size: 10px; font-weight: 700; transition: all .2s;
+    border-radius: 14px; margin: 0 2px;
 }
-.portal-bottom-link:hover, .portal-bottom-link.active { color: #b45309; }
-.portal-bottom-link i { font-size: 1.25rem; }
+.portal-bottom-link:hover { color: #92400e; background: rgba(245,158,11,.08); }
+.portal-bottom-link.active { color: #92400e; background: rgba(245,158,11,.15); }
+.portal-bottom-link.active::before { content: ''; display: block; width: 20px; height: 3px; background: #f59e0b; border-radius: 999px; position: absolute; top: 0; }
+.portal-bottom-link i { font-size: 1.35rem; }
 
 /* أنيميشن زر الوضع الليلي */
 .portal-theme-toggle { transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s ease, box-shadow 0.3s ease; }
@@ -199,6 +202,14 @@ body.client-portal-dark .client-portal-app .media-lightbox-wrap #media-lightbox-
 body.client-portal-dark .client-portal-app .media-lightbox-wrap #media-lightbox-prev,
 body.client-portal-dark .client-portal-app .media-lightbox-wrap #media-lightbox-next { background: rgba(255,255,255,.2) !important; color: #fff !important; }
 body.client-portal-dark .client-portal-app .media-lightbox-wrap #media-lightbox-download { color: #000 !important; }
+/* شارات نوع الحساب — الوضع الليلي */
+body.client-portal-dark .client-portal-app .badge-company { background: rgba(34,197,94,.12) !important; color: #4ade80 !important; border-color: rgba(34,197,94,.25) !important; }
+body.client-portal-dark .client-portal-app .badge-individual { background: rgba(255,255,255,.08) !important; color: rgba(255,255,255,.6) !important; border-color: rgba(255,255,255,.12) !important; }
+/* تحسين active nav في الوضع الليلي */
+body.client-portal-dark .client-portal-app .portal-nav-link.active { background: rgba(245,166,35,.18) !important; color: #fbbf24 !important; border-inline-start-color: #f59e0b !important; }
+/* bottom nav active في الوضع الليلي */
+body.client-portal-dark .client-portal-app .portal-bottom-link.active { background: rgba(245,166,35,.15) !important; }
+body.client-portal-dark .client-portal-app .portal-bottom-link.active::before { background: #f59e0b !important; }
 </style>
 @endpush
 
@@ -231,23 +242,40 @@ body.client-portal-dark .client-portal-app .media-lightbox-wrap #media-lightbox-
         {{-- Sidebar (Desktop) --}}
         <aside class="client-portal-sidebar">
             <div class="p-4">
-                <div class="mb-4 flex items-center gap-3 border-b border-gray-200 pb-4">
-                    <div class="portal-avatar">
-                        {{ mb_substr($client->name ?? '؟', 0, 1) }}
+                <div class="mb-4 flex items-start gap-3 border-b border-gray-200 pb-4">
+                    <div class="portal-avatar flex-shrink-0">
+                        @if(!empty($client->is_company) && !empty($client->business_name))
+                            {{ mb_substr($client->business_name, 0, 1) }}
+                        @else
+                            {{ mb_substr($client->name ?? '؟', 0, 1) }}
+                        @endif
                     </div>
                     <div class="min-w-0 flex-1">
-                        <p class="truncate font-black text-gray-800">{{ $client->name ?? 'العميل' }}</p>
-                        @if(isset($activeBooking) && $activeBooking && $activeBooking->event_date)
-                            <p class="text-xs text-gray-500 mt-0.5">
-                                @if($activeBooking->event_date->isFuture())
-                                    حفلتك بعد {{ $activeBooking->event_date->diffInDays(now()) }} يوم
-                                @else
-                                    تمت الحفلة
-                                @endif
-                            </p>
+                        @if(!empty($client->is_company) && !empty($client->business_name))
+                            <p class="truncate font-black text-gray-800 leading-tight">{{ $client->business_name }}</p>
+                            <p class="truncate text-xs text-gray-500 mt-0.5">{{ $client->name }}</p>
                         @else
-                            <p class="text-xs text-gray-500 mt-0.5">مساحتك الخاصة</p>
+                            <p class="truncate font-black text-gray-800">{{ $client->name ?? 'العميل' }}</p>
+                            @if(isset($activeBooking) && $activeBooking && $activeBooking->event_date)
+                                <p class="text-xs text-gray-500 mt-0.5">
+                                    @if($activeBooking->event_date->isFuture())
+                                        حفلتك بعد {{ $activeBooking->event_date->diffInDays(now()) }} يوم
+                                    @else
+                                        تمت الحفلة
+                                    @endif
+                                </p>
+                            @else
+                                <p class="text-xs text-gray-500 mt-0.5">مساحتك الخاصة</p>
+                            @endif
                         @endif
+                        {{-- شارة نوع الحساب --}}
+                        <div class="mt-1.5">
+                            @if(!empty($client->is_company))
+                                <span class="badge-company"><i class="bi bi-building"></i> شركة</span>
+                            @else
+                                <span class="badge-individual"><i class="bi bi-person"></i> فرد</span>
+                            @endif
+                        </div>
                     </div>
                 </div>
                 <nav class="space-y-1">

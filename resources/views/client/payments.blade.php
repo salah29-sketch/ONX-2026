@@ -24,10 +24,13 @@
 }
 .panel-pay-icon {
     width: 40px; height: 40px; border-radius: 12px;
-    background: #fef3c7; display: flex;
+    background: var(--event-soft); display: flex;
     align-items: center; justify-content: center;
     font-size: 20px;
 }
+.panel-pay-icon.ads { background: var(--ads-soft); }
+.panel-pay.event { border-inline-start: 4px solid var(--event-primary); }
+.panel-pay.ads   { border-inline-start: 4px solid var(--ads-primary); }
 .panel-pay-name { font-weight: 900; color: #1f2937; text-decoration: none; }
 .panel-pay-name:hover { color: #b45309; }
 .panel-pay-sub  { font-size: 12px; color: #6b7280; margin-top: 2px; }
@@ -121,10 +124,10 @@
         $isEvent = $booking->service_type === 'event';
         $barClass= $booking->isFullyPaid() ? 'green' : ($booking->remainingAmount() > 0 ? 'red' : 'amber');
     @endphp
-    <div class="panel-pay">
+    <div class="panel-pay {{ $isEvent ? 'event' : 'ads' }}">
         <div class="panel-pay-head">
             <div class="panel-pay-title">
-                <div class="panel-pay-icon">{{ $isEvent ? '🎬' : '📢' }}</div>
+                <div class="panel-pay-icon {{ $isEvent ? '' : 'ads' }}">{{ $isEvent ? '🎪' : '📢' }}</div>
                 <div>
                     <a href="{{ route('client.bookings.show', $booking) }}" class="panel-pay-name">
                         الطلب {{ $clientOrderMap[$booking->id] ?? $booking->id }}

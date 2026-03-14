@@ -21,6 +21,8 @@ class Client extends Authenticatable
         'phone',
         'password',
         'login_disabled',
+        'is_company',
+        'business_name',
     ];
 
     protected $hidden = [
@@ -31,6 +33,7 @@ class Client extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'login_disabled'    => 'boolean',
+        'is_company'        => 'boolean',
     ];
 
     public function setPasswordAttribute($value): void

@@ -14,10 +14,76 @@
     @vite(['resources/js/app.js'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
     <style>
-        /* تصغير المحتوى في بوابة العملاء (حجم أساسي 14px بدل 16px) */
         html.client-portal-page { font-size: 14px; }
         body { font-family: 'Cairo', sans-serif; }
         [x-cloak] { display: none !important; }
+
+        /* ===== Design Tokens ===== */
+        :root {
+            --event-primary:  #f59e0b;
+            --event-dark:     #b45309;
+            --event-soft:     #fef3c7;
+            --event-border:   #fde68a;
+
+            --ads-primary:    #3b82f6;
+            --ads-dark:       #1d4ed8;
+            --ads-soft:       #eff6ff;
+            --ads-border:     #bfdbfe;
+
+            --text-primary:   #111827;
+            --text-secondary: #374151;
+            --text-muted:     #6b7280;
+            --text-faint:     #9ca3af;
+
+            --card-bg:        #ffffff;
+            --card-border:    #e5e7eb;
+            --card-radius:    18px;
+            --card-shadow:    0 1px 4px rgba(0,0,0,.06), 0 0 0 1px rgba(0,0,0,.03);
+
+            --status-new-bg:            #f3f4f6;  --status-new-text:            #374151;
+            --status-confirmed-bg:      #dbeafe;  --status-confirmed-text:      #1d4ed8;
+            --status-progress-bg:       #ede9fe;  --status-progress-text:       #7c3aed;
+            --status-done-bg:           #dcfce7;  --status-done-text:           #166534;
+            --status-cancelled-bg:      #fee2e2;  --status-cancelled-text:      #991b1b;
+            --status-unconfirmed-bg:    #fef3c7;  --status-unconfirmed-text:    #92400e;
+        }
+
+        /* ===== Utility — service type badges ===== */
+        .badge-event {
+            display:inline-flex; align-items:center; gap:4px;
+            background:var(--event-soft); color:var(--event-dark);
+            border:1px solid var(--event-border);
+            border-radius:999px; padding:2px 10px; font-size:12px; font-weight:700;
+        }
+        .badge-ads {
+            display:inline-flex; align-items:center; gap:4px;
+            background:var(--ads-soft); color:var(--ads-dark);
+            border:1px solid var(--ads-border);
+            border-radius:999px; padding:2px 10px; font-size:12px; font-weight:700;
+        }
+        .card-event { border-inline-start: 4px solid var(--event-primary) !important; background: var(--event-soft) !important; }
+        .card-ads   { border-inline-start: 4px solid var(--ads-primary)   !important; background: var(--ads-soft)   !important; }
+
+        /* ===== Status badges ===== */
+        .s-badge { display:inline-block; border-radius:999px; padding:3px 12px; font-size:12px; font-weight:700; }
+        .s-new         { background:var(--status-new-bg);         color:var(--status-new-text); }
+        .s-unconfirmed { background:var(--status-unconfirmed-bg); color:var(--status-unconfirmed-text); }
+        .s-confirmed   { background:var(--status-confirmed-bg);   color:var(--status-confirmed-text); }
+        .s-in_progress { background:var(--status-progress-bg);    color:var(--status-progress-text); }
+        .s-completed   { background:var(--status-done-bg);        color:var(--status-done-text); }
+        .s-cancelled   { background:var(--status-cancelled-bg);   color:var(--status-cancelled-text); }
+
+        /* ===== Company badge ===== */
+        .badge-company {
+            display:inline-flex; align-items:center; gap:3px;
+            background:#f0fdf4; color:#166534; border:1px solid #bbf7d0;
+            border-radius:999px; padding:2px 9px; font-size:11px; font-weight:700;
+        }
+        .badge-individual {
+            display:inline-flex; align-items:center; gap:3px;
+            background:#f9fafb; color:#4b5563; border:1px solid #e5e7eb;
+            border-radius:999px; padding:2px 9px; font-size:11px; font-weight:700;
+        }
     </style>
     @stack('styles')
 </head>

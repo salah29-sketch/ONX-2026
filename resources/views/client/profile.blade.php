@@ -101,22 +101,36 @@
 
 {{-- Profile Header --}}
 <div class="profile-header">
-    <div class="profile-avatar">{{ mb_substr($client->name ?? '؟', 0, 1) }}</div>
+    <div class="profile-avatar">
+        @if(!empty($client->is_company) && !empty($client->business_name))
+            {{ mb_substr($client->business_name, 0, 1) }}
+        @else
+            {{ mb_substr($client->name ?? '؟', 0, 1) }}
+        @endif
+    </div>
     <div>
-        <div class="profile-name">{{ $client->name }}</div>
-        <div class="profile-email">{{ $client->email ?? $client->phone ?? '' }}</div>
+        @if(!empty($client->is_company) && !empty($client->business_name))
+            <div class="profile-name">{{ $client->business_name }}</div>
+            <div class="profile-email">{{ $client->name }} · {{ $client->email ?? $client->phone ?? '' }}</div>
+            <div class="mt-1"><span class="badge-company"><i class="bi bi-building"></i> شركة</span></div>
+        @else
+            <div class="profile-name">{{ $client->name }}</div>
+            <div class="profile-email">{{ $client->email ?? $client->phone ?? '' }}</div>
+            <div class="mt-1"><span class="badge-individual"><i class="bi bi-person"></i> فرد</span></div>
+        @endif
     </div>
 </div>
 
 {{-- تعديل المعلومات --}}
 <div class="profile-section">
     <h3>المعلومات الشخصية</h3>
-    <p class="sub">تحديث اسمك وبريدك ورقم هاتفك</p>
-    <form method="POST" action="{{ route('client.profile.update') }}">
+    <p class="sub">تحديث اسمك وبريدك ورقم هاتفك ونوع الحساب</p>
+    <form method="POST" action="{{ route('client.profile.update') }}"
+          x-data="{ isCompany: {{ !empty($client->is_company) ? 'true' : 'false' }} }">
         @csrf
         @method('PUT')
         <div class="form-field">
-            <label class="form-label">الاسم</label>
+            <label class="form-label">الاسم الشخصي</label>
             <input type="text" name="name" value="{{ old('name', $client->name) }}" required class="form-input">
         </div>
         <div class="form-field">
@@ -127,6 +141,26 @@
             <label class="form-label">رقم الهاتف</label>
             <input type="text" name="phone" value="{{ old('phone', $client->phone) }}" required class="form-input">
         </div>
+
+        {{-- نوع الحساب --}}
+        <div class="form-field">
+            <label class="form-label">نوع الحساب</label>
+            <div class="flex gap-3 mt-1">
+                <label class="flex items-center gap-2 cursor-pointer select-none">
+                    <input type="radio" name="is_company" value="0" :checked="!isCompany" @change="isCompany = false" class="accent-amber-500">
+                    <span class="text-sm font-bold text-gray-700">فرد</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer select-none">
+                    <input type="radio" name="is_company" value="1" :checked="isCompany" @change="isCompany = true" class="accent-amber-500">
+                    <span class="text-sm font-bold text-gray-700">شركة</span>
+                </label>
+            </div>
+        </div>
+        <div class="form-field" x-show="isCompany" x-transition>
+            <label class="form-label">اسم الشركة</label>
+            <input type="text" name="business_name" value="{{ old('business_name', $client->business_name) }}" class="form-input" placeholder="مثال: شركة النور للإعلانات">
+        </div>
+
         <button type="submit" class="btn-save">حفظ التغييرات</button>
     </form>
 </div>

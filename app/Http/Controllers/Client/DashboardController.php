@@ -115,11 +115,16 @@ class DashboardController extends Controller
     {
         $client = $this->client();
         $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'required|string|max:50',
+            'name'          => 'required|string|max:255',
+            'email'         => 'nullable|email|max:255',
+            'phone'         => 'required|string|max:50',
+            'is_company'    => 'nullable|boolean',
+            'business_name' => 'nullable|string|max:255',
         ]);
-        $client->update($request->only('name', 'email', 'phone'));
+        $data = $request->only('name', 'email', 'phone');
+        $data['is_company']    = $request->boolean('is_company');
+        $data['business_name'] = $data['is_company'] ? $request->input('business_name') : null;
+        $client->update($data);
         return back()->with('success', 'تم تحديث البيانات.');
     }
 
