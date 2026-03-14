@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Admin\Role;
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 
 class AuthGates
@@ -22,18 +23,22 @@ class AuthGates
                 return null;
             });
 
-            $roles            = Role::with('permissions')->get();
-            $permissionsArray = [];
+            $permissionsArray = Cache::remember('auth_gates_permissions', 3600, function () {
+                $roles = Role::with('permissions:id,title')->get();
+                $map   = [];
 
-            foreach ($roles as $role) {
-                foreach ($role->permissions as $permissions) {
-                    $permissionsArray[$permissions->title][] = $role->id;
+                foreach ($roles as $role) {
+                    foreach ($role->permissions as $permission) {
+                        $map[$permission->title][] = $role->id;
+                    }
                 }
-            }
 
-            foreach ($permissionsArray as $title => $roles) {
-                Gate::define($title, function (\App\Models\User $user) use ($roles) {
-                    return count(array_intersect($user->roles->pluck('id')->toArray(), $roles)) > 0;
+                return $map;
+            });
+
+            foreach ($permissionsArray as $title => $roleIds) {
+                Gate::define($title, function (\App\Models\User $user) use ($roleIds) {
+                    return count(array_intersect($user->roles->pluck('id')->toArray(), $roleIds)) > 0;
                 });
             }
         }

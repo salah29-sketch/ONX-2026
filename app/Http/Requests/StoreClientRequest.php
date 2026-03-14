@@ -18,6 +18,9 @@ class StoreClientRequest extends FormRequest
     public function rules()
     {
         return [
+            'name'  => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:20'],
+            'email' => ['nullable', 'email', 'max:255'],
         ];
     }
 }
